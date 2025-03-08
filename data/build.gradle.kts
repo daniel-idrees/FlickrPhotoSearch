@@ -20,9 +20,6 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 24
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
         buildConfigField("String", "API_KEY", apiKey)
@@ -50,17 +47,10 @@ android {
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.gson)
 
     api(libs.hilt.android)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(project(":test-feature"))
 }
