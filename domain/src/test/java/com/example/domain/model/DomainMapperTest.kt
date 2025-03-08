@@ -1,13 +1,13 @@
 package com.example.domain.model
 
+import com.example.domain.util.fakeFirstPhotoIsFamily
+import com.example.domain.util.fakeFirstPhotoIsFriend
+import com.example.domain.util.fakeFirstPhotoIsPublic
 import com.example.domain.util.fakePhotoDtoList
-import com.example.testfeature.util.fakeFirstPhotoIsFamily
-import com.example.testfeature.util.fakeFirstPhotoIsFriend
-import com.example.testfeature.util.fakeFirstPhotoIsPublic
+import com.example.domain.util.fakeSecondPhotoIsFamily
+import com.example.domain.util.fakeSecondPhotoIsFriend
+import com.example.domain.util.fakeSecondPhotoIsPublic
 import com.example.testfeature.util.fakeFirstPhotoTitle
-import com.example.testfeature.util.fakeSecondPhotoIsFamily
-import com.example.testfeature.util.fakeSecondPhotoIsFriend
-import com.example.testfeature.util.fakeSecondPhotoIsPublic
 import com.example.testfeature.util.fakeSecondPhotoTitle
 import io.kotest.matchers.shouldBe
 import org.junit.Test

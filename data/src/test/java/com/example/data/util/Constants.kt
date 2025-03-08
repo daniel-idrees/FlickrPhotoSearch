@@ -6,18 +6,12 @@ import com.example.data.network.model.PhotoSearchDetail
 import com.example.data.network.model.PhotoSearchResponse
 import com.example.testfeature.util.fakeFirstPhotoFarm
 import com.example.testfeature.util.fakeFirstPhotoId
-import com.example.testfeature.util.fakeFirstPhotoIsFamily
-import com.example.testfeature.util.fakeFirstPhotoIsFriend
-import com.example.testfeature.util.fakeFirstPhotoIsPublic
 import com.example.testfeature.util.fakeFirstPhotoOwner
 import com.example.testfeature.util.fakeFirstPhotoSecret
 import com.example.testfeature.util.fakeFirstPhotoServer
 import com.example.testfeature.util.fakeFirstPhotoTitle
 import com.example.testfeature.util.fakeSecondPhotoFarm
 import com.example.testfeature.util.fakeSecondPhotoId
-import com.example.testfeature.util.fakeSecondPhotoIsFamily
-import com.example.testfeature.util.fakeSecondPhotoIsFriend
-import com.example.testfeature.util.fakeSecondPhotoIsPublic
 import com.example.testfeature.util.fakeSecondPhotoOwner
 import com.example.testfeature.util.fakeSecondPhotoSecret
 import com.example.testfeature.util.fakeSecondPhotoServer
@@ -28,6 +22,14 @@ internal const val fakePage = 1
 internal const val fakePages = 10
 internal const val fakePerPage = 100
 internal const val fakeTotal = 1000
+
+internal const val fakeFirstPhotoIsPublic = 1
+internal const val fakeFirstPhotoIsFriend = 0
+internal const val fakeFirstPhotoIsFamily = 1
+
+internal const val fakeSecondPhotoIsPublic = 0
+internal const val fakeSecondPhotoIsFriend = 1
+internal const val fakeSecondPhotoIsFamily = 0
 
 internal const val fakeStatus = "ok"
 internal const val fakeInvalidStatus = "fail"
