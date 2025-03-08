@@ -39,11 +39,11 @@ class PhotoNetworkRepositoryTest {
 
             val result = subject.searchPhotos("test")
 
-
             val expected = RepoPhotoSearchResult.Success(fakePhotoItemDtoList)
 
             result.test {
                 awaitItem() shouldBe expected
+                expected.photos.size shouldBe fakePhotoSearchResponse.photoSearchDetail.photos.size
                 verify(network).searchPhotos("test")
                 verifyNoMoreInteractions(network)
                 cancelAndIgnoreRemainingEvents()

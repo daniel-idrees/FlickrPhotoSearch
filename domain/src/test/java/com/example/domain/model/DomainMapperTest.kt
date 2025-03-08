@@ -1,14 +1,14 @@
 package com.example.domain.model
 
-import com.example.domain.util.fakeFirstIsFamily
-import com.example.domain.util.fakeFirstIsFriend
-import com.example.domain.util.fakeFirstIsPublic
-import com.example.domain.util.fakeFirstTitle
 import com.example.domain.util.fakePhotoDtoList
-import com.example.domain.util.fakeSecondIsFamily
-import com.example.domain.util.fakeSecondIsFriend
-import com.example.domain.util.fakeSecondIsPublic
-import com.example.domain.util.fakeSecondTitle
+import com.example.testfeature.util.fakeFirstPhotoIsFamily
+import com.example.testfeature.util.fakeFirstPhotoIsFriend
+import com.example.testfeature.util.fakeFirstPhotoIsPublic
+import com.example.testfeature.util.fakeFirstPhotoTitle
+import com.example.testfeature.util.fakeSecondPhotoIsFamily
+import com.example.testfeature.util.fakeSecondPhotoIsFriend
+import com.example.testfeature.util.fakeSecondPhotoIsPublic
+import com.example.testfeature.util.fakeSecondPhotoTitle
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 
@@ -24,18 +24,18 @@ class DomainMapperTest {
         // Verify the first item
         val firstItem = photoItemList.first()
 
-        firstItem.title shouldBe fakeFirstTitle
+        firstItem.title shouldBe fakeFirstPhotoTitle
         firstItem.url shouldBe "https://farm9999.staticflickr.com/fakeServer/123456789_1c27664791.jpg"
-        firstItem.isPublic shouldBe fakeFirstIsPublic
-        firstItem.isFriend shouldBe fakeFirstIsFriend
-        firstItem.isFamily shouldBe fakeFirstIsFamily
+        firstItem.isPublic shouldBe fakeFirstPhotoIsPublic
+        firstItem.isFriend shouldBe fakeFirstPhotoIsFriend
+        firstItem.isFamily shouldBe fakeFirstPhotoIsFamily
 
         // Verify the second item
         val secondItem = photoItemList[1]
-        secondItem.title shouldBe fakeSecondTitle
+        secondItem.title shouldBe fakeSecondPhotoTitle
         secondItem.url shouldBe "https://farm8888.staticflickr.com/fakeServer2/987654321_2d38764802.jpg"
-        secondItem.isPublic shouldBe fakeSecondIsPublic
-        secondItem.isFriend shouldBe fakeSecondIsFriend
-        secondItem.isFamily shouldBe fakeSecondIsFamily
+        secondItem.isPublic shouldBe fakeSecondPhotoIsPublic
+        secondItem.isFriend shouldBe fakeSecondPhotoIsFriend
+        secondItem.isFamily shouldBe fakeSecondPhotoIsFamily
     }
 }
