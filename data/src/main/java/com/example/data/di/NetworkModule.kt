@@ -35,7 +35,7 @@ internal class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitBookNetworkApi(
+    fun provideRetrofitFlickrApi(
         retrofitBuilder: Retrofit.Builder,
     ): RetrofitFlickrApi =
         retrofitBuilder
