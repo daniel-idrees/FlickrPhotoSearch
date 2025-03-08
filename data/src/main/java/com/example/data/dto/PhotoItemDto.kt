@@ -9,5 +9,5 @@ data class PhotoItemDto(
     val owner: String,
     val secret: String,
     val server: String,
-    val farm: Int,
+    val farm: Long,
 )
