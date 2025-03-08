@@ -31,7 +31,7 @@ internal class PhotoNetworkRepository(
 
     private fun getErrorResult(throwable: Throwable): RepoPhotoSearchResult {
         return when (throwable) {
-            is IOException -> RepoPhotoSearchResult.NoInternetConnection
+            is IOException -> RepoPhotoSearchResult.NetworkUnavailable
             else -> RepoPhotoSearchResult.Error
         }
     }
