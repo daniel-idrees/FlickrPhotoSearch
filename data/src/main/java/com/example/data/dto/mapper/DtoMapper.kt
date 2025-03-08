@@ -4,18 +4,14 @@ import com.example.data.dto.PhotoItemDto
 import com.example.data.network.model.Photo
 import com.example.data.network.model.PhotoSearchResponse
 
-internal fun PhotoSearchResponse.toPhotoList(): List<PhotoItemDto> {
-    val photos = mutableListOf<PhotoItemDto>()
-    this.photoSearchDetail.photos.forEach { photo ->
-        val photoItem = photo.toPhotoItem()
-        photos.add(photoItem)
+internal fun PhotoSearchResponse.toPhotoList(): List<PhotoItemDto> =
+    this.photoSearchDetail.photos.map { photo ->
+        photo.toPhotoItem()
     }
 
-    return photos
-}
 
-private fun Photo.toPhotoItem(): PhotoItemDto {
-    return PhotoItemDto(
+private fun Photo.toPhotoItem(): PhotoItemDto =
+    PhotoItemDto(
         title = title,
         isPublic = isPublic,
         isFriend = isFriend,
@@ -26,5 +22,3 @@ private fun Photo.toPhotoItem(): PhotoItemDto {
         secret = secret,
         owner = owner
     )
-}
-
