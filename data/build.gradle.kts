@@ -3,6 +3,8 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.jetbrainsKotlinKapt)
+    alias(libs.plugins.google.dagger)
 }
 
 val localProperties = Properties()
@@ -50,7 +52,9 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.gson)
 
-    api(libs.hilt.android)
+    implementation(libs.hilt.android)
+    kapt(libs.androidx.hilt.compiler)
+    kapt(libs.hilt.compiler)
 
     testImplementation(project(":test-feature"))
 }
