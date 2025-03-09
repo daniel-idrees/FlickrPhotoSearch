@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.jetbrainsKotlinKapt)
+    alias(libs.plugins.google.dagger)
 }
 
 android {
@@ -34,6 +36,10 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
+    implementation(libs.hilt.android)
+    kapt(libs.androidx.hilt.compiler)
+    kapt(libs.hilt.compiler)
 
     testImplementation(project(":test-feature"))
 }
