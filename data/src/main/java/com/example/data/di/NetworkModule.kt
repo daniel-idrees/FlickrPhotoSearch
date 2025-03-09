@@ -1,5 +1,7 @@
 package com.example.data.di
 
+import com.example.data.network.PhotoDataSource
+import com.example.data.network.retrofit.RetrofitFlickApiClient
 import com.example.data.network.retrofit.RetrofitFlickrApi
 import com.example.data.network.retrofit.RetrofitFlickrApi.Companion.FLICKR_API_BASE_URL
 import dagger.Module
@@ -42,4 +44,10 @@ internal class NetworkModule {
             .baseUrl(FLICKR_API_BASE_URL)
             .build()
             .create(RetrofitFlickrApi::class.java)
+
+    @Provides
+    @Singleton
+    fun providePhotoDataSource(
+        network: RetrofitFlickApiClient
+    ): PhotoDataSource = network
 }
