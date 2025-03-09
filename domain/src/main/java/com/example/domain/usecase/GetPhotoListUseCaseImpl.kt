@@ -21,14 +21,14 @@ internal class GetPhotoListUseCaseImpl @Inject constructor(
                 when (result) {
                     is RepoPhotoSearchResult.Success -> handleSuccessResult(result)
                     RepoPhotoSearchResult.Error -> PhotoSearchResult.Error("Something went wrong.")
-                    RepoPhotoSearchResult.InvalidStatus -> PhotoSearchResult.Error("Result Unavailable")
-                    RepoPhotoSearchResult.NetworkUnavailable -> PhotoSearchResult.Error("Please check your Internet connection")
+                    RepoPhotoSearchResult.InvalidStatus -> PhotoSearchResult.Error("Result Unavailable..")
+                    RepoPhotoSearchResult.NetworkUnavailable -> PhotoSearchResult.Error("Please check your Internet connection...")
                 }
             }
         }.onSuccess { result ->
             result.collect(::emit)
         }.onFailure {
-            emit(PhotoSearchResult.Error("Something went wrong."))
+            emit(PhotoSearchResult.Error("Something went wrong..."))
         }
     }
 
