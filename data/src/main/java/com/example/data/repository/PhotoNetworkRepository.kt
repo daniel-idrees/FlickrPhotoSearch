@@ -7,8 +7,9 @@ import com.example.data.runSuspendCatching
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
+import javax.inject.Inject
 
-internal class PhotoNetworkRepository(
+internal class PhotoNetworkRepository @Inject constructor(
     private val photoDataSource: PhotoDataSource
 ) : PhotoRepository {
     override suspend fun searchPhotos(searchText: String): Flow<RepoPhotoSearchResult> =
