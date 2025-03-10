@@ -32,17 +32,16 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.domain.model.PhotoItem
-import com.example.ui.main.MainUiEvent
-import com.example.ui.main.MainViewModel
-import com.example.ui.main.MainViewState
 import com.example.ui.R
-import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_EXTRA_SMALL
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.SPACING_SMALL
 import com.example.ui.common.content.ContentScreen
 import com.example.ui.common.content.ContentTitle
+import com.example.ui.main.MainUiEvent
+import com.example.ui.main.MainViewModel
+import com.example.ui.main.MainViewState
 import com.example.ui.main.bottomtabs.screen.BottomBarScreen
 
 @Composable
@@ -68,6 +67,7 @@ private fun Content(
 ) {
 
     val searchHistory = state.searchHistory
+
     Column(
         verticalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp),
         modifier = Modifier
@@ -122,11 +122,18 @@ private fun Content(
                         horizontalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val searchQuery = searchHistory.get(index)
+
                         Card(
                             modifier = Modifier
                                 .weight(0.90f)
                                 .clickable {
-                                    //TODO  search for the text and show the results
+                                    onEventSend(
+                                        MainUiEvent.OnSearchHistoryItemClicked(
+                                            searchQuery,
+                                            BottomBarScreen.History
+                                        )
+                                    )
                                 },
                             shape = RoundedCornerShape(8.dp),
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -148,7 +155,7 @@ private fun Content(
                                 )
 
                                 Text(
-                                    text = searchHistory.get(index),
+                                    text = searchQuery,
                                 )
                             }
                         }
