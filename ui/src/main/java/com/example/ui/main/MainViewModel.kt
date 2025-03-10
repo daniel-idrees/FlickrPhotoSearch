@@ -67,7 +67,8 @@ internal class MainViewModel @Inject constructor(
             if (event.fromScreen != BottomBarScreen.Search) {
                 switchToSearchScreen()
             }
-            search(searchQuery = event.searchQuery)
+            val searchQuery = event.searchQuery.trim() // remove whitespaces
+            search(searchQuery = searchQuery)
         }
     }
 
