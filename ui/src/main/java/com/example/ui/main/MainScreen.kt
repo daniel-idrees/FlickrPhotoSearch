@@ -24,7 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.ui.common.getActivity
-import com.example.ui.common.showErrorToast
+import com.example.ui.common.showToast
 import com.example.ui.main.bottomtabs.HomeScreen
 import com.example.ui.main.bottomtabs.SearchHistoryScreen
 import com.example.ui.main.bottomtabs.SearchScreen
@@ -38,6 +38,7 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val bottomNavigationController = rememberNavController()
     val state by viewModel.viewState.collectAsStateWithLifecycle()
+
     Scaffold(
         bottomBar = { BottomNavigationBar(bottomNavigationController) }
     ) { padding ->
@@ -69,15 +70,6 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
         }
     }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            showErrorToast(
-                context = context,
-                message = it.errorSubTitle
-            )
-        }
-    }
-
     LaunchedEffect(Unit) {
         viewModel.effect.onEach { effect ->
             when (effect) {
@@ -103,7 +95,7 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                     }
                 }
 
-                is MainUiEffect.EmptyTextError -> showErrorToast(
+                is MainUiEffect.ShowEmptyTextError -> showToast(
                     context = context,
                     message = effect.errorMessage
                 )
