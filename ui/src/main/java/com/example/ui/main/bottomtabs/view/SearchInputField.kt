@@ -54,7 +54,8 @@ internal fun SearchInputField(
     shouldHaveFocus: Boolean = false,
     searchErrorReceived: Boolean = false,
     doOnSearchTextChange: (String) -> Unit = {},
-    doOnSearchRequest: (String) -> Unit
+    doOnSearchRequest: (String) -> Unit,
+    doOnSearchHistoryDropDownItemClick: (String) -> Unit = {}
 ) {
     val shouldShowButton = !buttonText.isNullOrEmpty()
 
@@ -135,7 +136,6 @@ internal fun SearchInputField(
                     searchHistory.forEach { suggestion ->
                         DropdownMenuItem(
                             modifier = Modifier
-                                .fillMaxWidth()
                                 .padding(horizontal = SPACING_MEDIUM.dp),
                             leadingIcon = {
                                 Icon(
@@ -157,7 +157,7 @@ internal fun SearchInputField(
                             },
                             text = { Text(text = suggestion) },
                             onClick = {
-                                doOnSearchRequest(suggestion)
+                                doOnSearchHistoryDropDownItemClick(suggestion)
                                 focusManager.clearFocus()
                                 isFocused = false
                             }
@@ -191,5 +191,8 @@ internal fun SearchInputField(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun SearchInputFieldPreview() {
-    SearchInputField(label = "Search something", doOnSearchRequest = {})
+    SearchInputField(
+        label = "Search something",
+        doOnSearchRequest = {}
+    )
 }
