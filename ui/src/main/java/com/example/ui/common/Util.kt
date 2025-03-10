@@ -4,12 +4,16 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 
@@ -47,4 +51,19 @@ internal fun showToast(context: Context, message: String, duration: Int = Toast.
 internal fun keyboardAsState(): State<Boolean> {
     val isImeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
     return rememberUpdatedState(isImeVisible)
+}
+
+@Composable
+internal fun StrikeView(modifier: Modifier){
+    Canvas(
+        modifier = modifier
+    ) {
+        val strokeWidth = 2.dp.toPx()
+        drawLine(
+            color = Color.Gray,
+            start = Offset(0f, 0f),
+            end = Offset(size.width, size.height),
+            strokeWidth = strokeWidth
+        )
+    }
 }
