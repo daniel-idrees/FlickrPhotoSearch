@@ -18,11 +18,5 @@ val fakePhoto = PhotoItem(
     isFamily = fakePhotoIsFamily
 )
 val fakePhotoList = listOf(
-    PhotoItem(
-        title = fakeFirstPhotoTitle,
-        url = "https://farm9999.staticflickr.com/fakeServer/123456789_1c27664791.jpg",
-        isPublic = fakePhotoIsPublic,
-        isFriend = fakePhotoIsFriend,
-        isFamily = fakePhotoIsFamily
-    )
+    fakePhoto
 )
