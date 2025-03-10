@@ -39,8 +39,10 @@ class PhotoNetworkRepositoryTest {
 
             val result = subject.searchPhotos("test")
 
+            // when
             val expected = RepoPhotoSearchResult.Success(fakePhotoItemDtoList)
 
+            // then
             result.test {
                 awaitItem() shouldBe expected
                 expected.photos.size shouldBe fakePhotoSearchResponse.photoSearchDetail.photos.size
@@ -55,8 +57,10 @@ class PhotoNetworkRepositoryTest {
         runTest {
             whenever(network.searchPhotos("test")) doReturn fakePhotoSearchResponseWithInvalidStatus
 
+            // when
             val result = subject.searchPhotos("test")
 
+            // then
             result.test {
                 awaitItem() shouldBe RepoPhotoSearchResult.InvalidStatus
                 verify(network).searchPhotos("test")
@@ -70,8 +74,10 @@ class PhotoNetworkRepositoryTest {
         runTest {
             whenever(network.searchPhotos("test")) doThrow IllegalArgumentException()
 
+            // when
             val result = subject.searchPhotos("test")
 
+            // then
             result.test {
                 awaitItem() shouldBe RepoPhotoSearchResult.Error
                 verify(network).searchPhotos("test")
@@ -85,8 +91,10 @@ class PhotoNetworkRepositoryTest {
         runTest {
             whenever(network.searchPhotos("test")) doAnswer { throw IOException() }
 
+            // when
             val result = subject.searchPhotos("test")
 
+            // then
             result.test {
                 awaitItem() shouldBe RepoPhotoSearchResult.NetworkUnavailable
                 verify(network).searchPhotos("test")
