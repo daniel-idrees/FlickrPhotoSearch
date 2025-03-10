@@ -43,7 +43,10 @@ internal class MainViewModelTest {
 
     @Test
     fun `OnBackPressed event from Home should trigger navigation Pop effect`() = runTest {
+        // when
         subject.setEvent(MainUiEvent.OnBackPressed(BottomBarScreen.Home))
+
+        // then
         subject.effect.test {
             awaitItem() shouldBe MainUiEffect.Navigation.Pop(BottomBarScreen.Home)
             cancelAndIgnoreRemainingEvents()
@@ -52,7 +55,10 @@ internal class MainViewModelTest {
 
     @Test
     fun `OnBackPressed event from Search should trigger navigation Pop effect`() = runTest {
+        // when
         subject.setEvent(MainUiEvent.OnBackPressed(BottomBarScreen.Search))
+
+        // then
         subject.effect.test {
             awaitItem() shouldBe MainUiEffect.Navigation.Pop(BottomBarScreen.Search)
             cancelAndIgnoreRemainingEvents()
@@ -61,7 +67,10 @@ internal class MainViewModelTest {
 
     @Test
     fun `OnBackPressed event from History should trigger navigation Pop effect`() = runTest {
+        // when
         subject.setEvent(MainUiEvent.OnBackPressed(BottomBarScreen.History))
+
+        // then
         subject.effect.test {
             awaitItem() shouldBe MainUiEffect.Navigation.Pop(BottomBarScreen.History)
             cancelAndIgnoreRemainingEvents()
@@ -70,6 +79,7 @@ internal class MainViewModelTest {
 
     @Test
     fun `OnClearAllButtonClick should trigger clear search history`() = runTest {
+
         whenever(getPhotoListUseCase(testQuery)).thenReturn(
             flowOf(
                 PhotoSearchResult.Success(
@@ -77,11 +87,14 @@ internal class MainViewModelTest {
                 )
             )
         )
-
+        // when
         subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.History))
+        // then
         subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
+        // when
         subject.setEvent(MainUiEvent.OnClearAllButtonClick)
+        // then
         subject.viewState.value.searchHistory shouldBe ArrayDeque()
     }
 
@@ -95,9 +108,10 @@ internal class MainViewModelTest {
                     )
                 )
             )
-
+            // when
             subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.Home))
 
+            // then
             verify(getPhotoListUseCase).invoke(testQuery)
 
             subject.effect.test {
@@ -116,9 +130,10 @@ internal class MainViewModelTest {
                     )
                 )
             )
-
+            // when
             subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.History))
 
+            // then
             verify(getPhotoListUseCase).invoke(testQuery)
 
             subject.effect.test {
@@ -138,8 +153,10 @@ internal class MainViewModelTest {
                 )
             )
 
+            // when
             subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.Search))
 
+            // then
             verify(getPhotoListUseCase).invoke(testQuery)
 
             subject.effect.test {
@@ -148,11 +165,15 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `OnSearchTextChange should update the searchQuery string in the viewstate`() = runTest {
+    fun `OnSearchTextChange should update the searchQuery string in the viewState`() = runTest {
+        // when
         subject.setEvent(MainUiEvent.OnSearchTextChange(testQuery))
+        // then
         subject.viewState.value.searchQuery shouldBe testQuery
 
+        // when
         subject.setEvent(MainUiEvent.OnSearchTextChange(anotherTestQuery))
+        // then
         subject.viewState.value.searchQuery shouldBe anotherTestQuery
     }
 
@@ -174,9 +195,9 @@ internal class MainViewModelTest {
             )
         )
 
+        // when
         subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.History))
         subject.setEvent(MainUiEvent.OnSearchRequest(anotherTestQuery, BottomBarScreen.History))
-
         subject.viewState.value.searchHistory shouldBe ArrayDeque(
             listOf(
                 anotherTestQuery,
@@ -184,6 +205,8 @@ internal class MainViewModelTest {
             )
         )
         subject.setEvent(MainUiEvent.DeleteFromSearchHistory(0))
+
+        // then
         subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
     }
 
@@ -198,6 +221,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchHistoryItemClicked(
                     testQuery,
@@ -205,6 +229,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // then
             verify(getPhotoListUseCase).invoke(testQuery)
 
             subject.effect.test {
@@ -224,6 +249,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchHistoryItemClicked(
                     testQuery,
@@ -231,6 +257,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // then
             verify(getPhotoListUseCase).invoke(testQuery)
 
             subject.effect.test {
@@ -249,8 +276,10 @@ internal class MainViewModelTest {
             )
         )
 
+        // when
         subject.setEvent(MainUiEvent.OnSearchHistoryItemClicked(testQuery, BottomBarScreen.Search))
 
+        // then
         verify(getPhotoListUseCase).invoke(testQuery)
 
         subject.effect.test {
@@ -269,12 +298,15 @@ internal class MainViewModelTest {
                 )
             )
 
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchHistoryItemClicked(
                     testQuery,
                     BottomBarScreen.Home
                 )
             )
+
+            // then
             verify(getPhotoListUseCase).invoke(testQuery)
         }
 
@@ -289,12 +321,15 @@ internal class MainViewModelTest {
                 )
             )
 
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchHistoryItemClicked(
                     testQuery,
                     BottomBarScreen.Search
                 )
             )
+
+            // then
             verify(getPhotoListUseCase).invoke(testQuery)
         }
 
@@ -309,12 +344,15 @@ internal class MainViewModelTest {
                 )
             )
 
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchHistoryItemClicked(
                     testQuery,
                     BottomBarScreen.History
                 )
             )
+
+            // then
             verify(getPhotoListUseCase).invoke(testQuery)
         }
 
@@ -328,6 +366,8 @@ internal class MainViewModelTest {
                     )
                 )
             )
+
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchRequest(
                     searchQuery = testQuery,
@@ -335,6 +375,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // then
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList<PhotoItem>()
             subject.viewState.value.isLoading shouldBe false
@@ -365,6 +406,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchRequest(
                     searchQuery = testQuery,
@@ -372,6 +414,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // then
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe fakePhotoList
             subject.viewState.value.error shouldBe null
@@ -390,6 +433,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchRequest(
                     searchQuery = testQuery,
@@ -397,6 +441,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // then
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
@@ -427,6 +472,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchRequest(
                     searchQuery = testQuery,
@@ -434,6 +480,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // then
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
@@ -465,6 +512,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchRequest(
                     searchQuery = testQuery,
@@ -472,6 +520,7 @@ internal class MainViewModelTest {
                 )
             )
 
+            // then
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
@@ -509,6 +558,7 @@ internal class MainViewModelTest {
                 flowOf(PhotoSearchResult.Success(fakePhotoList))
             )
 
+            // when
             subject.setEvent(
                 MainUiEvent.OnSearchRequest(
                     searchQuery = testQuery,
@@ -517,6 +567,7 @@ internal class MainViewModelTest {
             )
             subject.setEvent(MainUiEvent.OnSearchRequest(anotherTestQuery, BottomBarScreen.Search))
 
+            // then
             subject.viewState.value.searchHistory shouldBe ArrayDeque(
                 listOf(
                     anotherTestQuery,
