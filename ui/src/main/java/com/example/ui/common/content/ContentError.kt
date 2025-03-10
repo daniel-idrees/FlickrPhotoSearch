@@ -25,12 +25,8 @@ import com.example.ui.common.SPACING_MEDIUM
 internal fun ContentError(
     contentErrorConfig: ContentErrorConfig,
     modifier: Modifier = Modifier,
-    titleStyle: TextStyle = MaterialTheme.typography.headlineSmall.copy(
-        color = MaterialTheme.colorScheme.onSurface
-    ),
-    subtitleStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(
-        color = MaterialTheme.colorScheme.onSurface
-    ),
+    titleStyle: TextStyle = MaterialTheme.typography.headlineSmall,
+    subtitleStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     subTitleMaxLines: Int = Int.MAX_VALUE,
 ) {
     Column(

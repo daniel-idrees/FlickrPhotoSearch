@@ -21,12 +21,8 @@ internal fun ContentTitle(
     modifier: Modifier = Modifier,
     title: String,
     subtitle: String? = null,
-    titleStyle: TextStyle = MaterialTheme.typography.headlineSmall.copy(
-        color = MaterialTheme.colorScheme.onSurface
-    ),
-    subtitleStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(
-        color = MaterialTheme.colorScheme.onSurface
-    ),
+    titleStyle: TextStyle = MaterialTheme.typography.headlineSmall,
+    subtitleStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     subTitleMaxLines: Int = Int.MAX_VALUE,
 ) {
     Column(
@@ -38,7 +34,6 @@ internal fun ContentTitle(
             text = title,
             style = titleStyle,
         )
-        //Spacer(modifier = Modifier.height(SPACING_MEDIUM.dp))
 
         subtitle?.let { safeSubtitle ->
             Text(
@@ -62,7 +57,7 @@ private fun ContentTitlePreview() {
     )
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 private fun ContentTitleNoSubtitlePreview() {
     ContentTitle(
