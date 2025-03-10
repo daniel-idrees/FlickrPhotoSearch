@@ -7,7 +7,7 @@ internal sealed interface MainUiEffect : ViewSideEffect {
     data class ShowEmptyTextError(var errorMessage: String) : MainUiEffect
     sealed interface Navigation : MainUiEffect {
         data object Finish : Navigation
-        data class SwitchScreen(val screenRoute: String) : Navigation
+        data class SwitchScreen(val toScreen: BottomBarScreen) : Navigation
         data class Pop(val fromScreen: BottomBarScreen) : Navigation
     }
 }
