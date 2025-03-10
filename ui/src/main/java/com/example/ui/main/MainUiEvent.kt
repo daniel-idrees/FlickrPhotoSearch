@@ -2,7 +2,7 @@ package com.example.ui.main
 
 import com.example.domain.model.PhotoItem
 import com.example.ui.common.mvi.ViewEvent
-import com.example.ui.main.bottomtabs.screen.BottomBarScreen
+import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 
 internal sealed interface MainUiEvent : ViewEvent {
     data class OnBackPressed(val fromScreen: BottomBarScreen) : MainUiEvent

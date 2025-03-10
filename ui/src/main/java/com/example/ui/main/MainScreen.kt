@@ -25,10 +25,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.ui.common.getActivity
 import com.example.ui.common.showToast
-import com.example.ui.main.bottomtabs.HomeScreen
-import com.example.ui.main.bottomtabs.SearchHistoryScreen
-import com.example.ui.main.bottomtabs.SearchScreen
-import com.example.ui.main.bottomtabs.screen.BottomBarScreen
+import com.example.ui.main.bottomtabs.screen.HomeScreen
+import com.example.ui.main.bottomtabs.screen.SearchHistoryScreen
+import com.example.ui.main.bottomtabs.screen.SearchScreen
+import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 

@@ -8,7 +8,7 @@ import com.example.testfeature.rule.CoroutineTestRule
 import com.example.ui.main.MainUiEffect
 import com.example.ui.main.MainUiEvent
 import com.example.ui.main.MainViewModel
-import com.example.ui.main.bottomtabs.screen.BottomBarScreen
+import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 import com.example.ui.util.anotherTestQuery
 import com.example.ui.util.fakePhotoList
 import com.example.ui.util.testQuery

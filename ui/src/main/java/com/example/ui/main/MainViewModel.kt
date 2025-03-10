@@ -5,7 +5,7 @@ import com.example.domain.PhotoSearchResult
 import com.example.domain.usecase.GetPhotoListUseCase
 import com.example.ui.common.content.ContentErrorConfig
 import com.example.ui.common.mvi.MviViewModel
-import com.example.ui.main.bottomtabs.screen.BottomBarScreen
+import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
