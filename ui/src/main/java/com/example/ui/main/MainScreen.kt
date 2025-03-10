@@ -2,8 +2,11 @@
 
 package com.example.ui.main
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -45,7 +48,8 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
         NavHost(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .padding(padding)
+                .windowInsetsPadding(WindowInsets.displayCutout),
             navController = bottomNavigationController,
             startDestination = BottomBarScreen.Home.route
         ) {
