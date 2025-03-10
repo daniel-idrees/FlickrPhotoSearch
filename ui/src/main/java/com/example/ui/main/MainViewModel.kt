@@ -61,7 +61,7 @@ internal class MainViewModel @Inject constructor(
     private fun doOnSearchRequest(event: MainUiEvent.OnSearchRequest) {
         if (event.searchQuery.isEmpty() || event.searchQuery.isBlank()) {
             setEffect {
-                MainUiEffect.ShowEmptyTextError("Enter something to search")
+                MainUiEffect.ShowEmptyTextError(R.string.main_view_model_empty_text_error_toast_text)
             }
         } else {
             if (event.fromScreen != BottomBarScreen.Search) {
@@ -93,8 +93,8 @@ internal class MainViewModel @Inject constructor(
                         copy(
                             isLoading = false,
                             error = ContentErrorConfig(
-                                errorTitleRes = R.string.main_view_model_no_result_error_title,
-                                errorSubTitleRes = R.string.main_view_model_no_result_error_sub_title,
+                                errorTitleRes = R.string.main_view_model_empty_error_title,
+                                errorSubTitleRes = R.string.main_view_model_empty_error_sub_title,
                                 onRetry = { search(searchQuery) },
                             )
                         )
@@ -105,8 +105,8 @@ internal class MainViewModel @Inject constructor(
                             copy(
                                 isLoading = false,
                                 error = ContentErrorConfig(
-                                    errorTitleRes = R.string.main_view_model_generic_error_title,
-                                    errorSubTitleRes = R.string.main_view_model_generic_error_sub_title,
+                                    errorTitleRes = R.string.main_view_model_no_result_error_title,
+                                    errorSubTitleRes = R.string.main_view_model_no_result_error_sub_title,
                                     onRetry = { search(searchQuery) },
                                 )
                             )

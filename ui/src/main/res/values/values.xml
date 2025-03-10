@@ -16,9 +16,10 @@
     <string name="main_view_model_generic_error_sub_title">Something went wrong.</string>
     <string name="main_view_model_no_internet_connection_error_title">Oops…</string>
     <string name="main_view_model_no_internet_connection_error_sub_title">Please check your Internet connection.</string>
-    <string name="main_view_model_no_result_error_title">Nothing found…</string>
-    <string name="main_view_model_no_result_error_sub_title">Unable to find anything. Try something else</string>
+    <string name="main_view_model_empty_error_title">Nothing found…</string>
+    <string name="main_view_model_empty_error_sub_title">Unable to find anything. Try something else</string>
     <string name="main_view_model_empty_text_error_toast_text">Enter something to search</string>
     <string name="main_view_model_success_result_title">Showing results for \""%1$s\""</string>
-
+    <string name="main_view_model_no_result_error_title">Oops…</string>
+    <string name="main_view_model_no_result_error_sub_title">"Result Unavailable."</string>
 </resources>
