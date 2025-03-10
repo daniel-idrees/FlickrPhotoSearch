@@ -38,6 +38,7 @@ import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.SPACING_SMALL
 import com.example.ui.common.content.ContentScreen
 import com.example.ui.common.content.ContentTitle
+import com.example.ui.common.theme.SapFlickrExampleTheme
 import com.example.ui.main.MainUiEvent
 import com.example.ui.main.MainViewModel
 import com.example.ui.main.MainViewState
@@ -59,7 +60,6 @@ internal fun SearchHistoryScreen(viewModel: MainViewModel, viewState: MainViewSt
     }
 }
 
-
 @Composable
 private fun Content(
     state: MainViewState,
@@ -75,7 +75,6 @@ private fun Content(
             .fillMaxSize()
             .padding(
                 paddingValues = PaddingValues(
-                    top = paddingValues.calculateTopPadding(),
                     bottom = 0.dp,
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr)
@@ -112,8 +111,6 @@ private fun Content(
                 onEventSend = onEventSend
             )
         }
-
-
     }
 }
 
@@ -197,17 +194,24 @@ private fun SearchHistoryItem(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @PreviewLightDark
 @Composable
 private fun SearchHistoryPreview(
     @PreviewParameter(SearchHistoryPreviewParameterProvider::class) viewState: MainViewState
 ) {
-    Content(
-        state = viewState,
-        onEventSend = {},
-        paddingValues = PaddingValues(1.dp),
-    )
+    SapFlickrExampleTheme {
+        ContentScreen(
+            isLoading = viewState.isLoading,
+            backPressHandler = {  }
+        ) {
+            Content(
+                state = viewState,
+                onEventSend = {},
+                paddingValues = PaddingValues(1.dp),
+            )
+        }
+    }
 }
 
 
