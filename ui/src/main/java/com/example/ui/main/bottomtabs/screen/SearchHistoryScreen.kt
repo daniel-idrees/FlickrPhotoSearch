@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -81,16 +82,16 @@ private fun Content(
                 )
             )
     ) {
+        val isSearchHistoryAvailabe = searchHistory.isNotEmpty()
 
         ContentTitle(
             modifier = Modifier
                 .fillMaxWidth(),
-            title = "Search History",
+            title = stringResource(R.string.search_history_screen_title),
+            subtitle = if (!isSearchHistoryAvailabe) stringResource(R.string.search_history_sub_title_if_no_history) else null
         )
 
-        if (searchHistory.isEmpty()) {
-            Text(text = "No search history")
-        } else {
+        if (isSearchHistoryAvailabe) {
             Button(
                 modifier = Modifier
                     .padding(horizontal = SPACING_EXTRA_SMALL.dp)
@@ -101,7 +102,7 @@ private fun Content(
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "Clear All",
+                    text = stringResource(R.string.search_history_clear_all_button_text),
                     fontSize = 15.sp,
                 )
             }
@@ -178,14 +179,13 @@ private fun Content(
 }
 
 @Composable
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 private fun SearchHistoryScreenPreview() {
     val viewState = MainViewState(
         isLoading = false,
         error = null,
-        subtitle = "Subtitle",
-        searchQuery = "",
-        searchResultTitle = "Showing results for This",
+        searchQuery = "query",
+        searchResultTitleRes = R.string.main_view_model_success_result_title,
         photoList = listOf(
             PhotoItem(
                 title = "Photo One",

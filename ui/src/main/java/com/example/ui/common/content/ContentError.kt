@@ -14,10 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.ui.R
 import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_MEDIUM
 
@@ -35,19 +37,17 @@ internal fun ContentError(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = contentErrorConfig.errorTitle,
+            text = stringResource(contentErrorConfig.errorTitleRes),
             style = titleStyle,
         )
 
-        contentErrorConfig.errorSubTitle.let { safeSubtitle ->
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = safeSubtitle,
-                style = subtitleStyle,
-                maxLines = subTitleMaxLines,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(contentErrorConfig.errorSubTitleRes),
+            style = subtitleStyle,
+            maxLines = subTitleMaxLines,
+            overflow = TextOverflow.Ellipsis
+        )
         if (contentErrorConfig.onRetry != null) {
             Icon(
                 modifier = Modifier
@@ -65,12 +65,12 @@ internal fun ContentError(
 }
 
 @Composable
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 private fun ContentErrorPreview() {
     ContentError(
         ContentErrorConfig(
-            errorTitle = "Something went wrong",
-            errorSubTitle = "Please check something",
+            errorTitleRes = R.string.main_view_model_generic_error_title,
+            errorSubTitleRes = R.string.main_view_model_generic_error_sub_title,
             onRetry = {}
         )
     )

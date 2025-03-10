@@ -47,7 +47,7 @@ internal fun ContentTitle(
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 private fun ContentTitlePreview() {
     ContentTitle(
@@ -57,7 +57,7 @@ private fun ContentTitlePreview() {
     )
 }
 
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 private fun ContentTitleNoSubtitlePreview() {
     ContentTitle(

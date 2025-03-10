@@ -14,11 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.domain.model.PhotoItem
+import com.example.ui.R
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.content.ContentError
 import com.example.ui.common.content.ContentScreen
@@ -70,8 +72,7 @@ private fun Content(
             ContentTitle(
                 modifier = Modifier
                     .fillMaxWidth(),
-                title = state.title,
-                subtitle = state.subtitle
+                title = stringResource(R.string.search_screen_title),
             )
         }
         val prefilledText =
@@ -81,9 +82,9 @@ private fun Content(
             modifier = Modifier.fillMaxWidth(),
             searchInputPrefilledText = prefilledText,
             searchHistory = state.searchHistory,
-            label = "Search a photo",
+            label = stringResource(R.string.search_screen_search_field_label),
             shouldHaveFocus = !photosResultAvailable,
-            buttonText = if (shouldShowButton && state.error == null) "Search" else null,
+            buttonText = if (shouldShowButton && state.error == null) stringResource(R.string.search_screen_search_button_text) else null,
             searchErrorReceived = state.error != null,
             doOnSearchRequest = { text ->
                 onEventSend(
@@ -109,7 +110,7 @@ private fun Content(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = SPACING_MEDIUM.dp),
-                text = state.searchResultTitle,
+                text = stringResource(state.searchResultTitleRes, state.searchHistory.first()),
                 overflow = TextOverflow.Ellipsis
             )
 
@@ -155,10 +156,7 @@ private fun SearchScreenPreview() {
     val viewState = MainViewState(
         isLoading = false,
         error = null,
-        title = "Flickr Photo Search",
-        subtitle = "",
         searchQuery = "",
-        searchResultTitle = "Showing results for This",
         photoList = listOf(
             PhotoItem(
                 title = "Photo One",

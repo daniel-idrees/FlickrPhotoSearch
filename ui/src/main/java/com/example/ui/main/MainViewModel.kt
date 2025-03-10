@@ -3,6 +3,7 @@ package com.example.ui.main
 import androidx.lifecycle.viewModelScope
 import com.example.domain.PhotoSearchResult
 import com.example.domain.usecase.GetPhotoListUseCase
+import com.example.ui.R
 import com.example.ui.common.content.ContentErrorConfig
 import com.example.ui.common.mvi.MviViewModel
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
@@ -16,7 +17,8 @@ internal class MainViewModel @Inject constructor(
 ) : MviViewModel<MainUiEvent, MainViewState, MainUiEffect>() {
 
     override fun setInitialState(): MainViewState = MainViewState(
-        title = "Flickr Photo Search"
+        isLoading = false,
+        error = null
     )
 
     override fun handleEvents(event: MainUiEvent) {
@@ -88,11 +90,10 @@ internal class MainViewModel @Inject constructor(
                 when (result) {
                     PhotoSearchResult.Empty -> setState {
                         copy(
-                            subtitle = "",
                             isLoading = false,
                             error = ContentErrorConfig(
-                                errorTitle = "Nothing found...",
-                                errorSubTitle = "Unable to find anything. Try something else",
+                                errorTitleRes = R.string.main_view_model_no_result_error_title,
+                                errorSubTitleRes = R.string.main_view_model_no_result_error_sub_title,
                                 onRetry = { search(searchQuery) },
                             )
                         )
@@ -101,11 +102,10 @@ internal class MainViewModel @Inject constructor(
                     PhotoSearchResult.Error.NoResult -> {
                         setState {
                             copy(
-                                subtitle = "",
                                 isLoading = false,
                                 error = ContentErrorConfig(
-                                    errorTitle = "Oops...",
-                                    errorSubTitle = "Result Unavailable.",
+                                    errorTitleRes = R.string.main_view_model_generic_error_title,
+                                    errorSubTitleRes = R.string.main_view_model_generic_error_sub_title,
                                     onRetry = { search(searchQuery) },
                                 )
                             )
@@ -115,11 +115,10 @@ internal class MainViewModel @Inject constructor(
                     PhotoSearchResult.Error.Generic -> {
                         setState {
                             copy(
-                                subtitle = "",
                                 isLoading = false,
                                 error = ContentErrorConfig(
-                                    errorTitle = "Oops...",
-                                    errorSubTitle = "Something went wrong.",
+                                    errorTitleRes = R.string.main_view_model_generic_error_title,
+                                    errorSubTitleRes = R.string.main_view_model_generic_error_sub_title,
                                     onRetry = { search(searchQuery) },
                                 )
                             )
@@ -129,11 +128,10 @@ internal class MainViewModel @Inject constructor(
                     PhotoSearchResult.Error.NoInternetConnection -> {
                         setState {
                             copy(
-                                subtitle = "",
                                 isLoading = false,
                                 error = ContentErrorConfig(
-                                    errorTitle = "Oops...",
-                                    errorSubTitle = "Please check your Internet connection.",
+                                    errorTitleRes = R.string.main_view_model_no_internet_connection_error_title,
+                                    errorSubTitleRes = R.string.main_view_model_no_internet_connection_error_sub_title,
                                     onRetry = { search(searchQuery) },
                                 )
                             )
@@ -147,7 +145,7 @@ internal class MainViewModel @Inject constructor(
                                 error = null,
                                 isLoading = false,
                                 photoList = result.photos,
-                                searchResultTitle = "Showing results for \"$searchQuery\"",
+                                searchResultTitleRes = R.string.main_view_model_success_result_title,
                             )
                         }
                     }

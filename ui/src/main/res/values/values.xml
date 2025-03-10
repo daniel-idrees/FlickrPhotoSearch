@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_screen_title">Flickr Photo Search</string>
+    <string name="home_screen_search_field_label">Search a photo</string>
+    <string name="home_screen_search_button_text">Search</string>
+
+    <string name="search_screen_title">Flickr Photo Search</string>
+    <string name="search_screen_search_field_label">Search a photo</string>
+    <string name="search_screen_search_button_text">Search</string>
+
+    <string name="search_history_screen_title">Search History</string>
+    <string name="search_history_sub_title_if_no_history">No search history</string>
+    <string name="search_history_clear_all_button_text">Clear All</string>
+
+    <string name="main_view_model_generic_error_title">Oops…</string>
+    <string name="main_view_model_generic_error_sub_title">Something went wrong.</string>
+    <string name="main_view_model_no_internet_connection_error_title">Oops…</string>
+    <string name="main_view_model_no_internet_connection_error_sub_title">Please check your Internet connection.</string>
+    <string name="main_view_model_no_result_error_title">Nothing found…</string>
+    <string name="main_view_model_no_result_error_sub_title">Unable to find anything. Try something else</string>
+    <string name="main_view_model_empty_text_error_toast_text">Enter something to search</string>
+    <string name="main_view_model_success_result_title">Showing results for \""%1$s\""</string>
+
+</resources>
