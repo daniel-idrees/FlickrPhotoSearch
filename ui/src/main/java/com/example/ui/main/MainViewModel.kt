@@ -24,10 +24,17 @@ internal class MainViewModel @Inject constructor(
             is MainUiEvent.OnSearchRequest -> {
                 if (event.searchQuery.isEmpty() || event.searchQuery.isBlank()) {
                     setEffect {
-                        MainUiEffect.EmptyTextError("Enter something to search")
+                        MainUiEffect.ShowEmptyTextError("Enter something to search")
                     }
                 } else {
-                    search(searchQuery = event.searchQuery, fromScreen = event.fromScreen)
+                    if (event.fromScreen != BottomBarScreen.Search) {
+                        setEffect {
+                            MainUiEffect.Navigation.SwitchScreen(
+                                BottomBarScreen.Search.route
+                            )
+                        }
+                    }
+                    search(searchQuery = event.searchQuery)
                 }
             }
 
@@ -54,10 +61,21 @@ internal class MainViewModel @Inject constructor(
                     )
                 }
             }
+
+            is MainUiEvent.OnSearchHistoryItemClicked -> {
+                if (event.fromScreen != BottomBarScreen.Search) {
+                    setEffect {
+                        MainUiEffect.Navigation.SwitchScreen(
+                            BottomBarScreen.Search.route
+                        )
+                    }
+                }
+                search(searchQuery = event.searchQuery)
+            }
         }
     }
 
-    private fun search(searchQuery: String, fromScreen: BottomBarScreen) {
+    private fun search(searchQuery: String) {
         setState {
             copy(
                 isLoading = true,
@@ -77,24 +95,53 @@ internal class MainViewModel @Inject constructor(
                             error = ContentErrorConfig(
                                 errorTitle = "Nothing found...",
                                 errorSubTitle = "Unable to find anything. Try something else",
-                                onRetry = { search(searchQuery, fromScreen) },
-                                retryButtonText = "Try Again"
+                                onRetry = { search(searchQuery) },
                             )
                         )
                     }
 
-                    is PhotoSearchResult.Error -> setState {
-                        copy(
-                            subtitle = "",
-                            isLoading = false,
-                            error = ContentErrorConfig(
-                                errorTitle = "Oops...",
-                                errorSubTitle = result.errorMessage,
-                                onRetry = { search(searchQuery, fromScreen) },
-                                retryButtonText = "Try Again"
+                    PhotoSearchResult.Error.NoResult -> {
+                        setState {
+                            copy(
+                                subtitle = "",
+                                isLoading = false,
+                                error = ContentErrorConfig(
+                                    errorTitle = "Oops...",
+                                    errorSubTitle = "Result Unavailable.",
+                                    onRetry = { search(searchQuery) },
+                                )
                             )
-                        )
+                        }
                     }
+
+                    PhotoSearchResult.Error.Generic -> {
+                        setState {
+                            copy(
+                                subtitle = "",
+                                isLoading = false,
+                                error = ContentErrorConfig(
+                                    errorTitle = "Oops...",
+                                    errorSubTitle = "Something went wrong.",
+                                    onRetry = { search(searchQuery) },
+                                )
+                            )
+                        }
+                    }
+
+                    PhotoSearchResult.Error.NoInternetConnection -> {
+                        setState {
+                            copy(
+                                subtitle = "",
+                                isLoading = false,
+                                error = ContentErrorConfig(
+                                    errorTitle = "Oops...",
+                                    errorSubTitle = "Please check your Internet connection.",
+                                    onRetry = { search(searchQuery) },
+                                )
+                            )
+                        }
+                    }
+
 
                     is PhotoSearchResult.Success -> {
                         setState {
@@ -104,13 +151,6 @@ internal class MainViewModel @Inject constructor(
                                 photoList = result.photos,
                                 searchResultTitle = "Showing results for \"$searchQuery\"",
                             )
-                        }
-                        if (fromScreen != BottomBarScreen.Search) {
-                            setEffect {
-                                MainUiEffect.Navigation.SwitchScreen(
-                                    BottomBarScreen.Search.route
-                                )
-                            }
                         }
                     }
                 }
