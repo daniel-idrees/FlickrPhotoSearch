@@ -1,20 +1,23 @@
 package com.example.ui.common.content
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_MEDIUM
 
@@ -49,21 +52,18 @@ internal fun ContentError(
                 overflow = TextOverflow.Ellipsis
             )
         }
-        if (contentErrorConfig.onRetry != null && contentErrorConfig.retryButtonText != null) {
-            Button(
+        if (contentErrorConfig.onRetry != null) {
+            Icon(
                 modifier = Modifier
-                    .padding(horizontal = SPACING_EXTRA_LARGE.dp)
-                    .fillMaxWidth(),
-                onClick = {
-                    contentErrorConfig.onRetry.invoke()
-                },
-            ) {
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = contentErrorConfig.retryButtonText,
-                    fontSize = 15.sp,
-                )
-            }
+                    .padding(top = SPACING_MEDIUM.dp)
+                    .size(SPACING_EXTRA_LARGE.dp)
+                    .clickable {
+                        contentErrorConfig.onRetry.invoke()
+                    }
+                    .align(Alignment.CenterHorizontally),
+                imageVector = Icons.Default.Refresh,
+                contentDescription = "Refresh icon on error"
+            )
         }
     }
 }
@@ -75,8 +75,7 @@ private fun ContentErrorPreview() {
         ContentErrorConfig(
             errorTitle = "Something went wrong",
             errorSubTitle = "Please check something",
-            onRetry = {},
-            retryButtonText = "Retry",
+            onRetry = {}
         )
     )
 }
