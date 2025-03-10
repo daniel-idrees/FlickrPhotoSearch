@@ -19,8 +19,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.domain.model.PhotoItem
 import com.example.ui.R
+import com.example.ui.common.SPACING_LARGE
+import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.content.ContentScreen
 import com.example.ui.common.content.ContentTitle
+import com.example.ui.common.theme.SapFlickrExampleTheme
 import com.example.ui.main.MainUiEvent
 import com.example.ui.main.MainViewModel
 import com.example.ui.main.MainViewState
@@ -32,7 +35,6 @@ internal fun HomeScreen(
     viewModel: MainViewModel,
     viewState: MainViewState
 ) {
-
     ContentScreen(
         isLoading = viewState.isLoading,
         backPressHandler = { viewModel.setEvent(MainUiEvent.OnBackPressed(BottomBarScreen.Home)) }
@@ -57,7 +59,6 @@ private fun Content(
             .fillMaxSize()
             .padding(
                 paddingValues = PaddingValues(
-                    top = paddingValues.calculateTopPadding(),
                     bottom = 0.dp,
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr)
@@ -71,7 +72,9 @@ private fun Content(
         )
 
         SearchFieldView(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = SPACING_LARGE.dp),
             searchInputPrefilledText = state.searchQuery,
             searchHistory = state.searchHistory,
             label = stringResource(R.string.home_screen_search_field_label),
@@ -104,14 +107,16 @@ private fun Content(
 private fun HomePreview(
     @PreviewParameter(HomePreviewParameterProvider::class) viewState: MainViewState
 ) {
-    ContentScreen(
-        isLoading = viewState.isLoading,
-    ) {
-        Content(
-            state = viewState,
-            onEventSend = {},
-            paddingValues = PaddingValues(1.dp)
-        )
+    SapFlickrExampleTheme {
+        ContentScreen(
+            isLoading = viewState.isLoading,
+        ) {
+            Content(
+                state = viewState,
+                onEventSend = {},
+                paddingValues = PaddingValues(1.dp)
+            )
+        }
     }
 }
 
