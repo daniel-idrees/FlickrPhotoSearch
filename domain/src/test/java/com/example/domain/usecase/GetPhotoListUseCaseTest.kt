@@ -86,7 +86,7 @@ class GetPhotoListUseCaseTest {
             verify(repository).searchPhotos("text")
             verifyNoMoreInteractions(repository)
             val result = awaitItem()
-            result shouldBe PhotoSearchResult.Error("Something went wrong.")
+            result shouldBe PhotoSearchResult.Error.Generic
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -101,7 +101,7 @@ class GetPhotoListUseCaseTest {
             verify(repository).searchPhotos("text")
             verifyNoMoreInteractions(repository)
             val result = awaitItem()
-            result shouldBe PhotoSearchResult.Error("Result Unavailable")
+            result shouldBe PhotoSearchResult.Error.NoResult
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -117,7 +117,7 @@ class GetPhotoListUseCaseTest {
                 verify(repository).searchPhotos("text")
                 verifyNoMoreInteractions(repository)
                 val result = awaitItem()
-                result shouldBe PhotoSearchResult.Error("Please check your Internet connection")
+                result shouldBe PhotoSearchResult.Error.NoInternetConnection
                 cancelAndIgnoreRemainingEvents()
             }
         }
