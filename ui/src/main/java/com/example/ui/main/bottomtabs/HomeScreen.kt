@@ -20,7 +20,7 @@ import com.example.ui.main.MainUiEvent
 import com.example.ui.main.MainViewModel
 import com.example.ui.main.MainViewState
 import com.example.ui.main.bottomtabs.screen.BottomBarScreen
-import com.example.ui.main.bottomtabs.view.SearchInputField
+import com.example.ui.main.bottomtabs.view.SearchInputFieldView
 
 @Composable
 internal fun HomeScreen(
@@ -66,7 +66,7 @@ private fun Content(
             subtitle = state.subtitle
         )
 
-        SearchInputField(
+        SearchInputFieldView(
             searchInputPrefilledText = state.searchQuery,
             searchHistory = state.searchHistory,
             label = "Search a photo",

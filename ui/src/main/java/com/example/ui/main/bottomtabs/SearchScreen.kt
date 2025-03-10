@@ -29,7 +29,7 @@ import com.example.ui.main.MainViewModel
 import com.example.ui.main.MainViewState
 import com.example.ui.main.bottomtabs.screen.BottomBarScreen
 import com.example.ui.main.bottomtabs.view.ListView
-import com.example.ui.main.bottomtabs.view.SearchInputField
+import com.example.ui.main.bottomtabs.view.SearchInputFieldView
 import kotlinx.coroutines.delay
 
 @Composable
@@ -77,7 +77,7 @@ private fun Content(
         val prefilledText =
             if (photosResultAvailable) state.searchHistory.first() else state.searchQuery
         val shouldShowButton = !photosResultAvailable
-        SearchInputField(
+        SearchInputFieldView(
             searchInputPrefilledText = prefilledText,
             searchHistory = state.searchHistory,
             label = "Search a photo",
