@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
 import com.example.ui.R
 import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_LARGE
@@ -128,7 +129,8 @@ internal fun SearchInputField(
                     expanded = isFocused,
                     onDismissRequest = { isFocused = false },
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    properties = PopupProperties(focusable = false)
                 ) {
                     searchHistory.forEach { suggestion ->
                         DropdownMenuItem(
