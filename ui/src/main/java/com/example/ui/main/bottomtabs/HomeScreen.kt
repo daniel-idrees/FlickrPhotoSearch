@@ -80,6 +80,14 @@ private fun Content(
                     )
                 )
             },
+            doOnSearchHistoryDropDownItemClick = { text ->
+                onEventSend(
+                    MainUiEvent.OnSearchHistoryItemClicked(
+                        searchQuery = text,
+                        BottomBarScreen.Home
+                    )
+                )
+            },
             doOnSearchTextChange = { text -> onEventSend(MainUiEvent.OnSearchTextChange(text)) }
         )
     }
