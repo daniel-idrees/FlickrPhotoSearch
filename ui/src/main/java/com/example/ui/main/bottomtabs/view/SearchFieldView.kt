@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -28,7 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -38,10 +40,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.PopupProperties
-import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_LARGE
-import com.example.ui.common.SPACING_MEDIUM
+import com.example.ui.common.theme.SapFlickrExampleTheme
 
 @Composable
 internal fun SearchFieldView(
@@ -59,6 +61,7 @@ internal fun SearchFieldView(
     val shouldShowButton = !buttonText.isNullOrEmpty()
 
     val focusManager = LocalFocusManager.current
+    val density = LocalDensity.current
     var textFieldValue by remember {
         mutableStateOf(
             TextFieldValue(
@@ -69,15 +72,7 @@ internal fun SearchFieldView(
     }
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
-
-    LaunchedEffect(shouldHaveFocus) {
-        if (shouldHaveFocus) {
-            focusRequester.requestFocus()
-            textFieldValue = textFieldValue.copy(
-                selection = TextRange(textFieldValue.text.length)
-            )
-        }
-    }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
     Column(
         modifier = modifier,
@@ -87,11 +82,13 @@ internal fun SearchFieldView(
             alignment = Alignment.CenterVertically,
         ),
     ) {
-
         val textFieldModifier = Modifier
             .fillMaxWidth()
             .then(if (shouldHaveFocus) Modifier.focusRequester(focusRequester) else Modifier)
             .onFocusChanged { focusState -> isFocused = focusState.isFocused }
+            .onGloballyPositioned { coordinates ->
+                textFieldSize = coordinates.size.toSize()
+            }
         Box {
             OutlinedTextField(
                 modifier = textFieldModifier,
@@ -129,22 +126,23 @@ internal fun SearchFieldView(
                     expanded = isFocused,
                     onDismissRequest = { isFocused = false },
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .width(with(density) { textFieldSize.width.toDp() }),
                     properties = PopupProperties(focusable = false)
                 ) {
-                    searchHistory.forEach { suggestion ->
+                    searchHistory.forEachIndexed { index, suggestion ->
+                        if (index > 9) {
+                            return@forEachIndexed
+                        }
+
                         DropdownMenuItem(
-                            modifier = Modifier
-                                .padding(horizontal = SPACING_MEDIUM.dp),
                             leadingIcon = {
                                 PastIcon(modifier = Modifier.size(SPACING_LARGE.dp))
                             },
                             trailingIcon = {
-                                TopLeftArrowIcon(modifier = Modifier
-                                    .size(SPACING_LARGE.dp)
-                                    .graphicsLayer {
-                                        rotationZ = 45f
-                                    })
+                                TopLeftArrowIcon(
+                                    modifier = Modifier
+                                        .size(SPACING_LARGE.dp)
+                                )
                             },
                             text = { Text(text = suggestion) },
                             onClick = {
@@ -161,8 +159,7 @@ internal fun SearchFieldView(
         if (shouldShowButton && buttonText != null) {
             Button(
                 modifier = Modifier
-                    .padding(horizontal = SPACING_EXTRA_LARGE.dp)
-                    .fillMaxWidth(),
+                    .width(with(density) { textFieldSize.width.toDp() }),
                 onClick = {
                     doOnSearchRequest(textFieldValue.text)
                     focusManager.clearFocus()
@@ -176,37 +173,52 @@ internal fun SearchFieldView(
             }
         }
     }
+
+    LaunchedEffect(shouldHaveFocus) {
+        if (shouldHaveFocus) {
+            focusRequester.requestFocus()
+            textFieldValue = textFieldValue.copy(
+                selection = TextRange(textFieldValue.text.length)
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun SearchInputFieldPreview() {
-    SearchFieldView(
-        label = "Search something",
-        doOnSearchRequest = {}
-    )
+    SapFlickrExampleTheme {
+        SearchFieldView(
+            label = "Search something",
+            doOnSearchRequest = {}
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun SearchInputFieldWithButtonPreview() {
-    SearchFieldView(
-        label = "Search something",
-        doOnSearchRequest = {},
-        buttonText = "Search"
-    )
+    SapFlickrExampleTheme {
+        SearchFieldView(
+            label = "Search something",
+            doOnSearchRequest = {},
+            buttonText = "Search"
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun SearchInputFieldWithPrefilledTextPreview() {
-    SearchFieldView(
-        label = "Search something",
-        doOnSearchRequest = {},
-        searchInputPrefilledText = "prefilled",
-        buttonText = "Search"
-    )
+    SapFlickrExampleTheme {
+        SearchFieldView(
+            label = "Search something",
+            doOnSearchRequest = {},
+            searchInputPrefilledText = "prefilled",
+            buttonText = "Search"
+        )
+    }
 }
