@@ -69,22 +69,7 @@ internal class MainViewModelTest {
     }
 
     @Test
-    fun `OnSearchRequest should trigger search`() = runTest {
-        whenever(getPhotoListUseCase(testQuery)).thenReturn(
-            flowOf(
-                PhotoSearchResult.Success(
-                    emptyList()
-                )
-            )
-        )
-
-        subject.setEvent(MainUiEvent.OnSearchRequest(testQuery))
-
-        verify(getPhotoListUseCase).invoke(testQuery)
-    }
-
-    @Test
-    fun `OnClearAllButtonClick should trigger search`() = runTest {
+    fun `OnClearAllButtonClick should trigger clear search history`() = runTest {
         whenever(getPhotoListUseCase(testQuery)).thenReturn(
             flowOf(
                 PhotoSearchResult.Success(
@@ -93,21 +78,90 @@ internal class MainViewModelTest {
             )
         )
 
-        subject.setEvent(MainUiEvent.OnSearchRequest(testQuery))
-
+        subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.History))
         subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
         subject.setEvent(MainUiEvent.OnClearAllButtonClick)
-
         subject.viewState.value.searchHistory shouldBe ArrayDeque()
     }
 
     @Test
-    fun `DeleteFromSearchHistory should trigger search`() = runTest {
+    fun `OnSearchRequest should trigger search and switch to Search screen if fromScreen is Home`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.Home))
+
+            verify(getPhotoListUseCase).invoke(testQuery)
+
+            subject.effect.test {
+                awaitItem() shouldBe MainUiEffect.Navigation.SwitchScreen(BottomBarScreen.Search)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `OnSearchRequest should trigger search and switch to Search screen if fromScreen is History`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.History))
+
+            verify(getPhotoListUseCase).invoke(testQuery)
+
+            subject.effect.test {
+                awaitItem() shouldBe MainUiEffect.Navigation.SwitchScreen(BottomBarScreen.Search)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `OnSearchRequest from Search screen should trigger search but should not switch screen`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.Search))
+
+            verify(getPhotoListUseCase).invoke(testQuery)
+
+            subject.effect.test {
+                expectNoEvents()
+            }
+        }
+
+    @Test
+    fun `OnSearchTextChange should update the searchQuery string in the viewstate`() = runTest {
+        subject.setEvent(MainUiEvent.OnSearchTextChange(testQuery))
+        subject.viewState.value.searchQuery shouldBe testQuery
+
+        subject.setEvent(MainUiEvent.OnSearchTextChange(anotherTestQuery))
+        subject.viewState.value.searchQuery shouldBe anotherTestQuery
+    }
+
+    @Test
+    fun `DeleteFromSearchHistory should delete item from search history`() = runTest {
         whenever(getPhotoListUseCase(testQuery)).thenReturn(
             flowOf(
                 PhotoSearchResult.Success(
-                    emptyList()
+                    fakePhotoList
                 )
             )
         )
@@ -115,13 +169,13 @@ internal class MainViewModelTest {
         whenever(getPhotoListUseCase(anotherTestQuery)).thenReturn(
             flowOf(
                 PhotoSearchResult.Success(
-                    emptyList()
+                    fakePhotoList
                 )
             )
         )
 
-        subject.setEvent(MainUiEvent.OnSearchRequest(testQuery))
-        subject.setEvent(MainUiEvent.OnSearchRequest(anotherTestQuery))
+        subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.History))
+        subject.setEvent(MainUiEvent.OnSearchRequest(anotherTestQuery, BottomBarScreen.History))
 
         subject.viewState.value.searchHistory shouldBe ArrayDeque(
             listOf(
@@ -134,7 +188,138 @@ internal class MainViewModelTest {
     }
 
     @Test
-    fun `Viewstate should have relevant updates when photo list is empty in the result when OnSearchRequest triggers search`() =
+    fun `OnSearchHistoryItemClicked should switch to Search screen if fromScreen is Home`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            subject.setEvent(
+                MainUiEvent.OnSearchHistoryItemClicked(
+                    testQuery,
+                    BottomBarScreen.Home
+                )
+            )
+
+            verify(getPhotoListUseCase).invoke(testQuery)
+
+            subject.effect.test {
+                awaitItem() shouldBe MainUiEffect.Navigation.SwitchScreen(BottomBarScreen.Search)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `OnSearchHistoryItemClicked should switch to Search screen if fromScreen is History`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            subject.setEvent(
+                MainUiEvent.OnSearchHistoryItemClicked(
+                    testQuery,
+                    BottomBarScreen.History
+                )
+            )
+
+            verify(getPhotoListUseCase).invoke(testQuery)
+
+            subject.effect.test {
+                awaitItem() shouldBe MainUiEffect.Navigation.SwitchScreen(BottomBarScreen.Search)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `OnSearchHistoryItemClicked from Search screen should not switch screen`() = runTest {
+        whenever(getPhotoListUseCase(testQuery)).thenReturn(
+            flowOf(
+                PhotoSearchResult.Success(
+                    fakePhotoList
+                )
+            )
+        )
+
+        subject.setEvent(MainUiEvent.OnSearchHistoryItemClicked(testQuery, BottomBarScreen.Search))
+
+        verify(getPhotoListUseCase).invoke(testQuery)
+
+        subject.effect.test {
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `OnSearchHistoryItemClicked should trigger search if called triggered from Home`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            subject.setEvent(
+                MainUiEvent.OnSearchHistoryItemClicked(
+                    testQuery,
+                    BottomBarScreen.Home
+                )
+            )
+            verify(getPhotoListUseCase).invoke(testQuery)
+        }
+
+    @Test
+    fun `OnSearchHistoryItemClicked should trigger search if called triggered from Search`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            subject.setEvent(
+                MainUiEvent.OnSearchHistoryItemClicked(
+                    testQuery,
+                    BottomBarScreen.Search
+                )
+            )
+            verify(getPhotoListUseCase).invoke(testQuery)
+        }
+
+    @Test
+    fun `OnSearchHistoryItemClicked should trigger search if called triggered from History`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            subject.setEvent(
+                MainUiEvent.OnSearchHistoryItemClicked(
+                    testQuery,
+                    BottomBarScreen.History
+                )
+            )
+            verify(getPhotoListUseCase).invoke(testQuery)
+        }
+
+    @Test
+    fun `viewState should have relevant updates when photo list is empty in the result when OnSearchRequest triggers search`() =
         runTest {
             whenever(getPhotoListUseCase(testQuery)).thenReturn(
                 flowOf(
@@ -143,8 +328,12 @@ internal class MainViewModelTest {
                     )
                 )
             )
-
-            subject.setEvent(MainUiEvent.OnSearchRequest(testQuery))
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
 
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList<PhotoItem>()
@@ -154,7 +343,6 @@ internal class MainViewModelTest {
             subject.viewState.value.error?.let { errorConfig ->
                 errorConfig.errorTitle shouldBe "Nothing found..."
                 errorConfig.errorSubTitle shouldBe "Unable to find anything. Try something else"
-                errorConfig.retryButtonText shouldBe "Try Again"
 
                 val capturedRetryFunction = errorConfig.onRetry
 
@@ -167,7 +355,7 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `Viewstate should have photo list when usecase returns success with populated photo list`() =
+    fun `viewState should have photo list when use case returns success with populated photo list`() =
         runTest {
             whenever(getPhotoListUseCase(testQuery)).thenReturn(
                 flowOf(
@@ -177,7 +365,12 @@ internal class MainViewModelTest {
                 )
             )
 
-            subject.setEvent(MainUiEvent.OnSearchRequest(testQuery))
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
 
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe fakePhotoList
@@ -188,16 +381,21 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `Viewstate should have relevant updates when usecase returns error`() =
+    fun `viewState should have relevant updates when use case returns generic error`() =
         runTest {
 
             whenever(getPhotoListUseCase(testQuery)).thenReturn(
                 flowOf(
-                    PhotoSearchResult.Error("error message")
+                    PhotoSearchResult.Error.Generic
                 )
             )
 
-            subject.setEvent(MainUiEvent.OnSearchRequest(testQuery))
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
 
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
@@ -207,8 +405,7 @@ internal class MainViewModelTest {
 
             subject.viewState.value.error?.let { errorConfig ->
                 errorConfig.errorTitle shouldBe "Oops..."
-                errorConfig.errorSubTitle shouldBe "error message"
-                errorConfig.retryButtonText shouldBe "Try Again"
+                errorConfig.errorSubTitle shouldBe "Something went wrong."
 
                 val capturedRetryFunction = errorConfig.onRetry
 
@@ -221,7 +418,84 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `Viewstate should have updated search history whenever OnSearchRequest triggers search`() =
+    fun `viewState should have relevant updates when use case returns no result error`() =
+        runTest {
+
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Error.NoResult
+                )
+            )
+
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
+
+            subject.viewState.value.searchQuery shouldBe testQuery
+            subject.viewState.value.photoList shouldBe emptyList()
+            subject.viewState.value.isLoading shouldBe false
+            subject.viewState.value.subtitle shouldBe ""
+            subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
+
+            subject.viewState.value.error?.let { errorConfig ->
+                errorConfig.errorTitle shouldBe "Oops..."
+                errorConfig.errorSubTitle shouldBe "Result Unavailable."
+
+                val capturedRetryFunction = errorConfig.onRetry
+
+                capturedRetryFunction shouldNotBe null
+
+                capturedRetryFunction?.invoke()
+
+                subject.viewState.value.searchQuery shouldBe testQuery
+            }
+        }
+
+
+    @Test
+    fun `viewState should have relevant updates when use case returns no internet connection error`() =
+        runTest {
+
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Error.NoInternetConnection
+                )
+            )
+
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
+
+            subject.viewState.value.searchQuery shouldBe testQuery
+            subject.viewState.value.photoList shouldBe emptyList()
+            subject.viewState.value.isLoading shouldBe false
+            subject.viewState.value.subtitle shouldBe ""
+            subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
+
+            subject.viewState.value.error?.let { errorConfig ->
+                errorConfig.errorTitle shouldBe "Oops..."
+                errorConfig.errorSubTitle shouldBe "Please check your Internet connection."
+
+                val capturedRetryFunction = errorConfig.onRetry
+
+                capturedRetryFunction shouldNotBe null
+
+                capturedRetryFunction?.invoke()
+
+                subject.viewState.value.searchQuery shouldBe testQuery
+            }
+        }
+
+
+
+    @Test
+    fun `viewState should have updated search history whenever OnSearchRequest triggers search`() =
         runTest {
             whenever(getPhotoListUseCase(testQuery)).thenReturn(
                 flowOf(
@@ -235,8 +509,13 @@ internal class MainViewModelTest {
                 flowOf(PhotoSearchResult.Success(fakePhotoList))
             )
 
-            subject.setEvent(MainUiEvent.OnSearchRequest(testQuery))
-            subject.setEvent(MainUiEvent.OnSearchRequest(anotherTestQuery))
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
+            subject.setEvent(MainUiEvent.OnSearchRequest(anotherTestQuery, BottomBarScreen.Search))
 
             subject.viewState.value.searchHistory shouldBe ArrayDeque(
                 listOf(
