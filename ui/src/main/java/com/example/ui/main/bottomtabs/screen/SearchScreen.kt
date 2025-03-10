@@ -78,6 +78,7 @@ private fun Content(
             if (photosResultAvailable) state.searchHistory.first() else state.searchQuery
         val shouldShowButton = !photosResultAvailable
         SearchFieldView(
+            modifier = Modifier.fillMaxWidth(),
             searchInputPrefilledText = prefilledText,
             searchHistory = state.searchHistory,
             label = "Search a photo",
@@ -115,7 +116,9 @@ private fun Content(
             ListView(
                 items = state.photoList,
                 paddingValues = paddingValues,
-                onItemClick = onEventSend
+                onItemClick = { photo ->
+                    onEventSend(MainUiEvent.OnPhotoItemClicked(photo))
+                }
             )
         } else if (state.error != null) {
             Column(
