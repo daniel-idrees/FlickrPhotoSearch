@@ -97,7 +97,7 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
 
                 is MainUiEffect.ShowEmptyTextError -> showToast(
                     context = context,
-                    message = effect.errorMessage
+                    messageRes = effect.errorMessageRes
                 )
             }
         }.collect()

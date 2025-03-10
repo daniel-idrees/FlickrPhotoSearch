@@ -4,7 +4,7 @@ import com.example.ui.common.mvi.ViewSideEffect
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 
 internal sealed interface MainUiEffect : ViewSideEffect {
-    data class ShowEmptyTextError(var errorMessage: String) : MainUiEffect
+    data class ShowEmptyTextError(var errorMessageRes: Int) : MainUiEffect
     sealed interface Navigation : MainUiEffect {
         data object Finish : Navigation
         data class SwitchScreen(val toScreen: BottomBarScreen) : Navigation

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -39,10 +40,10 @@ internal fun Context.getActivity(): ComponentActivity? = when (this) {
     else -> null
 }
 
-internal fun showToast(context: Context, message: String, duration: Int = Toast.LENGTH_LONG) {
+internal fun showToast(context: Context, @StringRes messageRes: Int, duration: Int = Toast.LENGTH_LONG) {
     Toast.makeText(
         context,
-        message,
+        messageRes,
         duration,
     ).show()
 }
