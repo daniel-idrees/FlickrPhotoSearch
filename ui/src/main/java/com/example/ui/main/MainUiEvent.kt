@@ -12,4 +12,5 @@ internal sealed interface MainUiEvent : ViewEvent {
     data class OnSearchTextChange(val searchQuery: String) :
         MainUiEvent
     data class DeleteFromSearchHistory(val index: Int) : MainUiEvent
+    data class OnSearchHistoryItemClicked(val searchQuery: String) : MainUiEvent
 }
