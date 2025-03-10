@@ -195,11 +195,13 @@ private fun SearchPreview(
     @PreviewParameter(SearchPreviewParameterProvider::class) viewState: MainViewState
 ) {
     SapFlickrExampleTheme {
-        Content(
-            paddingValues = PaddingValues(1.dp),
-            state = viewState,
-            onEventSend = {}
-        )
+        ContentScreen {
+            Content(
+                paddingValues = PaddingValues(1.dp),
+                state = viewState,
+                onEventSend = {}
+            )
+        }
     }
 }
 
