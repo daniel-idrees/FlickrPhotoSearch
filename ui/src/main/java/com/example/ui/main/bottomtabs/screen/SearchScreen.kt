@@ -1,14 +1,23 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.example.ui.main.bottomtabs.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,16 +33,20 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.domain.model.PhotoItem
 import com.example.ui.R
+import com.example.ui.common.SPACING_EXTRA_LARGE
+import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
+import com.example.ui.common.SPACING_SMALL
 import com.example.ui.common.content.ContentError
 import com.example.ui.common.content.ContentScreen
 import com.example.ui.common.content.ContentTitle
 import com.example.ui.common.keyboardAsState
+import com.example.ui.common.theme.SapFlickrExampleTheme
 import com.example.ui.main.MainUiEvent
 import com.example.ui.main.MainViewModel
 import com.example.ui.main.MainViewState
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
-import com.example.ui.main.bottomtabs.view.ListView
+import com.example.ui.main.bottomtabs.view.PhotoListItemView
 import com.example.ui.main.bottomtabs.view.SearchFieldView
 import kotlinx.coroutines.delay
 
@@ -58,12 +71,10 @@ private fun Content(
     paddingValues: PaddingValues
 ) {
     Column(
-        verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxSize()
             .padding(
                 paddingValues = PaddingValues(
-                    top = paddingValues.calculateTopPadding(),
                     bottom = 0.dp,
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr)
@@ -73,80 +84,104 @@ private fun Content(
         val photosResultAvailable = state.photoList.isNotEmpty()
         if (!photosResultAvailable) {
             ContentTitle(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 title = stringResource(R.string.search_screen_title),
             )
         }
-        val prefilledText =
-            if (photosResultAvailable) state.searchHistory.first() else state.searchQuery
-        val shouldShowButton = !photosResultAvailable
-        SearchFieldView(
-            modifier = Modifier.fillMaxWidth(),
-            searchInputPrefilledText = prefilledText,
-            searchHistory = state.searchHistory,
-            label = stringResource(R.string.search_screen_search_field_label),
-            shouldHaveFocus = !photosResultAvailable,
-            buttonText = if (shouldShowButton && state.error == null) stringResource(R.string.search_screen_search_button_text) else null,
-            searchErrorReceived = state.error != null,
-            doOnSearchRequest = { text ->
-                onEventSend(
-                    MainUiEvent.OnSearchRequest(
-                        searchQuery = text,
-                        BottomBarScreen.Search
-                    )
-                )
-            },
-            doOnSearchHistoryDropDownItemClick = { text ->
-                onEventSend(
-                    MainUiEvent.OnSearchHistoryItemClicked(
-                        searchQuery = text,
-                        BottomBarScreen.Home
-                    )
-                )
-            },
-            doOnSearchTextChange = { text -> onEventSend(MainUiEvent.OnSearchTextChange(text)) }
-        )
+        LazyColumn(
+            modifier = Modifier.weight(1f)
+        ) {
+            stickyHeader {
+                val prefilledText =
+                    if (photosResultAvailable) state.searchHistory.first() else state.searchQuery
+                val shouldShowButton = !photosResultAvailable
 
-        if (photosResultAvailable) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = SPACING_MEDIUM.dp),
-                text = stringResource(state.searchResultTitleRes, state.searchHistory.first()),
-                overflow = TextOverflow.Ellipsis
-            )
-
-            ListView(
-                items = state.photoList,
-                paddingValues = paddingValues,
-                onItemClick = { photo ->
-                    onEventSend(MainUiEvent.OnPhotoItemClicked(photo))
-                }
-            )
-        } else if (state.error != null) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(
-                        paddingValues = PaddingValues(
-                            top = SPACING_MEDIUM.dp,
-                            bottom = paddingValues.calculateBottomPadding()
+                SearchFieldView(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .then(if (!photosResultAvailable) Modifier.padding(top = SPACING_LARGE.dp) else Modifier),
+                    searchInputPrefilledText = prefilledText,
+                    searchHistory = state.searchHistory,
+                    label = stringResource(R.string.search_screen_search_field_label),
+                    shouldHaveFocus = !photosResultAvailable,
+                    buttonText = if (shouldShowButton && state.error == null) stringResource(R.string.search_screen_search_button_text) else null,
+                    searchErrorReceived = state.error != null,
+                    doOnSearchRequest = { text ->
+                        onEventSend(
+                            MainUiEvent.OnSearchRequest(
+                                searchQuery = text,
+                                BottomBarScreen.Search
+                            )
                         )
-                    ),
-
-                verticalArrangement = Arrangement.Center
-            ) {
-                ContentError(
-                    contentErrorConfig = state.error
+                    },
+                    doOnSearchHistoryDropDownItemClick = { text ->
+                        onEventSend(
+                            MainUiEvent.OnSearchHistoryItemClicked(
+                                searchQuery = text,
+                                BottomBarScreen.Home
+                            )
+                        )
+                    },
+                    doOnSearchTextChange = { text -> onEventSend(MainUiEvent.OnSearchTextChange(text)) }
                 )
             }
-        } else {
-            val isKeyboardOpen by keyboardAsState()
-            LaunchedEffect(isKeyboardOpen) {
-                delay(300)
-                if (!isKeyboardOpen) {
-                    onEventSend(MainUiEvent.OnBackPressed(BottomBarScreen.Search))
+
+            if (photosResultAvailable) {
+                item {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = SPACING_MEDIUM.dp),
+                        text = stringResource(
+                            state.searchResultTitleRes,
+                            state.searchHistory.first()
+                        ),
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                items(state.photoList) { photo ->
+                    PhotoListItemView(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        photoItem = photo,
+                        onPhotoClick = { onEventSend(MainUiEvent.OnPhotoItemClicked(photo)) }
+                    )
+                    Spacer(modifier = Modifier.height(SPACING_LARGE.dp))
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(horizontal = SPACING_EXTRA_LARGE.dp)
+                    )
+                    Spacer(modifier = Modifier.height(SPACING_SMALL.dp))
+                }
+            } else if (state.error != null) {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(
+                                paddingValues = PaddingValues(
+                                    top = SPACING_MEDIUM.dp,
+                                    bottom = paddingValues.calculateBottomPadding()
+                                )
+                            ),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        ContentError(
+                            contentErrorConfig = state.error
+                        )
+                    }
+                }
+            } else {
+                item {
+                    val isKeyboardOpen by keyboardAsState()
+                    LaunchedEffect(isKeyboardOpen) {
+                        delay(300)
+                        if (!isKeyboardOpen) {
+                            onEventSend(MainUiEvent.OnBackPressed(BottomBarScreen.Search))
+                        }
+                    }
                 }
             }
         }
@@ -159,11 +194,13 @@ private fun Content(
 private fun SearchPreview(
     @PreviewParameter(SearchPreviewParameterProvider::class) viewState: MainViewState
 ) {
-    Content(
-        paddingValues = PaddingValues(1.dp),
-        state = viewState,
-        onEventSend = {}
-    )
+    SapFlickrExampleTheme {
+        Content(
+            paddingValues = PaddingValues(1.dp),
+            state = viewState,
+            onEventSend = {}
+        )
+    }
 }
 
 private class SearchPreviewParameterProvider : PreviewParameterProvider<MainViewState> {
@@ -174,6 +211,13 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
         MainViewState(
             searchQuery = "query",
             photoList = listOf(
+                PhotoItem(
+                    title = "Photo One",
+                    url = "url",
+                    isPublic = true,
+                    isFriend = true,
+                    isFamily = true
+                ),
                 PhotoItem(
                     title = "Photo One",
                     url = "url",
