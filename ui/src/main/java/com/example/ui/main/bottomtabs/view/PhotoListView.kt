@@ -21,15 +21,17 @@ import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.SPACING_SMALL
+import com.example.ui.common.theme.SapFlickrExampleTheme
 
 @Composable
 internal fun ListView(
+    modifier: Modifier = Modifier,
     items: List<PhotoItem>,
     paddingValues: PaddingValues,
     onItemClick: (PhotoItem) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxHeight(),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SPACING_LARGE.dp),
         contentPadding = PaddingValues(
             top = SPACING_MEDIUM.dp,
@@ -58,23 +60,25 @@ internal fun ListView(
 @PreviewLightDark
 @Composable
 private fun PhotoListViewPreview() {
-    ListView(
-        items = listOf(
-            PhotoItem(
-                title = "Photo title",
-                url = " https://farm66.staticflickr.com/65535/54375913088_62172768d8.jpg",
-                isPublic = false,
-                isFriend = true,
-                isFamily = false
+    SapFlickrExampleTheme {
+        ListView(
+            items = listOf(
+                PhotoItem(
+                    title = "Photo title",
+                    url = " https://farm66.staticflickr.com/65535/54375913088_62172768d8.jpg",
+                    isPublic = false,
+                    isFriend = true,
+                    isFamily = false
+                ),
+                PhotoItem(
+                    title = "Photo title",
+                    url = " https://farm66.staticflickr.com/65535/54375913088_62172768d8.jpg",
+                    isPublic = true,
+                    isFriend = true,
+                    isFamily = true
+                )
             ),
-            PhotoItem(
-                title = "Photo title",
-                url = " https://farm66.staticflickr.com/65535/54375913088_62172768d8.jpg",
-                isPublic = true,
-                isFriend = true,
-                isFamily = true
-            )
-        ),
-        paddingValues = PaddingValues(1.dp),
-    ) {}
+            paddingValues = PaddingValues(1.dp),
+        ) {}
+    }
 }
