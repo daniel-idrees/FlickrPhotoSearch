@@ -74,7 +74,7 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
         viewModel.effect.onEach { effect ->
             when (effect) {
                 is MainUiEffect.Navigation.SwitchScreen -> bottomNavigationController.navigate(
-                    effect.screenRoute
+                    effect.toScreen.route
                 ) {
                     popUpTo(bottomNavigationController.graph.startDestinationId)
                     launchSingleTop = true
@@ -122,7 +122,7 @@ fun BottomNavigationBar(navController: NavHostController) {
             NavigationBarItem(
                 icon = {
                     Icon(
-                        screen.imageVector,
+                        screen.tabImageVector,
                         contentDescription = "${screen.label} bottom bar icon"
                     )
                 },
