@@ -19,7 +19,7 @@ internal val homeIcon = Icons.Default.Home
 internal val searchIcon = Icons.Default.Search
 internal val historyIcon = Icons.Default.Refresh
 
-internal sealed class BottomBarScreen(val route: String, val label: String, val imageVector: ImageVector) {
+internal sealed class BottomBarScreen(val route: String, val label: String, val tabImageVector: ImageVector) {
     data object Home : BottomBarScreen(HOME_ROUTE, HOME_LABEL, homeIcon)
     data object Search : BottomBarScreen(SEARCH_ROUTE, SEARCH_LABEL, searchIcon)
     data object History : BottomBarScreen(HISTORY_ROUTE, HISTORY_LABEL, historyIcon)
