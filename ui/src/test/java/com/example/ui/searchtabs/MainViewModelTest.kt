@@ -23,6 +23,7 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import com.example.ui.R
 
 @RunWith(MockitoJUnitRunner::class)
 internal class MainViewModelTest {
@@ -38,7 +39,8 @@ internal class MainViewModelTest {
 
     @Test
     fun `Initial state should be set correctly`() = runTest {
-        subject.viewState.value.title shouldBe "Flickr Photo Search"
+        subject.viewState.value.isLoading shouldBe false
+        subject.viewState.value.error shouldBe null
     }
 
     @Test
@@ -382,8 +384,8 @@ internal class MainViewModelTest {
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
             subject.viewState.value.error?.let { errorConfig ->
-                errorConfig.errorTitle shouldBe "Nothing found..."
-                errorConfig.errorSubTitle shouldBe "Unable to find anything. Try something else"
+                errorConfig.errorTitleRes shouldBe R.string.main_view_model_empty_error_title
+                errorConfig.errorSubTitleRes shouldBe R.string.main_view_model_empty_error_sub_title
 
                 val capturedRetryFunction = errorConfig.onRetry
 
@@ -419,7 +421,7 @@ internal class MainViewModelTest {
             subject.viewState.value.photoList shouldBe fakePhotoList
             subject.viewState.value.error shouldBe null
             subject.viewState.value.isLoading shouldBe false
-            subject.viewState.value.searchResultTitle shouldBe "Showing results for \"$testQuery\""
+            subject.viewState.value.searchResultTitleRes shouldBe R.string.main_view_model_success_result_title
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
         }
 
@@ -445,12 +447,11 @@ internal class MainViewModelTest {
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
-            subject.viewState.value.subtitle shouldBe ""
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
             subject.viewState.value.error?.let { errorConfig ->
-                errorConfig.errorTitle shouldBe "Oops..."
-                errorConfig.errorSubTitle shouldBe "Something went wrong."
+                errorConfig.errorTitleRes shouldBe R.string.main_view_model_generic_error_title
+                errorConfig.errorSubTitleRes shouldBe R.string.main_view_model_generic_error_sub_title
 
                 val capturedRetryFunction = errorConfig.onRetry
 
@@ -484,12 +485,11 @@ internal class MainViewModelTest {
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
-            subject.viewState.value.subtitle shouldBe ""
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
             subject.viewState.value.error?.let { errorConfig ->
-                errorConfig.errorTitle shouldBe "Oops..."
-                errorConfig.errorSubTitle shouldBe "Result Unavailable."
+                errorConfig.errorTitleRes shouldBe R.string.main_view_model_no_result_error_title
+                errorConfig.errorSubTitleRes shouldBe R.string.main_view_model_no_result_error_sub_title
 
                 val capturedRetryFunction = errorConfig.onRetry
 
@@ -524,12 +524,11 @@ internal class MainViewModelTest {
             subject.viewState.value.searchQuery shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
-            subject.viewState.value.subtitle shouldBe ""
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
             subject.viewState.value.error?.let { errorConfig ->
-                errorConfig.errorTitle shouldBe "Oops..."
-                errorConfig.errorSubTitle shouldBe "Please check your Internet connection."
+                errorConfig.errorTitleRes shouldBe R.string.main_view_model_no_internet_connection_error_title
+                errorConfig.errorSubTitleRes shouldBe R.string.main_view_model_no_internet_connection_error_sub_title
 
                 val capturedRetryFunction = errorConfig.onRetry
 
@@ -540,8 +539,6 @@ internal class MainViewModelTest {
                 subject.viewState.value.searchQuery shouldBe testQuery
             }
         }
-
-
 
     @Test
     fun `viewState should have updated search history whenever OnSearchRequest triggers search`() =
