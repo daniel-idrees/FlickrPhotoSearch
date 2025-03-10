@@ -35,7 +35,7 @@ internal fun Context.getActivity(): ComponentActivity? = when (this) {
     else -> null
 }
 
-internal fun showErrorToast(context: Context, message: String, duration: Int = Toast.LENGTH_LONG) {
+internal fun showToast(context: Context, message: String, duration: Int = Toast.LENGTH_LONG) {
     Toast.makeText(
         context,
         message,
@@ -43,9 +43,8 @@ internal fun showErrorToast(context: Context, message: String, duration: Int = T
     ).show()
 }
 
-
 @Composable
-fun keyboardAsState(): State<Boolean> {
+internal fun keyboardAsState(): State<Boolean> {
     val isImeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
     return rememberUpdatedState(isImeVisible)
 }
