@@ -15,12 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,6 +41,8 @@ import com.example.ui.main.MainUiEvent
 import com.example.ui.main.MainViewModel
 import com.example.ui.main.MainViewState
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
+import com.example.ui.main.bottomtabs.view.DeleteIcon
+import com.example.ui.main.bottomtabs.view.PastIcon
 
 @Composable
 internal fun SearchHistoryScreen(viewModel: MainViewModel, viewState: MainViewState) {
@@ -82,16 +81,16 @@ private fun Content(
                 )
             )
     ) {
-        val isSearchHistoryAvailabe = searchHistory.isNotEmpty()
+        val isSearchHistoryAvailable = searchHistory.isNotEmpty()
 
         ContentTitle(
             modifier = Modifier
                 .fillMaxWidth(),
             title = stringResource(R.string.search_history_screen_title),
-            subtitle = if (!isSearchHistoryAvailabe) stringResource(R.string.search_history_sub_title_if_no_history) else null
+            subtitle = if (!isSearchHistoryAvailable) stringResource(R.string.search_history_sub_title_if_no_history) else null
         )
 
-        if (isSearchHistoryAvailabe) {
+        if (isSearchHistoryAvailable) {
             Button(
                 modifier = Modifier
                     .padding(horizontal = SPACING_EXTRA_SMALL.dp)
@@ -106,75 +105,94 @@ private fun Content(
                     fontSize = 15.sp,
                 )
             }
-
-            LazyColumn(
+            SearchHistoryListView(
                 modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp),
-            ) {
+                searchHistory = searchHistory,
+                onEventSend = onEventSend
+            )
+        }
 
-                items(searchHistory.size) { index ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = SPACING_SMALL.dp,
-                                vertical = SPACING_EXTRA_SMALL.dp
-                            ),
-                        horizontalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        val searchQuery = searchHistory.get(index)
 
-                        Card(
-                            modifier = Modifier
-                                .weight(0.90f)
-                                .clickable {
-                                    onEventSend(
-                                        MainUiEvent.OnSearchHistoryItemClicked(
-                                            searchQuery,
-                                            BottomBarScreen.History
-                                        )
-                                    )
-                                },
-                            shape = RoundedCornerShape(8.dp),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        horizontal = SPACING_SMALL.dp,
-                                        vertical = SPACING_EXTRA_SMALL.dp
-                                    ),
-                                horizontalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    modifier = Modifier.size(SPACING_LARGE.dp),
-                                    painter = painterResource(R.drawable.ic_past),
-                                    contentDescription = "Photo public icon",
-                                )
+    }
+}
 
-                                Text(
-                                    text = searchQuery,
-                                )
-                            }
-                        }
+@Composable
+private fun SearchHistoryListView(
+    modifier: Modifier = Modifier,
+    searchHistory: ArrayDeque<String>,
+    onEventSend: (MainUiEvent) -> Unit,
+) {
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp),
+    ) {
 
-                        Icon(
-                            modifier = Modifier
-                                .size(SPACING_LARGE.dp)
-                                .weight(0.10f)
-                                .clickable {
-                                    onEventSend(MainUiEvent.DeleteFromSearchHistory(index))
-                                },
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Photo public icon",
+        items(searchHistory.size) { index ->
+            SearchHistoryItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = SPACING_SMALL.dp,
+                        vertical = SPACING_EXTRA_SMALL.dp
+                    ),
+                searchText = searchHistory.get(index),
+                index = index,
+                onEventSend = onEventSend
+            )
+        }
+    }
+}
+
+@Composable
+private fun SearchHistoryItem(
+    modifier: Modifier = Modifier,
+    searchText: String, index: Int,
+    onEventSend: (MainUiEvent) -> Unit,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Card(
+            modifier = Modifier
+                .weight(0.90f)
+                .clickable {
+                    onEventSend(
+                        MainUiEvent.OnSearchHistoryItemClicked(
+                            searchText,
+                            BottomBarScreen.History
                         )
-                    }
-                }
+                    )
+                },
+            shape = RoundedCornerShape(SPACING_SMALL.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = SPACING_EXTRA_SMALL.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = SPACING_SMALL.dp,
+                        vertical = SPACING_EXTRA_SMALL.dp
+                    ),
+                horizontalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PastIcon(modifier = Modifier.size(SPACING_LARGE.dp))
+
+                Text(
+                    text = searchText,
+                )
             }
         }
+
+        DeleteIcon(modifier = Modifier
+            .size(SPACING_LARGE.dp)
+            .weight(0.10f)
+            .clickable {
+                onEventSend(MainUiEvent.DeleteFromSearchHistory(index))
+            }
+        )
     }
 }
 

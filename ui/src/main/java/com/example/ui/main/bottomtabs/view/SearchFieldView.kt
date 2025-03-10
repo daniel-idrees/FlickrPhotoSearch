@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -31,7 +30,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -40,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
-import com.example.ui.R
 import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
@@ -139,22 +136,14 @@ internal fun SearchFieldView(
                             modifier = Modifier
                                 .padding(horizontal = SPACING_MEDIUM.dp),
                             leadingIcon = {
-                                Icon(
-                                    modifier = Modifier.size(SPACING_LARGE.dp),
-                                    painter = painterResource(R.drawable.ic_past),
-                                    contentDescription = "Photo public icon",
-                                )
+                                PastIcon(modifier = Modifier.size(SPACING_LARGE.dp))
                             },
                             trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = "Top-left arrow icon",
-                                    modifier = Modifier
-                                        .size(SPACING_LARGE.dp)
-                                        .graphicsLayer {
-                                            rotationZ = 45f
-                                        }
-                                )
+                                TopLeftArrowIcon(modifier = Modifier
+                                    .size(SPACING_LARGE.dp)
+                                    .graphicsLayer {
+                                        rotationZ = 45f
+                                    })
                             },
                             text = { Text(text = suggestion) },
                             onClick = {
