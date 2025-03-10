@@ -8,14 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 
-/**
- * Internal use only.
- *
- * A composable that displays a loading indicator.
- *
- * @param modifier The modifier to be applied to the Box.
- */
 @Composable
 internal fun LoadingView(modifier: Modifier) {
     Box(
@@ -29,6 +23,7 @@ internal fun LoadingView(modifier: Modifier) {
 }
 
 @Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun LoadingViewPreview() {
     LoadingView(Modifier.fillMaxSize())

@@ -12,6 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.domain.model.PhotoItem
@@ -96,36 +99,11 @@ private fun Content(
 }
 
 @Preview(showBackground = true)
+@PreviewLightDark
 @Composable
-private fun SearchScreenPreview() {
-    val viewState = MainViewState(
-        isLoading = false,
-        error = null,
-        searchQuery = "query",
-        photoList = listOf(
-            PhotoItem(
-                title = "Photo One",
-                url = "url",
-                isPublic = true,
-                isFriend = true,
-                isFamily = true
-            ),
-            PhotoItem(
-                title = "Photo Two",
-                url = "url",
-                isPublic = true,
-                isFriend = true,
-                isFamily = true
-            )
-        ),
-        searchHistory = ArrayDeque()
-    )
-    SearchScreenPreviewWithViewState(viewState)
-
-}
-
-@Composable
-private fun SearchScreenPreviewWithViewState(viewState: MainViewState) {
+private fun HomePreview(
+    @PreviewParameter(HomePreviewParameterProvider::class) viewState: MainViewState
+) {
     ContentScreen(
         isLoading = viewState.isLoading,
     ) {
@@ -138,3 +116,30 @@ private fun SearchScreenPreviewWithViewState(viewState: MainViewState) {
 }
 
 
+private class HomePreviewParameterProvider : PreviewParameterProvider<MainViewState> {
+    override val values = sequenceOf(
+        MainViewState(),
+        MainViewState(
+            isLoading = false,
+            error = null,
+            searchQuery = "query",
+            photoList = listOf(
+                PhotoItem(
+                    title = "Photo One",
+                    url = "url",
+                    isPublic = true,
+                    isFriend = true,
+                    isFamily = true
+                ),
+                PhotoItem(
+                    title = "Photo Two",
+                    url = "url",
+                    isPublic = true,
+                    isFriend = true,
+                    isFamily = true
+                )
+            ),
+            searchHistory = ArrayDeque()
+        ),
+    )
+}

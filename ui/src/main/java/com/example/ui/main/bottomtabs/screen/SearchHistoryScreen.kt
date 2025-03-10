@@ -1,6 +1,5 @@
 package com.example.ui.main.bottomtabs.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,10 +21,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -196,29 +197,39 @@ private fun SearchHistoryItem(
     }
 }
 
-@Composable
 @Preview(showBackground = true)
-private fun SearchHistoryScreenPreview() {
-    val viewState = MainViewState(
-        isLoading = false,
-        error = null,
-        searchQuery = "query",
-        searchResultTitleRes = R.string.main_view_model_success_result_title,
-        photoList = listOf(
-            PhotoItem(
-                title = "Photo One",
-                url = "url",
-                isPublic = false,
-                isFriend = false,
-                isFamily = false
-            )
-        ),
-        searchHistory = ArrayDeque(listOf("test1", "test2"))
-    )
-
+@PreviewLightDark
+@Composable
+private fun SearchHistoryPreview(
+    @PreviewParameter(SearchHistoryPreviewParameterProvider::class) viewState: MainViewState
+) {
     Content(
         state = viewState,
         onEventSend = {},
         paddingValues = PaddingValues(1.dp),
+    )
+}
+
+
+private class SearchHistoryPreviewParameterProvider : PreviewParameterProvider<MainViewState> {
+    override val values = sequenceOf(
+        MainViewState(
+            searchQuery = "query",
+            searchResultTitleRes = R.string.main_view_model_success_result_title,
+            photoList = listOf(
+                PhotoItem(
+                    title = "Photo One",
+                    url = "url",
+                    isPublic = false,
+                    isFriend = false,
+                    isFamily = false
+                )
+            ),
+            searchHistory = ArrayDeque(listOf("test1", "test2"))
+        ),
+        MainViewState(
+            photoList = emptyList(),
+            searchHistory = ArrayDeque()
+        )
     )
 }

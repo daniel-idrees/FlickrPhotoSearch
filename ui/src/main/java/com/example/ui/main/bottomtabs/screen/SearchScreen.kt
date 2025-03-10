@@ -17,6 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.domain.model.PhotoItem
@@ -150,35 +153,60 @@ private fun Content(
     }
 }
 
+@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
-@Preview
-private fun SearchScreenPreview() {
-    val viewState = MainViewState(
-        isLoading = false,
-        error = null,
-        searchQuery = "",
-        photoList = listOf(
-            PhotoItem(
-                title = "Photo One",
-                url = "url",
-                isPublic = true,
-                isFriend = true,
-                isFamily = true
-            ),
-            PhotoItem(
-                title = "Photo Two",
-                url = "url",
-                isPublic = true,
-                isFriend = true,
-                isFamily = true
-            )
-        ),
-        searchHistory = ArrayDeque()
-    )
-
+private fun SearchPreview(
+    @PreviewParameter(SearchPreviewParameterProvider::class) viewState: MainViewState
+) {
     Content(
         paddingValues = PaddingValues(1.dp),
         state = viewState,
         onEventSend = {}
+    )
+}
+
+private class SearchPreviewParameterProvider : PreviewParameterProvider<MainViewState> {
+    override val values = sequenceOf(
+        MainViewState(),
+        MainViewState(searchQuery = "query"),
+        MainViewState(isLoading = true),
+        MainViewState(
+            searchQuery = "query",
+            photoList = listOf(
+                PhotoItem(
+                    title = "Photo One",
+                    url = "url",
+                    isPublic = true,
+                    isFriend = true,
+                    isFamily = true
+                )
+            ),
+            searchHistory = ArrayDeque(listOf("query", "query2"))
+        ), MainViewState(
+            searchQuery = "query",
+            photoList = listOf(
+                PhotoItem(
+                    title = "Photo Two",
+                    url = "url",
+                    isPublic = false,
+                    isFriend = false,
+                    isFamily = false
+                )
+            ),
+            searchHistory = ArrayDeque(listOf("query", "query2"))
+        ), MainViewState(
+            searchQuery = "query",
+            photoList = listOf(
+                PhotoItem(
+                    title = "Photo Three",
+                    url = "url",
+                    isPublic = false,
+                    isFriend = true,
+                    isFamily = false
+                )
+            ),
+            searchHistory = ArrayDeque(listOf("query", "query2"))
+        )
     )
 }
