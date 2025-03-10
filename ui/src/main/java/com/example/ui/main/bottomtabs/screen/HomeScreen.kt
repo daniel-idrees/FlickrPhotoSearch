@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.magnifier
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -67,6 +68,7 @@ private fun Content(
         )
 
         SearchFieldView(
+            modifier = Modifier.fillMaxWidth(),
             searchInputPrefilledText = state.searchQuery,
             searchHistory = state.searchHistory,
             label = "Search a photo",
