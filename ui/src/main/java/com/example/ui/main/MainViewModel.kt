@@ -21,25 +21,10 @@ internal class MainViewModel @Inject constructor(
 
     override fun handleEvents(event: MainUiEvent) {
         when (event) {
-            is MainUiEvent.OnSearchRequest -> {
-                if (event.searchQuery.isEmpty() || event.searchQuery.isBlank()) {
-                    setEffect {
-                        MainUiEffect.ShowEmptyTextError("Enter something to search")
-                    }
-                } else {
-                    if (event.fromScreen != BottomBarScreen.Search) {
-                        setEffect {
-                            MainUiEffect.Navigation.SwitchScreen(
-                                BottomBarScreen.Search.route
-                            )
-                        }
-                    }
-                    search(searchQuery = event.searchQuery)
-                }
-            }
+            is MainUiEvent.OnSearchRequest -> doOnSearchRequest(event)
 
             is MainUiEvent.OnPhotoItemClicked -> {
-                // TODO MainUiEffect.Navigation.SwitchScreen(screenRoute = "detail")
+                // TODO Do something with the photo item
             }
 
             is MainUiEvent.OnBackPressed -> setEffect { MainUiEffect.Navigation.Pop(event.fromScreen) }
@@ -64,15 +49,28 @@ internal class MainViewModel @Inject constructor(
 
             is MainUiEvent.OnSearchHistoryItemClicked -> {
                 if (event.fromScreen != BottomBarScreen.Search) {
-                    setEffect {
-                        MainUiEffect.Navigation.SwitchScreen(
-                            BottomBarScreen.Search.route
-                        )
-                    }
+                    switchToSearchScreen()
                 }
                 search(searchQuery = event.searchQuery)
             }
         }
+    }
+
+    private fun doOnSearchRequest(event: MainUiEvent.OnSearchRequest) {
+        if (event.searchQuery.isEmpty() || event.searchQuery.isBlank()) {
+            setEffect {
+                MainUiEffect.ShowEmptyTextError("Enter something to search")
+            }
+        } else {
+            if (event.fromScreen != BottomBarScreen.Search) {
+                switchToSearchScreen()
+            }
+            search(searchQuery = event.searchQuery)
+        }
+    }
+
+    private fun switchToSearchScreen() {
+        setEffect { MainUiEffect.Navigation.SwitchScreen(BottomBarScreen.Search) }
     }
 
     private fun search(searchQuery: String) {
