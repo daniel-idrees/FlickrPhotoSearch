@@ -47,6 +47,7 @@ import com.example.ui.common.SPACING_MEDIUM
 
 @Composable
 internal fun SearchFieldView(
+    modifier: Modifier = Modifier,
     label: String,
     searchHistory: List<String> = emptyList(),
     searchInputPrefilledText: String = "",
@@ -81,7 +82,7 @@ internal fun SearchFieldView(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(
             space = SPACING_LARGE.dp,
@@ -102,9 +103,9 @@ internal fun SearchFieldView(
                     doOnSearchTextChange(newTextFieldValue.text)
                 },
                 label = { Text(label) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
-                    onDone = {
+                    onSearch = {
                         doOnSearchRequest(textFieldValue.text)
                         focusManager.clearFocus()
                     }
@@ -188,11 +189,32 @@ internal fun SearchFieldView(
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 private fun SearchInputFieldPreview() {
     SearchFieldView(
         label = "Search something",
         doOnSearchRequest = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SearchInputFieldWithButtonPreview() {
+    SearchFieldView(
+        label = "Search something",
+        doOnSearchRequest = {},
+        buttonText = "Search"
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SearchInputFieldWithPrefilledTextPreview() {
+    SearchFieldView(
+        label = "Search something",
+        doOnSearchRequest = {},
+        searchInputPrefilledText = "prefilled",
+        buttonText = "Search"
     )
 }
