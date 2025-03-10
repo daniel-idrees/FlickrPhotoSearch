@@ -51,6 +51,7 @@ android {
 dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.gson)
+    implementation(libs.logging.interceptor)
 
     implementation(libs.hilt.android)
     kapt(libs.androidx.hilt.compiler)
