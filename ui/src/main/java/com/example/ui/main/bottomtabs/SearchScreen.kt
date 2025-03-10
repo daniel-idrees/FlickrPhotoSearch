@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.domain.model.PhotoItem
 import com.example.ui.common.SPACING_MEDIUM
+import com.example.ui.common.content.ContentError
 import com.example.ui.common.content.ContentScreen
 import com.example.ui.common.content.ContentTitle
 import com.example.ui.common.keyboardAsState
@@ -80,13 +82,23 @@ private fun Content(
             searchHistory = state.searchHistory,
             label = "Search a photo",
             shouldHaveFocus = !photosResultAvailable,
-            buttonText = if (shouldShowButton) "Search" else null,
+            buttonText = if (shouldShowButton && state.error == null) "Search" else null,
             searchErrorReceived = state.error != null,
             doOnSearchRequest = { text ->
-                onEventSend (MainUiEvent.OnSearchRequest(
-                    searchQuery = text,
-                    BottomBarScreen.Search
-                ))
+                onEventSend(
+                    MainUiEvent.OnSearchRequest(
+                        searchQuery = text,
+                        BottomBarScreen.Search
+                    )
+                )
+            },
+            doOnSearchHistoryDropDownItemClick = { text ->
+                onEventSend(
+                    MainUiEvent.OnSearchHistoryItemClicked(
+                        searchQuery = text,
+                        BottomBarScreen.Home
+                    )
+                )
             },
             doOnSearchTextChange = { text -> onEventSend(MainUiEvent.OnSearchTextChange(text)) }
         )
@@ -105,6 +117,23 @@ private fun Content(
                 paddingValues = paddingValues,
                 onItemClick = onEventSend
             )
+        } else if (state.error != null) {
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(
+                        paddingValues = PaddingValues(
+                            top = SPACING_MEDIUM.dp,
+                            bottom = paddingValues.calculateBottomPadding()
+                        )
+                    ),
+
+                verticalArrangement = Arrangement.Center
+            ) {
+                ContentError(
+                    contentErrorConfig = state.error
+                )
+            }
         } else {
             val isKeyboardOpen by keyboardAsState()
             LaunchedEffect(isKeyboardOpen) {
