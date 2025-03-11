@@ -9,11 +9,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -103,15 +100,13 @@ internal fun SearchFieldView(
                 ),
                 trailingIcon = {
                     if (textFieldValue.text.isNotEmpty()) {
-                        Icon(
+                        ClearIcon(
                             modifier = Modifier
                                 .size(SPACING_LARGE.dp)
                                 .clickable {
                                     textFieldValue = textFieldValue.copy(text = "")
                                     doOnSearchTextChange(textFieldValue.text)
-                                },
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "Clear text icon",
+                                }
                         )
                     }
                 }
