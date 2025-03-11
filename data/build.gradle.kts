@@ -56,6 +56,5 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.androidx.hilt.compiler)
     kapt(libs.hilt.compiler)
-
-    testImplementation(project(":test-feature"))
+    testImplementation(project(":test-util"))
 }

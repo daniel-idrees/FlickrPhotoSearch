@@ -1,15 +1,16 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.jetbrainsKotlinKapt)
-    alias(libs.plugins.google.dagger)
 }
 
 android {
-    namespace = "com.example.domain"
+    namespace = "com.example.testfeature"
     compileSdk = 35
 
     defaultConfig {
+        minSdk = 21
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -32,13 +33,19 @@ android {
 }
 
 dependencies {
-    implementation(project(":data"))
+    api(libs.junit)
+    api (libs.mockito.kotlin)
+    api(libs.mockito.core)
+    api(libs.mockito.inline)
+    api( libs.kotlinx.coroutines.test)
+    api (libs.kotest.runner.junit5)
+    api (libs.kotest.assertions.core)
+    api (libs.kotest.property)
+    api(libs.turbine)
 
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    api(libs.androidx.core.ktx)
 
-    implementation(libs.hilt.android)
-    kapt(libs.androidx.hilt.compiler)
-    kapt(libs.hilt.compiler)
-    testImplementation(project(":test-util"))
+
+    api(libs.androidx.junit)
+    api (libs.mockito.android)
 }
