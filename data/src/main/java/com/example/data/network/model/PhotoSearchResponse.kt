@@ -4,7 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 internal data class PhotoSearchResponse(
     @SerializedName("photos") val photoSearchDetail: PhotoSearchDetail,
-    @SerializedName("stat") val status: String
+    @SerializedName("stat") val status: String,
+    @SerializedName("code") val errorCode: Int?
 )
 
 internal data class PhotoSearchDetail(

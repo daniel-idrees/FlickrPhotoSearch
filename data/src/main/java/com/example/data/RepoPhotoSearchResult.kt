@@ -5,7 +5,9 @@ import com.example.data.dto.PhotoItemDto
 
 sealed interface RepoPhotoSearchResult {
     data class Success(val photos: List<PhotoItemDto>) : RepoPhotoSearchResult
-    data object Error : RepoPhotoSearchResult
-    data object NetworkUnavailable : RepoPhotoSearchResult
-    data object RequestFailed : RepoPhotoSearchResult
+    sealed interface Error : RepoPhotoSearchResult {
+        data object NetworkUnavailable : Error
+        data class RequestFailed(val errorMessage: String) : Error
+        data object ServerError : Error
+    }
 }

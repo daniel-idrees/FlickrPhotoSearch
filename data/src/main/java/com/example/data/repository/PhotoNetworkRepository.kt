@@ -2,6 +2,7 @@ package com.example.data.repository
 
 import com.example.data.RepoPhotoSearchResult
 import com.example.data.dto.mapper.toPhotoList
+import com.example.data.dto.mapper.translateErrorCodeMessage
 import com.example.data.network.PhotoDataSource
 import com.example.data.runSuspendCatching
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,11 @@ internal class PhotoNetworkRepository @Inject constructor(
 
                 if (response.status != "ok") {
                     //log the message and code
-                    emit(RepoPhotoSearchResult.RequestFailed)
+                    emit(
+                        RepoPhotoSearchResult.Error.RequestFailed(
+                            errorMessage = translateErrorCodeMessage(response.errorCode)
+                        )
+                    )
                     return@flow
                 }
 
@@ -28,14 +33,15 @@ internal class PhotoNetworkRepository @Inject constructor(
             }.onSuccess { photos ->
                 emit(RepoPhotoSearchResult.Success(photos))
             }.onFailure {
+                //log failure
                 emit(getErrorResult(it))
             }
         }
 
     private fun getErrorResult(throwable: Throwable): RepoPhotoSearchResult {
         return when (throwable) {
-            is IOException -> RepoPhotoSearchResult.NetworkUnavailable
-            else -> RepoPhotoSearchResult.Error
+            is IOException -> RepoPhotoSearchResult.Error.NetworkUnavailable
+            else -> RepoPhotoSearchResult.Error.ServerError
         }
     }
 }

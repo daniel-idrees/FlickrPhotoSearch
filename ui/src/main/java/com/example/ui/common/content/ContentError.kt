@@ -32,19 +32,29 @@ internal fun ContentError(
     subtitleStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     subTitleMaxLines: Int = Int.MAX_VALUE,
 ) {
+    val errorTitleText = when (contentErrorConfig.errorTitleRes) {
+        is ContentErrorConfig.ErrorMessage.Resource -> stringResource(contentErrorConfig.errorTitleRes.resId)
+        is ContentErrorConfig.ErrorMessage.Text -> contentErrorConfig.errorTitleRes.text
+    }
+
+    val errorSubTitleText = when (contentErrorConfig.errorSubTitleRes) {
+        is ContentErrorConfig.ErrorMessage.Resource -> stringResource(contentErrorConfig.errorSubTitleRes.resId)
+        is ContentErrorConfig.ErrorMessage.Text -> contentErrorConfig.errorSubTitleRes.text
+    }
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp)
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(contentErrorConfig.errorTitleRes),
+            text = errorTitleText,
             style = titleStyle,
         )
 
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(contentErrorConfig.errorSubTitleRes),
+            text = errorSubTitleText,
             style = subtitleStyle,
             maxLines = subTitleMaxLines,
             overflow = TextOverflow.Ellipsis
@@ -68,11 +78,24 @@ internal fun ContentError(
 @Composable
 @Preview(showBackground = true)
 @PreviewLightDark
-private fun ContentErrorPreview() {
+private fun ContentErrorWithErrorResourcePreview() {
     ContentError(
         ContentErrorConfig(
-            errorTitleRes = R.string.main_view_model_generic_error_title,
-            errorSubTitleRes = R.string.main_view_model_generic_error_sub_title,
+            errorTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_generic_error_title),
+            errorSubTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_generic_error_sub_title),
+            onRetry = {}
+        )
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+@PreviewLightDark
+private fun ContentErrorWithErrorTextPreview() {
+    ContentError(
+        ContentErrorConfig(
+            errorTitleRes = ContentErrorConfig.ErrorMessage.Text("Oops..."),
+            errorSubTitleRes = ContentErrorConfig.ErrorMessage.Text("Something went wrong."),
             onRetry = {}
         )
     )

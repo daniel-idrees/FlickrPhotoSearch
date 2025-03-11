@@ -20,9 +20,7 @@ internal class GetPhotoListUseCaseImpl @Inject constructor(
             photoRepository.searchPhotos(searchText).map { result ->
                 when (result) {
                     is RepoPhotoSearchResult.Success -> handleSuccessResult(result)
-                    RepoPhotoSearchResult.Error -> PhotoSearchResult.Error.Generic
-                    RepoPhotoSearchResult.RequestFailed -> PhotoSearchResult.Error.SearchFailed
-                    RepoPhotoSearchResult.NetworkUnavailable -> PhotoSearchResult.Error.NoInternetConnection
+                    is RepoPhotoSearchResult.Error -> handleErrorResult(result)
                 }
             }
         }.onSuccess { result ->
@@ -39,6 +37,14 @@ internal class GetPhotoListUseCaseImpl @Inject constructor(
             PhotoSearchResult.Success(photos)
         } else {
             PhotoSearchResult.Empty
+        }
+    }
+
+    private fun handleErrorResult(result: RepoPhotoSearchResult.Error): PhotoSearchResult {
+        return when (result) {
+            is RepoPhotoSearchResult.Error.RequestFailed -> PhotoSearchResult.Error.SearchFailed(result.errorMessage)
+            RepoPhotoSearchResult.Error.ServerError -> PhotoSearchResult.Error.Generic
+            RepoPhotoSearchResult.Error.NetworkUnavailable -> PhotoSearchResult.Error.NoInternetConnection
         }
     }
 }

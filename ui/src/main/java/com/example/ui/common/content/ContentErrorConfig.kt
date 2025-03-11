@@ -4,7 +4,13 @@ import androidx.annotation.StringRes
 
 
 internal data class ContentErrorConfig(
-    @StringRes val errorTitleRes: Int,
-    @StringRes val errorSubTitleRes: Int,
+    val errorTitleRes: ErrorMessage,
+    val errorSubTitleRes: ErrorMessage,
     val onRetry: (() -> Unit)? = null
-)
+) {
+    internal sealed interface ErrorMessage {
+        data class Resource(@StringRes val resId: Int) : ErrorMessage
+        data class Text(val text: String) : ErrorMessage
+    }
+}
+

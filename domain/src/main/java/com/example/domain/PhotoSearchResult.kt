@@ -6,7 +6,7 @@ sealed interface PhotoSearchResult {
     data class Success(val photos: List<PhotoItem>) : PhotoSearchResult
     sealed interface Error : PhotoSearchResult {
         data object Generic : Error
-        data object SearchFailed : Error
+        data class SearchFailed(val errorMessage: String) : Error
         data object NoInternetConnection : Error
     }
 
