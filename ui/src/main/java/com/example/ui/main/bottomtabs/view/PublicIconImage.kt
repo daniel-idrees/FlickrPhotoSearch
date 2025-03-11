@@ -18,6 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ui.R
+import com.example.ui.common.SPACING_EXTRA_SMALL
+import com.example.ui.common.SPACING_SMALL
 
 @Composable
 internal fun PublicIconImage(modifier: Modifier = Modifier) {
@@ -30,8 +32,8 @@ internal fun PublicIconImage(modifier: Modifier = Modifier) {
         positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
         tooltip = {
             Surface(
-                modifier = Modifier.padding(top = 8.dp),
-                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier.padding(top = SPACING_SMALL.dp),
+                shape = RoundedCornerShape(SPACING_EXTRA_SMALL),
             ) {
                 Text(
                     text = stringResource(R.string.search_screen_result_photo_public_icon_tooltip_text),
