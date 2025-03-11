@@ -3,7 +3,6 @@ package com.example.ui.main.bottomtabs.view
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +12,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.example.domain.model.PhotoItem
@@ -21,7 +19,7 @@ import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.SPACING_SMALL
-import com.example.ui.common.theme.SapFlickrExampleTheme
+import com.example.ui.common.theme.FlickrPhotoSearchTheme
 
 @Composable
 internal fun ListView(
@@ -59,7 +57,7 @@ internal fun ListView(
 @PreviewLightDark
 @Composable
 private fun PhotoListViewPreview() {
-    SapFlickrExampleTheme {
+    FlickrPhotoSearchTheme {
         ListView(
             items = listOf(
                 PhotoItem(

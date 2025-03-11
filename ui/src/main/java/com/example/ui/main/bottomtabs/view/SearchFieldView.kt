@@ -34,13 +34,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.PopupProperties
 import com.example.ui.common.SPACING_LARGE
-import com.example.ui.common.theme.SapFlickrExampleTheme
+import com.example.ui.common.theme.FlickrPhotoSearchTheme
 
 @Composable
 internal fun SearchFieldView(
@@ -179,7 +178,7 @@ internal fun SearchFieldView(
 @PreviewLightDark
 @Composable
 private fun SearchInputFieldPreview() {
-    SapFlickrExampleTheme {
+    FlickrPhotoSearchTheme {
         SearchFieldView(
             label = "Search something",
             doOnSearchRequest = {}
@@ -190,7 +189,7 @@ private fun SearchInputFieldPreview() {
 @PreviewLightDark
 @Composable
 private fun SearchInputFieldWithButtonPreview() {
-    SapFlickrExampleTheme {
+    FlickrPhotoSearchTheme {
         SearchFieldView(
             label = "Search something",
             doOnSearchRequest = {},
@@ -202,7 +201,7 @@ private fun SearchInputFieldWithButtonPreview() {
 @PreviewLightDark
 @Composable
 private fun SearchInputFieldWithPrefilledTextPreview() {
-    SapFlickrExampleTheme {
+    FlickrPhotoSearchTheme {
         SearchFieldView(
             label = "Search something",
             doOnSearchRequest = {},

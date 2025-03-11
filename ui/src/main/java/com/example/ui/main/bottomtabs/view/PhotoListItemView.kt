@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,7 +33,7 @@ import com.example.ui.R
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.SPACING_SMALL
-import com.example.ui.common.theme.SapFlickrExampleTheme
+import com.example.ui.common.theme.FlickrPhotoSearchTheme
 
 @Composable
 internal fun PhotoListItemView(
@@ -126,7 +125,7 @@ private fun PhotoListItemWithAllIconsPreview() {
 @PreviewLightDark
 @Composable
 private fun PhotoListItemWithFriendPreview() {
-    SapFlickrExampleTheme {
+    FlickrPhotoSearchTheme {
         PhotoListItemView(
             photoItem = PhotoItem(
                 title = "Photo title",

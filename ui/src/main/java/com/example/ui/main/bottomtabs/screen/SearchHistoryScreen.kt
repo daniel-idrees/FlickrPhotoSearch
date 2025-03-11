@@ -9,26 +9,20 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.domain.model.PhotoItem
 import com.example.ui.R
-import com.example.ui.common.SPACING_EXTRA_SMALL
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.content.ContentScreen
 import com.example.ui.common.content.ContentTitle
-import com.example.ui.common.theme.SapFlickrExampleTheme
+import com.example.ui.common.theme.FlickrPhotoSearchTheme
 import com.example.ui.main.MainUiEvent
 import com.example.ui.main.MainViewModel
 import com.example.ui.main.MainViewState
@@ -89,7 +83,7 @@ private fun Content(
 private fun SearchHistoryPreview(
     @PreviewParameter(SearchHistoryPreviewParameterProvider::class) viewState: MainViewState
 ) {
-    SapFlickrExampleTheme {
+    FlickrPhotoSearchTheme {
         ContentScreen(
             isLoading = viewState.isLoading,
             backPressHandler = { }

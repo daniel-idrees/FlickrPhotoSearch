@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.sapflickrexample"
+    namespace = "com.example.flickrphotosearch"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.sapflickrexample"
+        applicationId = "com.example.flickrphotosearch"
         minSdk = 21
         targetSdk = 35
         versionCode = 1

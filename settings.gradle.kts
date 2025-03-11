@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SapFlickrExample"
+rootProject.name = "FlickrPhotoSearch"
 include(":app")
 include(":data")
 include(":domain")
