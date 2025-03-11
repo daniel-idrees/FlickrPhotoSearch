@@ -6,14 +6,21 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.Text
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,15 +28,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import coil3.EventListener
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import coil3.request.SuccessResult
 import coil3.request.crossfade
 import com.example.domain.model.PhotoItem
 import com.example.ui.R
+import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.SPACING_SMALL
@@ -39,55 +47,55 @@ import com.example.ui.common.theme.FlickrPhotoSearchTheme
 internal fun PhotoListItemView(
     modifier: Modifier = Modifier,
     photoItem: PhotoItem,
-    onPhotoClick: () -> Unit
+    onPhotoClick: (Boolean) -> Unit
 ) {
-    Column(modifier = modifier) {
+    val context = LocalContext.current
+    var hasImageLoadedSuccessfully by rememberSaveable { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier.padding(bottom = SPACING_LARGE.dp),
+        verticalArrangement = Arrangement.spacedBy(SPACING_SMALL.dp)
+    ) {
 
         val configuration = LocalConfiguration.current
         val screenWidth = configuration.screenWidthDp.dp
-
+        val cardMaxWidth = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+            screenWidth * 0.4f else screenWidth * 1f
         Card(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .background(Color.Transparent)
-                .clickable {
-                    onPhotoClick()
-                }
-                .widthIn(
-                    max = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
-                        screenWidth * 0.4f
-                    else
-                        screenWidth * 1f
-                ),
-
+                .clickable { onPhotoClick(hasImageLoadedSuccessfully) }
+                .widthIn(max = cardMaxWidth),
             shape = RoundedCornerShape(SPACING_MEDIUM.dp),
         ) {
-            val context = LocalContext.current
 
             AsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(photoItem.url)
                     .crossfade(true)
+                    .listener(object : EventListener() {
+                        override fun onSuccess(request: ImageRequest, result: SuccessResult) {
+                            super.onSuccess(request, result)
+                            hasImageLoadedSuccessfully = true
+                        }
+                    })
                     .build(),
-                modifier = Modifier.fillMaxWidth(), //widthIn(max = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 300.dp else 300.dp),//.fillMaxWidth(0.6f),
-
+                modifier = Modifier.fillMaxWidth(),
                 contentScale = ContentScale.FillWidth,
                 contentDescription = "Searched photo",
                 placeholder = painterResource(id = R.drawable.ic_placeholder),
                 error = painterResource(id = R.drawable.ic_placeholder)
             )
         }
-        Text(
+
+        TextBodyMedium(
             text = photoItem.title,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = SPACING_SMALL.dp)
         )
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = SPACING_SMALL.dp),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -104,6 +112,13 @@ internal fun PhotoListItemView(
                 FamilyIconImage(modifier = iconModifier)
             }
         }
+
+        Spacer(modifier = Modifier.height(SPACING_SMALL.dp))
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(horizontal = SPACING_EXTRA_LARGE.dp)
+        )
     }
 }
 
