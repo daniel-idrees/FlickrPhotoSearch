@@ -14,6 +14,6 @@ fun TopArrowIcon(modifier: Modifier = Modifier) {
             rotationZ = 90f
         },
         imageVector = Icons.AutoMirrored.Default.ArrowBack,
-        contentDescription = "Scroll to Top"
+        contentDescription = "Scroll to Top Icon"
     )
 }
