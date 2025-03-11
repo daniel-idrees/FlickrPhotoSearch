@@ -169,14 +169,6 @@ internal class MainViewModelTest {
 
     @Test
     fun `OnSearchRequest should trigger ShowEmptyTextError is search query is empty`() = runTest {
-        whenever(getPhotoListUseCase(testQuery)).thenReturn(
-            flowOf(
-                PhotoSearchResult.Success(
-                    fakePhotoList
-                )
-            )
-        )
-
         // when
         subject.setEvent(MainUiEvent.OnSearchRequest("", BottomBarScreen.Search))
         // then
@@ -185,16 +177,15 @@ internal class MainViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
 
-        whenever(getPhotoListUseCase(testQuery)).thenReturn(
-            flowOf(
-                PhotoSearchResult.Success(
-                    fakePhotoList
-                )
+        // when white space characters
+        subject.setEvent(
+            MainUiEvent.OnSearchRequest(
+                "   ",
+                BottomBarScreen.Search
             )
         )
-
-        // when
-        subject.setEvent(MainUiEvent.OnSearchRequest("   ", BottomBarScreen.Search)) //white space characters
+        
+        // then
         subject.effect.test {
             awaitItem() shouldBe MainUiEffect.ShowEmptyTextError(R.string.main_view_model_empty_text_error_toast_text)
             cancelAndIgnoreRemainingEvents()
@@ -430,7 +421,7 @@ internal class MainViewModelTest {
             )
 
             // then
-            subject.viewState.value.searchQuery shouldBe testQuery
+            subject.viewState.value.lastSearch shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList<PhotoItem>()
             subject.viewState.value.isLoading shouldBe false
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
@@ -469,7 +460,7 @@ internal class MainViewModelTest {
             )
 
             // then
-            subject.viewState.value.searchQuery shouldBe testQuery
+            subject.viewState.value.lastSearch shouldBe testQuery
             subject.viewState.value.photoList shouldBe fakePhotoList
             subject.viewState.value.error shouldBe null
             subject.viewState.value.isLoading shouldBe false
@@ -496,7 +487,7 @@ internal class MainViewModelTest {
             )
 
             // then
-            subject.viewState.value.searchQuery shouldBe testQuery
+            subject.viewState.value.lastSearch shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
@@ -511,7 +502,8 @@ internal class MainViewModelTest {
 
                 capturedRetryFunction?.invoke()
 
-                subject.viewState.value.searchQuery shouldBe testQuery
+                subject.viewState.value.lastSearch shouldBe testQuery
+                subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery, testQuery))
             }
         }
 
@@ -534,7 +526,7 @@ internal class MainViewModelTest {
             )
 
             // then
-            subject.viewState.value.searchQuery shouldBe testQuery
+            subject.viewState.value.lastSearch shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
@@ -549,7 +541,8 @@ internal class MainViewModelTest {
 
                 capturedRetryFunction?.invoke()
 
-                subject.viewState.value.searchQuery shouldBe testQuery
+                subject.viewState.value.lastSearch shouldBe testQuery
+                subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery, testQuery))
             }
         }
 
@@ -573,7 +566,7 @@ internal class MainViewModelTest {
             )
 
             // then
-            subject.viewState.value.searchQuery shouldBe testQuery
+            subject.viewState.value.lastSearch shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
@@ -588,7 +581,8 @@ internal class MainViewModelTest {
 
                 capturedRetryFunction?.invoke()
 
-                subject.viewState.value.searchQuery shouldBe testQuery
+                subject.viewState.value.lastSearch shouldBe testQuery
+                subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery, testQuery))
             }
         }
 
