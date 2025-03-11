@@ -168,6 +168,57 @@ internal class MainViewModelTest {
         }
 
     @Test
+    fun `OnSearchRequest should trigger ShowEmptyTextError is search query is empty`() = runTest {
+        whenever(getPhotoListUseCase(testQuery)).thenReturn(
+            flowOf(
+                PhotoSearchResult.Success(
+                    fakePhotoList
+                )
+            )
+        )
+
+        // when
+        subject.setEvent(MainUiEvent.OnSearchRequest("", BottomBarScreen.Search))
+        // then
+        subject.effect.test {
+            awaitItem() shouldBe MainUiEffect.ShowEmptyTextError(R.string.main_view_model_empty_text_error_toast_text)
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        whenever(getPhotoListUseCase(testQuery)).thenReturn(
+            flowOf(
+                PhotoSearchResult.Success(
+                    fakePhotoList
+                )
+            )
+        )
+
+        // when
+        subject.setEvent(MainUiEvent.OnSearchRequest("   ", BottomBarScreen.Search)) //white space characters
+        subject.effect.test {
+            awaitItem() shouldBe MainUiEffect.ShowEmptyTextError(R.string.main_view_model_empty_text_error_toast_text)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `OnSearchRequest should update lastSearch string in the viewState`() = runTest {
+        whenever(getPhotoListUseCase(testQuery)).thenReturn(
+            flowOf(
+                PhotoSearchResult.Success(
+                    fakePhotoList
+                )
+            )
+        )
+
+        // when
+        subject.setEvent(MainUiEvent.OnSearchRequest(testQuery, BottomBarScreen.Search))
+
+        // then
+        subject.viewState.value.lastSearch shouldBe testQuery
+    }
+
+    @Test
     fun `OnSearchTextChange should update the searchQuery string in the viewState`() = runTest {
         // when
         subject.setEvent(MainUiEvent.OnSearchTextChange(testQuery))
