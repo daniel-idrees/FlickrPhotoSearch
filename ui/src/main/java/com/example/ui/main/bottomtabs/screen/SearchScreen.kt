@@ -60,120 +60,126 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun SearchScreen(viewModel: MainViewModel, viewState: MainViewState) {
-    ContentScreen(
-        isLoading = viewState.isLoading,
-        backPressHandler = { viewModel.setEvent(MainUiEvent.OnBackPressed(BottomBarScreen.Search)) }
-    ) { paddingValues ->
-        Content(
-            state = viewState,
-            onEventSend = { viewModel.setEvent(it) },
-            paddingValues = paddingValues
-        )
-    }
+    Content(
+        state = viewState,
+        onEventSend = { viewModel.setEvent(it) },
+        triggerOnBackPressUiEvent = { viewModel.setEvent(MainUiEvent.OnBackPressed(BottomBarScreen.Search)) }
+    )
 }
 
 @Composable
 private fun Content(
     state: MainViewState,
     onEventSend: (MainUiEvent) -> Unit,
-    paddingValues: PaddingValues,
+    triggerOnBackPressUiEvent: () -> Unit = {}
 ) {
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val showFab by remember {
         derivedStateOf {
-            lazyListState.firstVisibleItemIndex > 5
+            lazyListState.firstVisibleItemIndex > 5 //show floating button after 5 items
         }
     }
     var zoomedPhoto by remember { mutableStateOf<PhotoItem?>(null) }
-    var isPhotoZoomed = zoomedPhoto != null
+    val isPhotoZoomed = zoomedPhoto != null
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    paddingValues = PaddingValues(
-                        bottom = 0.dp,
-                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr)
-                    )
-                )
-        ) {
-            val photosResultAvailable = state.photoList.isNotEmpty()
-            if (!photosResultAvailable) {
-                ContentTitle(
-                    modifier = Modifier.fillMaxWidth(),
-                    title = stringResource(R.string.search_screen_title),
-                )
+    ContentScreen(
+        isLoading = state.isLoading,
+        backPressHandler = {
+            if (isPhotoZoomed) {
+                zoomedPhoto = null   //hide zoomed photo if visible when back pressed
+            } else {
+                triggerOnBackPressUiEvent()
             }
-            LazyColumn(
+        }
+    ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
                 modifier = Modifier
-                    .weight(1f),
-                userScrollEnabled = isPhotoZoomed.not(), // disable scrolling when zoomed photo is visible
-                state = lazyListState
+                    .fillMaxSize()
+                    .padding(
+                        paddingValues = PaddingValues(
+                            bottom = 0.dp,
+                            start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                            end = paddingValues.calculateEndPadding(LayoutDirection.Ltr)
+                        )
+                    )
             ) {
-                stickyHeader {
-                    val prefilledText = if (photosResultAvailable) state.lastSearch else state.searchQuery
-
-                    val shouldShowButton = !photosResultAvailable
-
-                    SearchFieldView(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .then(if (!photosResultAvailable) Modifier.padding(top = SPACING_LARGE.dp) else Modifier),
-                        searchInputPrefilledText = prefilledText,
-                        searchHistory = state.searchHistory,
-                        label = stringResource(R.string.search_screen_search_field_label),
-                        shouldHaveFocus = !photosResultAvailable,
-                        buttonText = if (shouldShowButton && state.error == null) stringResource(R.string.search_screen_search_button_text) else null,
-                        searchErrorReceived = state.error != null,
-                        doOnSearchRequest = { text ->
-                            onEventSend(
-                                MainUiEvent.OnSearchRequest(
-                                    searchQuery = text,
-                                    BottomBarScreen.Search
-                                )
-                            )
-                        },
-                        doOnSearchHistoryDropDownItemClick = { text ->
-                            onEventSend(
-                                MainUiEvent.OnSearchHistoryItemClicked(
-                                    searchQuery = text,
-                                    BottomBarScreen.Home
-                                )
-                            )
-                        },
-                        doOnSearchTextChange = { text ->
-                            onEventSend(
-                                MainUiEvent.OnSearchTextChange(
-                                    text
-                                )
-                            )
-                        }
+                val photosResultAvailable = state.photoList.isNotEmpty()
+                if (!photosResultAvailable) {
+                    ContentTitle(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = stringResource(R.string.search_screen_title),
                     )
                 }
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f),
+                    state = lazyListState
+                ) {
+                    stickyHeader {
+                        val prefilledText =
+                            if (photosResultAvailable) state.lastSearch else state.searchQuery
 
-                if (photosResultAvailable) {
-                    item {
-                        TextBodyMedium(
-                            Modifier
+                        val shouldShowButton = !photosResultAvailable
+
+                        SearchFieldView(
+                            modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = SPACING_MEDIUM.dp),
-                            text = stringResource(
-                                state.searchResultTitleRes,
-                                state.lastSearch
-                            ),
+                                .then(if (!photosResultAvailable) Modifier.padding(top = SPACING_LARGE.dp) else Modifier),
+                            searchInputPrefilledText = prefilledText,
+                            searchHistory = state.searchHistory,
+                            label = stringResource(R.string.search_screen_search_field_label),
+                            shouldHaveFocus = !photosResultAvailable,
+                            buttonText = if (shouldShowButton && state.error == null) stringResource(
+                                R.string.search_screen_search_button_text
+                            ) else null,
+                            searchErrorReceived = state.error != null,
+                            doOnSearchRequest = { text ->
+                                onEventSend(
+                                    MainUiEvent.OnSearchRequest(
+                                        searchQuery = text,
+                                        BottomBarScreen.Search
+                                    )
+                                )
+                            },
+                            doOnSearchHistoryDropDownItemClick = { text ->
+                                onEventSend(
+                                    MainUiEvent.OnSearchHistoryItemClicked(
+                                        searchQuery = text,
+                                        BottomBarScreen.Home
+                                    )
+                                )
+                            },
+                            doOnSearchTextChange = { text ->
+                                onEventSend(
+                                    MainUiEvent.OnSearchTextChange(
+                                        text
+                                    )
+                                )
+                            }
                         )
                     }
 
-                    items(state.photoList) { photo ->
-                        PhotoListItemView(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            photoItem = photo,
-                            onPhotoClick = { hasPhotoLoadedSuccessfully ->
-                                if(isPhotoZoomed.not()) {
+                    if (photosResultAvailable) {
+                        item {
+                            TextBodyMedium(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = SPACING_MEDIUM.dp),
+                                text = stringResource(
+                                    state.searchResultTitleRes,
+                                    state.lastSearch
+                                ),
+                            )
+                        }
+
+                        items(state.photoList) { photo ->
+                            PhotoListItemView(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                photoItem = photo,
+                                onPhotoClick = { hasPhotoLoadedSuccessfully ->
                                     onEventSend(
                                         MainUiEvent.OnPhotoItemClicked(
                                             photo
@@ -183,64 +189,64 @@ private fun Content(
                                         zoomedPhoto = photo
                                     }
                                 }
-                            }
-                        )
-                    }
-                } else if (state.error != null) {
-                    item {
-                        ContentError(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .padding(
-                                    paddingValues = PaddingValues(
-                                        top = SPACING_MEDIUM.dp,
-                                        bottom = paddingValues.calculateBottomPadding()
-                                    )
-                                ),
-                            contentErrorConfig = state.error
-                        )
-                    }
-                } else {
-                    item {
-                        val isKeyboardOpen by keyboardAsState()
-                        LaunchedEffect(isKeyboardOpen) {
-                            delay(300)
-                            if (!isKeyboardOpen) {
-                                onEventSend(MainUiEvent.OnBackPressed(BottomBarScreen.Search))
+                            )
+                        }
+                    } else if (state.error != null) {
+                        item {
+                            ContentError(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .padding(
+                                        paddingValues = PaddingValues(
+                                            top = SPACING_MEDIUM.dp,
+                                            bottom = paddingValues.calculateBottomPadding()
+                                        )
+                                    ),
+                                contentErrorConfig = state.error
+                            )
+                        }
+                    } else {
+                        item {
+                            val isKeyboardOpen by keyboardAsState()
+                            LaunchedEffect(isKeyboardOpen) {
+                                delay(300)
+                                if (!isKeyboardOpen) {
+                                    onEventSend(MainUiEvent.OnBackPressed(BottomBarScreen.Search))
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        if (showFab) {
-            FloatingActionButton(
-                onClick = {
-                    coroutineScope.launch {
-                        lazyListState.scrollToItem(0)
-                    }
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(SPACING_MEDIUM.dp)
-            ) {
-                TopArrowIcon(modifier = Modifier.size(SPACING_LARGE.dp))
+            if (showFab) {
+                FloatingActionButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            lazyListState.scrollToItem(0)
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(SPACING_MEDIUM.dp)
+                ) {
+                    TopArrowIcon(modifier = Modifier.size(SPACING_LARGE.dp))
+                }
             }
         }
-    }
 
-    AnimatedVisibility(
-        visible = zoomedPhoto != null,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        zoomedPhoto?.let { photo ->
-            ZoomedPhotoOverlay(
-                photo = photo,
-                onClose = {
-                    zoomedPhoto = null
-                }
-            )
+        AnimatedVisibility(
+            visible = zoomedPhoto != null,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            zoomedPhoto?.let { photo ->
+                ZoomedPhotoOverlay(
+                    photo = photo,
+                    onClose = {
+                        zoomedPhoto = null
+                    }
+                )
+            }
         }
     }
 }
@@ -251,13 +257,11 @@ private fun SearchPreview(
     @PreviewParameter(SearchPreviewParameterProvider::class) viewState: MainViewState
 ) {
     FlickrPhotoSearchTheme {
-        ContentScreen {
-            Content(
-                paddingValues = PaddingValues(1.dp),
-                state = viewState,
-                onEventSend = {}
-            )
-        }
+        Content(
+            state = viewState,
+            onEventSend = {},
+            triggerOnBackPressUiEvent = {}
+        )
     }
 }
 
