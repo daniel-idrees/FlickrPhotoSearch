@@ -20,6 +20,5 @@
     <string name="main_view_model_empty_error_sub_title">Unable to find anything. Try something else</string>
     <string name="main_view_model_empty_text_error_toast_text">Enter something to search</string>
     <string name="main_view_model_success_result_title">Showing results for \""%1$s\""</string>
-    <string name="main_view_model_search_failed_error_title">Oops…</string>
-    <string name="main_view_model_search_failed_error_sub_title">Search failed</string>
+    <string name="main_view_model_search_failed_error_title">Search failed.</string>
 </resources>
