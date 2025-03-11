@@ -48,7 +48,6 @@ internal fun ContentTitle(
     }
 }
 
-@Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun ContentTitlePreview() {
@@ -59,7 +58,6 @@ private fun ContentTitlePreview() {
     )
 }
 
-@Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun ContentTitleNoSubtitlePreview() {

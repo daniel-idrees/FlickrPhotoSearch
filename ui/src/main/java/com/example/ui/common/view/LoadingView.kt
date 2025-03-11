@@ -22,7 +22,6 @@ internal fun LoadingView(modifier: Modifier) {
     }
 }
 
-@Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun LoadingViewPreview() {

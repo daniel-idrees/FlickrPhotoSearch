@@ -76,7 +76,6 @@ internal fun ContentError(
 }
 
 @Composable
-@Preview(showBackground = true)
 @PreviewLightDark
 private fun ContentErrorWithErrorResourcePreview() {
     ContentError(
@@ -89,7 +88,6 @@ private fun ContentErrorWithErrorResourcePreview() {
 }
 
 @Composable
-@Preview(showBackground = true)
 @PreviewLightDark
 private fun ContentErrorWithErrorTextPreview() {
     ContentError(
