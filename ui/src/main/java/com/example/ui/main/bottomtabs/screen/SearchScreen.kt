@@ -86,6 +86,7 @@ private fun Content(
         }
     }
     var zoomedPhoto by remember { mutableStateOf<PhotoItem?>(null) }
+    var isPhotoZoomed = zoomedPhoto != null
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -109,7 +110,7 @@ private fun Content(
             LazyColumn(
                 modifier = Modifier
                     .weight(1f),
-                userScrollEnabled = zoomedPhoto == null, // disable scrolling when zoomed photo is visible
+                userScrollEnabled = isPhotoZoomed.not(), // disable scrolling when zoomed photo is visible
                 state = lazyListState
             ) {
                 stickyHeader {
@@ -172,14 +173,15 @@ private fun Content(
                                 .fillMaxWidth(),
                             photoItem = photo,
                             onPhotoClick = { hasPhotoLoadedSuccessfully ->
-
-                                onEventSend(
-                                    MainUiEvent.OnPhotoItemClicked(
-                                        photo
+                                if(isPhotoZoomed.not()) {
+                                    onEventSend(
+                                        MainUiEvent.OnPhotoItemClicked(
+                                            photo
+                                        )
                                     )
-                                )
-                                if (hasPhotoLoadedSuccessfully) {
-                                    zoomedPhoto = photo
+                                    if (hasPhotoLoadedSuccessfully) {
+                                        zoomedPhoto = photo
+                                    }
                                 }
                             }
                         )
