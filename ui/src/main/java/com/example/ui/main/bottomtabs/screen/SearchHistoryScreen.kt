@@ -84,7 +84,6 @@ private fun Content(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
 @PreviewLightDark
 @Composable
 private fun SearchHistoryPreview(

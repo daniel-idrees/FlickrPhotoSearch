@@ -56,7 +56,6 @@ internal fun ListView(
     }
 }
 
-@Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun PhotoListViewPreview() {

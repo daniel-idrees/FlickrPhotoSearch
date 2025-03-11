@@ -176,7 +176,6 @@ internal fun SearchFieldView(
     }
 }
 
-@Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun SearchInputFieldPreview() {
@@ -188,7 +187,6 @@ private fun SearchInputFieldPreview() {
     }
 }
 
-@Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun SearchInputFieldWithButtonPreview() {
@@ -201,7 +199,6 @@ private fun SearchInputFieldWithButtonPreview() {
     }
 }
 
-@Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun SearchInputFieldWithPrefilledTextPreview() {

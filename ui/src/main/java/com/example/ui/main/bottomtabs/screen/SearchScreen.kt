@@ -229,7 +229,6 @@ private fun Content(
     }
 }
 
-@Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun SearchPreview(
