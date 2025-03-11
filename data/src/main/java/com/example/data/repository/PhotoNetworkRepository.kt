@@ -19,7 +19,7 @@ internal class PhotoNetworkRepository @Inject constructor(
                 val response = photoDataSource.searchPhotos(searchText)
 
                 if (response.status != "ok") {
-                    //log the message and code
+                    //log the response and code
                     emit(
                         RepoPhotoSearchResult.Error.RequestFailed(
                             errorMessage = translateErrorCodeMessage(response.errorCode)
