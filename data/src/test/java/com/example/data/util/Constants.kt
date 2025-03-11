@@ -108,5 +108,6 @@ internal val fakePhotoSearchDetailForInvalidStatus = PhotoSearchDetail(
 
 internal val fakePhotoSearchResponseWithInvalidStatus = PhotoSearchResponse(
     photoSearchDetail = fakePhotoSearchDetailForInvalidStatus,
-    status = fakeInvalidStatus
+    status = fakeInvalidStatus,
+    errorCode = 116
 )

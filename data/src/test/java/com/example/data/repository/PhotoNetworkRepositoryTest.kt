@@ -62,7 +62,7 @@ class PhotoNetworkRepositoryTest {
 
             // then
             result.test {
-                awaitItem() shouldBe RepoPhotoSearchResult.RequestFailed
+                awaitItem() shouldBe RepoPhotoSearchResult.Error.RequestFailed("Operation failed. Please contact support.")
                 verify(network).searchPhotos("test")
                 verifyNoMoreInteractions(network)
                 cancelAndIgnoreRemainingEvents()
@@ -70,7 +70,7 @@ class PhotoNetworkRepositoryTest {
         }
 
     @Test
-    fun `searchPhotos should return general error when api response throws general exception`() =
+    fun `searchPhotos should return ServerError when api response throws general exception`() =
         runTest {
             whenever(network.searchPhotos("test")) doThrow IllegalArgumentException()
 
@@ -79,7 +79,7 @@ class PhotoNetworkRepositoryTest {
 
             // then
             result.test {
-                awaitItem() shouldBe RepoPhotoSearchResult.Error
+                awaitItem() shouldBe RepoPhotoSearchResult.Error.ServerError
                 verify(network).searchPhotos("test")
                 verifyNoMoreInteractions(network)
                 cancelAndIgnoreRemainingEvents()
@@ -87,7 +87,7 @@ class PhotoNetworkRepositoryTest {
         }
 
     @Test
-    fun `searchPhotos should return general error when api response throws io exception`() =
+    fun `searchPhotos should return NetworkUnavailable error when api response throws IOException`() =
         runTest {
             whenever(network.searchPhotos("test")) doAnswer { throw IOException() }
 
@@ -96,7 +96,7 @@ class PhotoNetworkRepositoryTest {
 
             // then
             result.test {
-                awaitItem() shouldBe RepoPhotoSearchResult.NetworkUnavailable
+                awaitItem() shouldBe RepoPhotoSearchResult.Error.NetworkUnavailable
                 verify(network).searchPhotos("test")
                 verifyNoMoreInteractions(network)
                 cancelAndIgnoreRemainingEvents()

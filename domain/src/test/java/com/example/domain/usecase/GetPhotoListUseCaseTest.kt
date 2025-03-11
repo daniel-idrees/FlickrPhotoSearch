@@ -77,9 +77,9 @@ class GetPhotoListUseCaseTest {
         }
 
     @Test
-    fun `Invocation should return Error if the repository returns error`() = runTest {
+    fun `Invocation should return Generic error if the repository returns ServerError`() = runTest {
         // when
-        whenever(repository.searchPhotos("text")) doReturn flowOf(RepoPhotoSearchResult.Error)
+        whenever(repository.searchPhotos("text")) doReturn flowOf(RepoPhotoSearchResult.Error.ServerError)
 
         // then
         subject("text").test {
@@ -92,16 +92,16 @@ class GetPhotoListUseCaseTest {
     }
 
     @Test
-    fun `Invocation should return Error if the repository returns invalid status`() = runTest {
+    fun `Invocation should return SearchFailed Error if the repository returns invalid status`() = runTest {
         // when
-        whenever(repository.searchPhotos("text")) doReturn flowOf(RepoPhotoSearchResult.RequestFailed)
+        whenever(repository.searchPhotos("text")) doReturn flowOf(RepoPhotoSearchResult.Error.RequestFailed("request failed"))
 
         // then
         subject("text").test {
             verify(repository).searchPhotos("text")
             verifyNoMoreInteractions(repository)
             val result = awaitItem()
-            result shouldBe PhotoSearchResult.Error.SearchFailed
+            result shouldBe PhotoSearchResult.Error.SearchFailed("request failed")
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -110,7 +110,7 @@ class GetPhotoListUseCaseTest {
     fun `Invocation should return Error if the repository returns network unavailable error`() =
         runTest {
             // when
-            whenever(repository.searchPhotos("text")) doReturn flowOf(RepoPhotoSearchResult.NetworkUnavailable)
+            whenever(repository.searchPhotos("text")) doReturn flowOf(RepoPhotoSearchResult.Error.NetworkUnavailable)
 
             // then
             subject("text").test {
