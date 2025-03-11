@@ -24,9 +24,8 @@ internal class MainViewModel @Inject constructor(
     override fun handleEvents(event: MainUiEvent) {
         when (event) {
             is MainUiEvent.OnSearchRequest -> doOnSearchRequest(event)
-
             is MainUiEvent.OnPhotoItemClicked -> {
-                // TODO Do something with the photo item
+                // for analytics or detail fetch
             }
 
             is MainUiEvent.OnBackPressed -> setEffect { MainUiEffect.Navigation.Pop(event.fromScreen) }
