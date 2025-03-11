@@ -15,17 +15,15 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.ui.R
 import com.example.ui.common.SPACING_LARGE
-import com.example.ui.common.SPACING_SMALL
 
 @Composable
-internal fun PublicIconImage(isPublic: Boolean) {
+internal fun PublicIconImage(modifier: Modifier = Modifier) {
     val publicPainterResource =
-        painterResource(id = if (!isPublic) R.drawable.ic_private else R.drawable.ic_public)
+        painterResource(id = R.drawable.ic_public)
     val tooltipState = rememberTooltipState()
 
 
@@ -37,7 +35,7 @@ internal fun PublicIconImage(isPublic: Boolean) {
                 shape = RoundedCornerShape(4.dp),
             ) {
                 Text(
-                    text = if(isPublic) "Public" else "Locked",
+                    text = "Public Photo",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -45,9 +43,9 @@ internal fun PublicIconImage(isPublic: Boolean) {
         state = tooltipState
     ) {
         Image(
-            modifier = Modifier.size(SPACING_LARGE.dp),
+            modifier = modifier,
             painter = publicPainterResource,
-            contentDescription = "Photo public icon",
+            contentDescription = "Photo public visibility icon",
         )
     }
 }

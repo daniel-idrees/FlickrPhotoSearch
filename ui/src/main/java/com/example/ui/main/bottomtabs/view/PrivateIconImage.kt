@@ -20,8 +20,11 @@ import com.example.ui.R
 
 
 @Composable
-internal fun FamilyIconImage(modifier: Modifier = Modifier) {
+internal fun PrivateIconImage(modifier: Modifier = Modifier) {
+    val publicPainterResource =
+        painterResource(id = R.drawable.ic_private)
     val tooltipState = rememberTooltipState()
+
 
     TooltipBox(
         positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
@@ -31,7 +34,7 @@ internal fun FamilyIconImage(modifier: Modifier = Modifier) {
                 shape = RoundedCornerShape(4.dp),
             ) {
                 Text(
-                    text = "Photo visible to family",
+                    text = "Private photo",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -40,8 +43,8 @@ internal fun FamilyIconImage(modifier: Modifier = Modifier) {
     ) {
         Image(
             modifier = modifier,
-            painter = painterResource(id = R.drawable.ic_family),
-            contentDescription = "Photo family visibility icon"
+            painter = publicPainterResource,
+            contentDescription = "Photo private visibility icon",
         )
     }
 }

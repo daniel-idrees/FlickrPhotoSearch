@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -30,6 +31,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.domain.model.PhotoItem
 import com.example.ui.R
+import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.SPACING_SMALL
 import com.example.ui.common.theme.SapFlickrExampleTheme
@@ -44,7 +46,7 @@ internal fun PhotoListItemView(
 
         val configuration = LocalConfiguration.current
         val screenWidth = configuration.screenWidthDp.dp
-        
+
         Card(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -90,14 +92,22 @@ internal fun PhotoListItemView(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            PublicIconImage(photoItem.isPublic)
-            FriendsIconImage(photoItem.isFriend)
-            FamilyIconImage(photoItem.isFamily)
+            val iconModifier = Modifier.size(SPACING_LARGE.dp)
+            if (photoItem.isPublic) {
+                PublicIconImage(modifier = iconModifier)
+            } else {
+                PrivateIconImage(modifier = iconModifier)
+            }
+            if (photoItem.isFriend) {
+                FriendsIconImage(modifier = iconModifier)
+            }
+            if (photoItem.isFamily) {
+                FamilyIconImage(modifier = iconModifier)
+            }
         }
     }
 }
 
-@Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun PhotoListItemWithAllIconsPreview() {
@@ -113,7 +123,6 @@ private fun PhotoListItemWithAllIconsPreview() {
     )
 }
 
-@Preview(showBackground = true)
 @PreviewLightDark
 @Composable
 private fun PhotoListItemWithFriendPreview() {

@@ -5,7 +5,6 @@ package com.example.ui.main.bottomtabs.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -19,11 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.ui.R
-import com.example.ui.common.SPACING_LARGE
-import com.example.ui.common.StrikeView
 
 @Composable
-internal fun FriendsIconImage(isFriend: Boolean) {
+internal fun FriendsIconImage(modifier: Modifier = Modifier) {
 
     val tooltipState = rememberTooltipState()
 
@@ -36,7 +33,7 @@ internal fun FriendsIconImage(isFriend: Boolean) {
                     shape = RoundedCornerShape(4.dp),
                 ) {
                     Text(
-                        text = if(isFriend) "Friend" else "Non Friend",
+                        text = "Photo visible to friend",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -44,13 +41,10 @@ internal fun FriendsIconImage(isFriend: Boolean) {
             state = tooltipState
         ) {
             Image(
-                modifier = Modifier.size(SPACING_LARGE.dp),
+                modifier = modifier,
                 painter = painterResource(id = R.drawable.ic_friends),
-                contentDescription = "Photo friends icon"
+                contentDescription = "Photo friend visibility icon"
             )
-        }
-        if (!isFriend) {
-            StrikeView(modifier = Modifier.matchParentSize())
         }
     }
 }
