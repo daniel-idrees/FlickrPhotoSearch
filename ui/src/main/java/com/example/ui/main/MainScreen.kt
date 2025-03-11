@@ -109,7 +109,7 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun BottomNavigationBar(navController: NavHostController) {
+private fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.Search,
