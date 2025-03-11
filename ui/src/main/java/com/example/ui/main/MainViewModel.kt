@@ -79,7 +79,7 @@ internal class MainViewModel @Inject constructor(
         setState {
             copy(
                 isLoading = true,
-                searchQuery = searchQuery,
+                lastSearch = searchQuery,
                 error = null,
                 searchHistory = getUpdatedSearchHistory(searchQuery),
             )

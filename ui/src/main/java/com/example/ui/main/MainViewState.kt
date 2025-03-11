@@ -9,6 +9,7 @@ internal data class MainViewState(
     val isLoading: Boolean = false,
     val error: ContentErrorConfig? = null,
     val searchQuery: String = "",
+    val lastSearch: String = "",
     val photoList: List<PhotoItem> = emptyList(),
     @StringRes val searchResultTitleRes : Int = 0,
     val searchHistory: ArrayDeque<String> = ArrayDeque(),
