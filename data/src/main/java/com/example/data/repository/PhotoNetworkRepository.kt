@@ -18,7 +18,9 @@ internal class PhotoNetworkRepository @Inject constructor(
                 val response = photoDataSource.searchPhotos(searchText)
 
                 if (response.status != "ok") {
-                    emit(RepoPhotoSearchResult.InvalidStatus)
+                    //log the message and code
+                    emit(RepoPhotoSearchResult.RequestFailed)
+                    return@flow
                 }
 
                 val photos = response.toPhotoList()

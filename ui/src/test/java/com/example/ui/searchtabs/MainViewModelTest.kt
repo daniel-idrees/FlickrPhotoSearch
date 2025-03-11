@@ -469,7 +469,7 @@ internal class MainViewModelTest {
 
             whenever(getPhotoListUseCase(testQuery)).thenReturn(
                 flowOf(
-                    PhotoSearchResult.Error.NoResult
+                    PhotoSearchResult.Error.SearchFailed
                 )
             )
 
@@ -488,8 +488,8 @@ internal class MainViewModelTest {
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
             subject.viewState.value.error?.let { errorConfig ->
-                errorConfig.errorTitleRes shouldBe R.string.main_view_model_no_result_error_title
-                errorConfig.errorSubTitleRes shouldBe R.string.main_view_model_no_result_error_sub_title
+                errorConfig.errorTitleRes shouldBe R.string.main_view_model_search_failed_error_title
+                errorConfig.errorSubTitleRes shouldBe R.string.main_view_model_search_failed_error_sub_title
 
                 val capturedRetryFunction = errorConfig.onRetry
 

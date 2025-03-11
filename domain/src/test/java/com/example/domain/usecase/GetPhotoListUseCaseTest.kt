@@ -94,14 +94,14 @@ class GetPhotoListUseCaseTest {
     @Test
     fun `Invocation should return Error if the repository returns invalid status`() = runTest {
         // when
-        whenever(repository.searchPhotos("text")) doReturn flowOf(RepoPhotoSearchResult.InvalidStatus)
+        whenever(repository.searchPhotos("text")) doReturn flowOf(RepoPhotoSearchResult.RequestFailed)
 
         // then
         subject("text").test {
             verify(repository).searchPhotos("text")
             verifyNoMoreInteractions(repository)
             val result = awaitItem()
-            result shouldBe PhotoSearchResult.Error.NoResult
+            result shouldBe PhotoSearchResult.Error.SearchFailed
             cancelAndIgnoreRemainingEvents()
         }
     }

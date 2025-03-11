@@ -100,13 +100,13 @@ internal class MainViewModel @Inject constructor(
                         )
                     }
 
-                    PhotoSearchResult.Error.NoResult -> {
+                    PhotoSearchResult.Error.SearchFailed -> {
                         setState {
                             copy(
                                 isLoading = false,
                                 error = ContentErrorConfig(
-                                    errorTitleRes = R.string.main_view_model_no_result_error_title,
-                                    errorSubTitleRes = R.string.main_view_model_no_result_error_sub_title,
+                                    errorTitleRes = R.string.main_view_model_search_failed_error_title,
+                                    errorSubTitleRes = R.string.main_view_model_search_failed_error_sub_title,
                                     onRetry = { search(searchQuery) },
                                 )
                             )

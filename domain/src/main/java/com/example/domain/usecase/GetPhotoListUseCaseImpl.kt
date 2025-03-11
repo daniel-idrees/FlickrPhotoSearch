@@ -21,7 +21,7 @@ internal class GetPhotoListUseCaseImpl @Inject constructor(
                 when (result) {
                     is RepoPhotoSearchResult.Success -> handleSuccessResult(result)
                     RepoPhotoSearchResult.Error -> PhotoSearchResult.Error.Generic
-                    RepoPhotoSearchResult.InvalidStatus -> PhotoSearchResult.Error.NoResult
+                    RepoPhotoSearchResult.RequestFailed -> PhotoSearchResult.Error.SearchFailed
                     RepoPhotoSearchResult.NetworkUnavailable -> PhotoSearchResult.Error.NoInternetConnection
                 }
             }

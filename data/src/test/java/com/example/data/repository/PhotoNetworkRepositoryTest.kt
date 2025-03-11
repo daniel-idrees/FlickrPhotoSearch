@@ -62,7 +62,7 @@ class PhotoNetworkRepositoryTest {
 
             // then
             result.test {
-                awaitItem() shouldBe RepoPhotoSearchResult.InvalidStatus
+                awaitItem() shouldBe RepoPhotoSearchResult.RequestFailed
                 verify(network).searchPhotos("test")
                 verifyNoMoreInteractions(network)
                 cancelAndIgnoreRemainingEvents()
