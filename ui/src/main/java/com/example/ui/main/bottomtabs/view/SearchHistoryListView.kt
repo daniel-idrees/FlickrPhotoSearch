@@ -28,17 +28,20 @@ internal fun SearchHistoryListView(
     fromScreen: BottomBarScreen,
     onEventSend: (MainUiEvent) -> Unit,
 ) {
+
+    if (searchHistory.isEmpty()) {
+        TextBodyMedium(
+            modifier.fillMaxWidth(),
+            text = stringResource(R.string.search_history_sub_title_if_no_history)
+        )
+        return
+    }
+    
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp)
     ) {
-        if (searchHistory.isEmpty()) {
-            TextBodyMedium(
-                modifier.fillMaxWidth(),
-                text = stringResource(R.string.search_history_sub_title_if_no_history)
-            )
-            return@Column
-        }
+
 
         ButtonWithTextView(
             modifier = Modifier
