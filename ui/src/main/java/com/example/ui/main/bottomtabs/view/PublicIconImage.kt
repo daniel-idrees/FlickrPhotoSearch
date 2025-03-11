@@ -4,7 +4,6 @@ package com.example.ui.main.bottomtabs.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -16,9 +15,9 @@ import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ui.R
-import com.example.ui.common.SPACING_LARGE
 
 @Composable
 internal fun PublicIconImage(modifier: Modifier = Modifier) {
@@ -35,7 +34,7 @@ internal fun PublicIconImage(modifier: Modifier = Modifier) {
                 shape = RoundedCornerShape(4.dp),
             ) {
                 Text(
-                    text = "Public Photo",
+                    text = stringResource(R.string.search_screen_result_photo_public_icon_tooltip_text),
                     style = MaterialTheme.typography.bodySmall
                 )
             }

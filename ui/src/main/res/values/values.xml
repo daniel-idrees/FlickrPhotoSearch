@@ -8,6 +8,11 @@
     <string name="search_screen_search_field_label">Search a photo</string>
     <string name="search_screen_search_button_text">Search</string>
 
+    <string name="search_screen_result_photo_family_icon_tooltip_text">Photo visible to family</string>
+    <string name="search_screen_result_photo_friend_icon_tooltip_text">Photo visible to friend"</string>
+    <string name="search_screen_result_photo_public_icon_tooltip_text">Photo visible to public</string>
+    <string name="search_screen_result_photo_private_icon_tooltip_text">Photo visible to none</string>
+
     <string name="search_history_screen_title">Search History</string>
     <string name="search_history_sub_title_if_no_history">No search history</string>
     <string name="search_history_clear_all_button_text">Clear All</string>

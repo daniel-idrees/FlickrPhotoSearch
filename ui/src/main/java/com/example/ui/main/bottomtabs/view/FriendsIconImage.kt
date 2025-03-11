@@ -16,6 +16,7 @@ import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.ui.R
 
@@ -33,7 +34,7 @@ internal fun FriendsIconImage(modifier: Modifier = Modifier) {
                     shape = RoundedCornerShape(4.dp),
                 ) {
                     Text(
-                        text = "Photo visible to friend",
+                        text = stringResource(R.string.search_screen_result_photo_friend_icon_tooltip_text),
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
