@@ -2,37 +2,35 @@
 
 package com.example.ui.main.bottomtabs.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -40,11 +38,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.domain.model.PhotoItem
 import com.example.ui.R
-import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
-import com.example.ui.common.SPACING_SMALL
 import com.example.ui.common.content.ContentError
+import com.example.ui.common.content.ContentErrorConfig
 import com.example.ui.common.content.ContentScreen
 import com.example.ui.common.content.ContentTitle
 import com.example.ui.common.keyboardAsState
@@ -55,7 +52,9 @@ import com.example.ui.main.MainViewState
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 import com.example.ui.main.bottomtabs.view.PhotoListItemView
 import com.example.ui.main.bottomtabs.view.SearchFieldView
+import com.example.ui.main.bottomtabs.view.TextBodyMedium
 import com.example.ui.main.bottomtabs.view.TopArrowIcon
+import com.example.ui.main.bottomtabs.view.ZoomedPhotoOverlay
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -77,7 +76,7 @@ internal fun SearchScreen(viewModel: MainViewModel, viewState: MainViewState) {
 private fun Content(
     state: MainViewState,
     onEventSend: (MainUiEvent) -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -86,6 +85,7 @@ private fun Content(
             lazyListState.firstVisibleItemIndex > 5
         }
     }
+    var zoomedPhoto by remember { mutableStateOf<PhotoItem?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -107,12 +107,14 @@ private fun Content(
                 )
             }
             LazyColumn(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f),
+                userScrollEnabled = zoomedPhoto == null, // disable scrolling when zoomed photo is visible
                 state = lazyListState
             ) {
                 stickyHeader {
-                    val prefilledText =
-                        if (photosResultAvailable) state.searchHistory.first() else state.searchQuery
+                    val prefilledText = if (photosResultAvailable) state.lastSearch else state.searchQuery
+
                     val shouldShowButton = !photosResultAvailable
 
                     SearchFieldView(
@@ -153,15 +155,14 @@ private fun Content(
 
                 if (photosResultAvailable) {
                     item {
-                        Text(
-                            modifier = Modifier
+                        TextBodyMedium(
+                            Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = SPACING_MEDIUM.dp),
                             text = stringResource(
                                 state.searchResultTitleRes,
-                                state.searchHistory.first()
+                                state.lastSearch
                             ),
-                            overflow = TextOverflow.Ellipsis
                         )
                     }
 
@@ -170,19 +171,22 @@ private fun Content(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             photoItem = photo,
-                            onPhotoClick = { onEventSend(MainUiEvent.OnPhotoItemClicked(photo)) }
+                            onPhotoClick = { hasPhotoLoadedSuccessfully ->
+
+                                onEventSend(
+                                    MainUiEvent.OnPhotoItemClicked(
+                                        photo
+                                    )
+                                )
+                                if (hasPhotoLoadedSuccessfully) {
+                                    zoomedPhoto = photo
+                                }
+                            }
                         )
-                        Spacer(modifier = Modifier.height(SPACING_LARGE.dp))
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(horizontal = SPACING_EXTRA_LARGE.dp)
-                        )
-                        Spacer(modifier = Modifier.height(SPACING_SMALL.dp))
                     }
                 } else if (state.error != null) {
                     item {
-                        Column(
+                        ContentError(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .padding(
@@ -191,12 +195,8 @@ private fun Content(
                                         bottom = paddingValues.calculateBottomPadding()
                                     )
                                 ),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            ContentError(
-                                contentErrorConfig = state.error
-                            )
-                        }
+                            contentErrorConfig = state.error
+                        )
                     }
                 } else {
                     item {
@@ -224,6 +224,21 @@ private fun Content(
             ) {
                 TopArrowIcon(modifier = Modifier.size(SPACING_LARGE.dp))
             }
+        }
+    }
+
+    AnimatedVisibility(
+        visible = zoomedPhoto != null,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        zoomedPhoto?.let { photo ->
+            ZoomedPhotoOverlay(
+                photo = photo,
+                onClose = {
+                    zoomedPhoto = null
+                }
+            )
         }
     }
 }
@@ -292,6 +307,15 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                 )
             ),
             searchHistory = ArrayDeque(listOf("query", "query2"))
+        ),
+        MainViewState(
+            searchQuery = "query",
+            photoList = emptyList(),
+            searchHistory = ArrayDeque(listOf("query", "query2")),
+            error = ContentErrorConfig(
+                errorTitleRes = ContentErrorConfig.ErrorMessage.Text("Something went wrong"),
+                errorSubTitleRes = ContentErrorConfig.ErrorMessage.Text("Please check something and try again."),
+            ) {}
         )
     )
 }
