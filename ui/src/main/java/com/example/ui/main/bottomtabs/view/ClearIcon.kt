@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun ClearIcon(
+internal fun ClearIcon(
     modifier: Modifier = Modifier,
     tint: Color = LocalContentColor.current
 ) {
