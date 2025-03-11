@@ -11,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -35,11 +34,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.PopupProperties
 import com.example.ui.common.SPACING_LARGE
@@ -157,20 +154,15 @@ internal fun SearchFieldView(
         }
 
         if (shouldShowButton && buttonText != null) {
-            Button(
+            ButtonWithTextView(
                 modifier = Modifier
                     .width(with(density) { textFieldSize.width.toDp() }),
+                buttonText = buttonText,
                 onClick = {
                     doOnSearchRequest(textFieldValue.text)
                     focusManager.clearFocus()
-                },
-            ) {
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = buttonText,
-                    fontSize = 15.sp,
-                )
-            }
+                }
+            )
         }
     }
 
