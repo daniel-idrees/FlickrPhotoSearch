@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.example.ui.common.SPACING_EXTRA_SMALL
 import com.example.ui.common.SPACING_LARGE
@@ -23,8 +23,8 @@ import com.example.ui.common.SPACING_SMALL
 internal fun SearchHistoryItem(
     modifier: Modifier = Modifier,
     searchText: String,
-    onItemClick: () -> Unit,
-    onDeleteIconClick: () -> Unit,
+    onItemClick: () -> Unit = {},
+    onDeleteIconClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier,
@@ -66,4 +66,10 @@ internal fun SearchHistoryItem(
             }
         )
     }
+}
+
+@Composable
+@PreviewLightDark
+private fun SearchHistoryItemPreview(){
+    SearchHistoryItem(searchText = "some text")
 }
