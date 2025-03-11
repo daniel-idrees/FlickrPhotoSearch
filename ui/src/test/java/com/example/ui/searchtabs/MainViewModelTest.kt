@@ -5,6 +5,8 @@ import com.example.domain.PhotoSearchResult
 import com.example.domain.model.PhotoItem
 import com.example.domain.usecase.GetPhotoListUseCase
 import com.example.testfeature.rule.CoroutineTestRule
+import com.example.ui.R
+import com.example.ui.common.content.ContentErrorConfig
 import com.example.ui.main.MainUiEffect
 import com.example.ui.main.MainUiEvent
 import com.example.ui.main.MainViewModel
@@ -23,7 +25,6 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import com.example.ui.R
 
 @RunWith(MockitoJUnitRunner::class)
 internal class MainViewModelTest {
@@ -359,7 +360,7 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `viewState should have relevant updates when photo list is empty in the result when OnSearchRequest triggers search`() =
+    fun `Error config in viewState should have relevant updates when photo list is empty in the result when OnSearchRequest triggers search`() =
         runTest {
             whenever(getPhotoListUseCase(testQuery)).thenReturn(
                 flowOf(
@@ -384,8 +385,8 @@ internal class MainViewModelTest {
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
             subject.viewState.value.error?.let { errorConfig ->
-                errorConfig.errorTitleRes shouldBe R.string.main_view_model_empty_error_title
-                errorConfig.errorSubTitleRes shouldBe R.string.main_view_model_empty_error_sub_title
+                errorConfig.errorTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_empty_error_title)
+                errorConfig.errorSubTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_empty_error_sub_title)
 
                 val capturedRetryFunction = errorConfig.onRetry
 
@@ -398,7 +399,7 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `viewState should have photo list when use case returns success with populated photo list`() =
+    fun `Error config in viewState should have photo list when use case returns success with populated photo list`() =
         runTest {
             whenever(getPhotoListUseCase(testQuery)).thenReturn(
                 flowOf(
@@ -426,7 +427,7 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `viewState should have relevant updates when use case returns generic error`() =
+    fun `Error config in viewState should have relevant updates when use case returns generic error`() =
         runTest {
 
             whenever(getPhotoListUseCase(testQuery)).thenReturn(
@@ -450,8 +451,8 @@ internal class MainViewModelTest {
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
             subject.viewState.value.error?.let { errorConfig ->
-                errorConfig.errorTitleRes shouldBe R.string.main_view_model_generic_error_title
-                errorConfig.errorSubTitleRes shouldBe R.string.main_view_model_generic_error_sub_title
+                errorConfig.errorTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_generic_error_title)
+                errorConfig.errorSubTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_generic_error_sub_title)
 
                 val capturedRetryFunction = errorConfig.onRetry
 
@@ -464,12 +465,12 @@ internal class MainViewModelTest {
         }
 
     @Test
-    fun `viewState should have relevant updates when use case returns no result error`() =
+    fun `Error config in viewState should have relevant updates when use case returns no result error`() =
         runTest {
 
             whenever(getPhotoListUseCase(testQuery)).thenReturn(
                 flowOf(
-                    PhotoSearchResult.Error.SearchFailed
+                    PhotoSearchResult.Error.SearchFailed("search failed")
                 )
             )
 
@@ -488,8 +489,8 @@ internal class MainViewModelTest {
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
             subject.viewState.value.error?.let { errorConfig ->
-                errorConfig.errorTitleRes shouldBe R.string.main_view_model_search_failed_error_title
-                errorConfig.errorSubTitleRes shouldBe R.string.main_view_model_search_failed_error_sub_title
+                errorConfig.errorTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_search_failed_error_title)
+                errorConfig.errorSubTitleRes shouldBe ContentErrorConfig.ErrorMessage.Text("search failed")
 
                 val capturedRetryFunction = errorConfig.onRetry
 
@@ -503,7 +504,7 @@ internal class MainViewModelTest {
 
 
     @Test
-    fun `viewState should have relevant updates when use case returns no internet connection error`() =
+    fun `Error config in viewState should have relevant updates when use case returns no internet connection error`() =
         runTest {
 
             whenever(getPhotoListUseCase(testQuery)).thenReturn(
@@ -527,8 +528,8 @@ internal class MainViewModelTest {
             subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
 
             subject.viewState.value.error?.let { errorConfig ->
-                errorConfig.errorTitleRes shouldBe R.string.main_view_model_no_internet_connection_error_title
-                errorConfig.errorSubTitleRes shouldBe R.string.main_view_model_no_internet_connection_error_sub_title
+                errorConfig.errorTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_no_internet_connection_error_title)
+                errorConfig.errorSubTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_no_internet_connection_error_sub_title)
 
                 val capturedRetryFunction = errorConfig.onRetry
 
@@ -538,6 +539,123 @@ internal class MainViewModelTest {
 
                 subject.viewState.value.searchQuery shouldBe testQuery
             }
+        }
+
+    @Test
+    fun `viewState should have empty photo list when use case returns generic error`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            // when
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
+
+            // then
+
+            subject.viewState.value.photoList shouldBe fakePhotoList
+
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Error.Generic
+                )
+            )
+
+            // when
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
+            subject.viewState.value.photoList shouldBe emptyList()
+        }
+
+    @Test
+    fun `viewState should have empty photo list when use case returns NoInternetConnection error`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            // when
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
+
+            // then
+
+            subject.viewState.value.photoList shouldBe fakePhotoList
+
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Error.NoInternetConnection
+                )
+            )
+
+            // when
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
+            subject.viewState.value.photoList shouldBe emptyList()
+        }
+
+    @Test
+    fun `viewState should have empty photo list when use case returns SearchFailed error`() =
+        runTest {
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Success(
+                        fakePhotoList
+                    )
+                )
+            )
+
+            // when
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
+
+            // then
+
+            subject.viewState.value.photoList shouldBe fakePhotoList
+
+            whenever(getPhotoListUseCase(testQuery)).thenReturn(
+                flowOf(
+                    PhotoSearchResult.Error.SearchFailed("")
+                )
+            )
+
+            // when
+            subject.setEvent(
+                MainUiEvent.OnSearchRequest(
+                    searchQuery = testQuery,
+                    fromScreen = BottomBarScreen.Search
+                )
+            )
+            subject.viewState.value.photoList shouldBe emptyList()
         }
 
     @Test
