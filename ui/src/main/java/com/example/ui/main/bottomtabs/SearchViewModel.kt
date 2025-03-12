@@ -10,8 +10,8 @@ internal class SearchViewModel @Inject constructor() : MviViewModel<SearchUiEven
 
     override fun handleEvents(event: SearchUiEvent) {
         when (event) {
-            SearchUiEvent.ClearZoom -> {
-                setEffect { SearchUiEffect.HidePhotoZoomOverlay }
+            SearchUiEvent.ClearPhotoOverlay -> {
+                setEffect { SearchUiEffect.HidePhotoOverlay }
                 setState {
                     copy(selectedPhoto = null)
                 }
@@ -19,7 +19,7 @@ internal class SearchViewModel @Inject constructor() : MviViewModel<SearchUiEven
 
             is SearchUiEvent.OnPhotoClick -> {
                 setState {
-                    setEffect { SearchUiEffect.ShowPhotoZoomOverlay }
+                    setEffect { SearchUiEffect.ShowPhotoOverlay }
                     copy(selectedPhoto = event.photo)
                 }
             }

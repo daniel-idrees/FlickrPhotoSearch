@@ -5,5 +5,5 @@ import com.example.ui.common.mvi.ViewEvent
 
 internal sealed interface SearchUiEvent : ViewEvent {
     data class OnPhotoClick(val photo: Photo) : SearchUiEvent
-    data object ClearZoom : SearchUiEvent
+    data object ClearPhotoOverlay : SearchUiEvent
 }

@@ -61,7 +61,7 @@ import com.example.ui.main.bottomtabs.view.PhotoListItemView
 import com.example.ui.main.bottomtabs.view.SearchFieldView
 import com.example.ui.main.bottomtabs.view.TextBodyMedium
 import com.example.ui.main.bottomtabs.view.TopArrowIcon
-import com.example.ui.main.bottomtabs.view.ZoomedImageOverlayView
+import com.example.ui.main.bottomtabs.view.ImageOverlayView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -72,13 +72,13 @@ internal fun SearchScreen(
     searchViewModel: SearchViewModel = hiltViewModel()
 ) {
     val searchViewState by searchViewModel.viewState.collectAsStateWithLifecycle()
-    var isPhotoZoomed by rememberSaveable { mutableStateOf(false) }
+    var isPhotoOverlayVisible by rememberSaveable { mutableStateOf(false) }
 
     ContentScreen(
         isLoading = mainViewState.isLoading,
         backPressHandler = {
-            if (isPhotoZoomed) {
-                searchViewModel.setEvent(SearchUiEvent.ClearZoom)
+            if (isPhotoOverlayVisible) {
+                searchViewModel.setEvent(SearchUiEvent.ClearPhotoOverlay)
             } else {
                 mainViewModel.setEvent(MainUiEvent.OnNavigateBackRequest(fromScreen = BottomBarScreen.Search))
             }
@@ -89,7 +89,7 @@ internal fun SearchScreen(
             searchViewState = searchViewState,
             onMainUiEventSend = { mainViewModel.setEvent(it) },
             onSearchUiEventSend = { searchViewModel.setEvent(it) },
-            shouldPhotoBeZoomed = isPhotoZoomed,
+            shouldPhotoOverlayBeVisible = isPhotoOverlayVisible,
             paddingValues = paddingValues
         )
     }
@@ -97,8 +97,8 @@ internal fun SearchScreen(
     LaunchedEffect(Unit) {
         searchViewModel.effect.collect { effect ->
             when (effect) {
-                SearchUiEffect.HidePhotoZoomOverlay -> isPhotoZoomed = false
-                SearchUiEffect.ShowPhotoZoomOverlay -> isPhotoZoomed = true
+                SearchUiEffect.HidePhotoOverlay -> isPhotoOverlayVisible = false
+                SearchUiEffect.ShowPhotoOverlay -> isPhotoOverlayVisible = true
             }
         }
     }
@@ -110,7 +110,7 @@ private fun Content(
     searchViewState: SearchViewState,
     onMainUiEventSend: (MainUiEvent) -> Unit,
     onSearchUiEventSend: (SearchUiEvent) -> Unit,
-    shouldPhotoBeZoomed: Boolean,
+    shouldPhotoOverlayBeVisible: Boolean,
     paddingValues: PaddingValues,
 ) {
     val lazyListState = rememberLazyListState()
@@ -266,15 +266,15 @@ private fun Content(
 
 
     AnimatedVisibility(
-        visible = shouldPhotoBeZoomed,
+        visible = shouldPhotoOverlayBeVisible,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
         searchViewState.selectedPhoto?.let { image ->
-            ZoomedImageOverlayView(
+            ImageOverlayView(
                 imageUrl = image.url,
                 onClose = {
-                    onSearchUiEventSend(SearchUiEvent.ClearZoom)
+                    onSearchUiEventSend(SearchUiEvent.ClearPhotoOverlay)
                 }
             )
         }
@@ -292,7 +292,7 @@ private fun SearchPreview(
             searchViewState = SearchViewState(selectedPhoto = null),
             onSearchUiEventSend = {},
             onMainUiEventSend = {},
-            shouldPhotoBeZoomed = false,
+            shouldPhotoOverlayBeVisible = false,
             paddingValues = PaddingValues(1.dp)
         )
     }

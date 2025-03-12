@@ -24,13 +24,13 @@ internal class SearchViewModelTest {
     }
 
     @Test
-    fun `OnPhotoClick event should trigger ZoomInPhoto effect`() = runTest {
+    fun `OnPhotoClick event should trigger ShowPhotoOverlay effect`() = runTest {
         // when
         subject.setEvent(SearchUiEvent.OnPhotoClick(fakePhoto))
 
         // then
         subject.effect.test {
-            awaitItem() shouldBe SearchUiEffect.ShowPhotoZoomOverlay
+            awaitItem() shouldBe SearchUiEffect.ShowPhotoOverlay
             cancelAndIgnoreRemainingEvents()
 
             subject.viewState.value.selectedPhoto shouldBe fakePhoto
@@ -38,13 +38,13 @@ internal class SearchViewModelTest {
     }
 
     @Test
-    fun `OnPhotoClick event  should trigger ZoomInPhoto effect`() = runTest {
+    fun `ClearPhotoOverlay event should trigger HidePhotoOverlay effect`() = runTest {
         // when
-        subject.setEvent(SearchUiEvent.ClearZoom)
+        subject.setEvent(SearchUiEvent.ClearPhotoOverlay)
 
         // then
         subject.effect.test {
-            awaitItem() shouldBe SearchUiEffect.HidePhotoZoomOverlay
+            awaitItem() shouldBe SearchUiEffect.HidePhotoOverlay
             cancelAndIgnoreRemainingEvents()
 
             subject.viewState.value.selectedPhoto shouldBe null
