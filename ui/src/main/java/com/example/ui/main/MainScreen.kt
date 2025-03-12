@@ -32,8 +32,6 @@ import com.example.ui.main.bottomtabs.screen.HomeScreen
 import com.example.ui.main.bottomtabs.screen.SearchHistoryScreen
 import com.example.ui.main.bottomtabs.screen.SearchScreen
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 
 
 @Composable
@@ -61,8 +59,8 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
             }
             composable(BottomBarScreen.Search.route) {
                 SearchScreen(
-                    viewModel = viewModel,
-                    viewState = state
+                    mainViewModel = viewModel,
+                    mainViewState = state
                 )
             }
             composable(BottomBarScreen.History.route) {
@@ -75,7 +73,7 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     }
 
     LaunchedEffect(Unit) {
-        viewModel.effect.onEach { effect ->
+        viewModel.effect.collect { effect ->
             when (effect) {
                 is MainUiEffect.Navigation.SwitchScreen -> bottomNavigationController.navigate(
                     effect.toScreen.route
@@ -104,7 +102,7 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                     messageRes = effect.errorMessageRes
                 )
             }
-        }.collect()
+        }
     }
 }
 
