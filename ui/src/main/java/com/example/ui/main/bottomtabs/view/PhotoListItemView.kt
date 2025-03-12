@@ -58,15 +58,15 @@ internal fun PhotoListItemView(
     ) {
 
         val configuration = LocalConfiguration.current
+        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         val screenWidth = configuration.screenWidthDp.dp
-        val cardMaxWidth = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
-            screenWidth * 0.4f else screenWidth * 1f
+
         Card(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .background(Color.Transparent)
-                .clickable { onPhotoClick(hasImageLoadedSuccessfully) }
-                .widthIn(max = cardMaxWidth),
+                .then(if (isLandscape) Modifier.widthIn(max = screenWidth * 0.4f) else Modifier)
+                .clickable { onPhotoClick(hasImageLoadedSuccessfully) },
             shape = RoundedCornerShape(SPACING_MEDIUM.dp),
         ) {
 
