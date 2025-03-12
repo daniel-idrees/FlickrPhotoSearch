@@ -2,10 +2,10 @@ package com.example.domain.model
 
 import com.example.data.dto.PhotoItemDto
 
-internal fun List<PhotoItemDto>.toDomainModel(): List<PhotoItem> =
+internal fun List<PhotoItemDto>.toDomainModel(): List<Photo> =
     this.map { photoDto ->
         with(photoDto) {
-            PhotoItem(
+            Photo(
                 title = title,
                 url = generatePhotoUrl(),
                 isPublic = isPublic.toBoolean("isPublic"),

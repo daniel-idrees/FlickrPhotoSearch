@@ -23,21 +23,21 @@ internal class MainViewModel @Inject constructor(
 
     override fun handleEvents(event: MainUiEvent) {
         when (event) {
-            is MainUiEvent.OnSearchRequest -> doOnSearchRequest(event)
-            is MainUiEvent.OnPhotoItemClicked -> {
+            is MainUiEvent.RequestSearch -> doOnSearchRequest(event)
+            is MainUiEvent.OnPhotoClicked -> {
                 // for analytics or detail fetch
             }
 
-            is MainUiEvent.OnBackPressed -> setEffect { MainUiEffect.Navigation.Pop(event.fromScreen) }
-            is MainUiEvent.OnSearchTextChange -> setState {
+            is MainUiEvent.OnNavigateBackRequest -> setEffect { MainUiEffect.Navigation.Pop(event.fromScreen) }
+            is MainUiEvent.OnSearchQueryChange -> setState {
                 copy(
                     error = null,
-                    searchQuery = event.searchQuery
+                    searchQuery = event.query
                 )
             }
 
-            MainUiEvent.OnClearAllButtonClick -> setState { copy(searchHistory = ArrayDeque()) }
-            is MainUiEvent.DeleteFromSearchHistory -> {
+            MainUiEvent.ClearSearchHistory -> setState { copy(searchHistory = ArrayDeque()) }
+            is MainUiEvent.RemoveSearchHistory -> {
                 setState {
                     val newSearchHistory = ArrayDeque(searchHistory).apply {
                         removeAt(event.index)
@@ -48,7 +48,7 @@ internal class MainViewModel @Inject constructor(
                 }
             }
 
-            is MainUiEvent.OnSearchHistoryItemClicked -> {
+            is MainUiEvent.OnSearchHistoryItemSelected -> {
                 if (event.fromScreen != BottomBarScreen.Search) {
                     switchToSearchScreen()
                 }
@@ -57,7 +57,7 @@ internal class MainViewModel @Inject constructor(
         }
     }
 
-    private fun doOnSearchRequest(event: MainUiEvent.OnSearchRequest) {
+    private fun doOnSearchRequest(event: MainUiEvent.RequestSearch) {
         if (event.searchQuery.isEmpty() || event.searchQuery.isBlank()) {
             setEffect {
                 MainUiEffect.ShowEmptyTextError(R.string.main_view_model_empty_text_error_toast_text)

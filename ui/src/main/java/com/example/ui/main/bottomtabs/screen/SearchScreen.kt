@@ -36,7 +36,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.example.domain.model.PhotoItem
+import com.example.domain.model.Photo
 import com.example.ui.R
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
@@ -63,7 +63,7 @@ internal fun SearchScreen(viewModel: MainViewModel, viewState: MainViewState) {
     Content(
         state = viewState,
         onEventSend = { viewModel.setEvent(it) },
-        triggerOnBackPressUiEvent = { viewModel.setEvent(MainUiEvent.OnBackPressed(BottomBarScreen.Search)) }
+        triggerOnBackPressUiEvent = { viewModel.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.Search)) }
     )
 }
 
@@ -80,7 +80,7 @@ private fun Content(
             lazyListState.firstVisibleItemIndex > 5 //show floating button after 5 items
         }
     }
-    var zoomedPhoto by remember { mutableStateOf<PhotoItem?>(null) }
+    var zoomedPhoto by remember { mutableStateOf<Photo?>(null) }
     val isPhotoZoomed = zoomedPhoto != null
 
     ContentScreen(
@@ -137,7 +137,7 @@ private fun Content(
                             searchErrorReceived = state.error != null,
                             doOnSearchRequest = { text ->
                                 onEventSend(
-                                    MainUiEvent.OnSearchRequest(
+                                    MainUiEvent.RequestSearch(
                                         searchQuery = text,
                                         BottomBarScreen.Search
                                     )
@@ -145,7 +145,7 @@ private fun Content(
                             },
                             doOnSearchHistoryDropDownItemClick = { text ->
                                 onEventSend(
-                                    MainUiEvent.OnSearchHistoryItemClicked(
+                                    MainUiEvent.OnSearchHistoryItemSelected(
                                         searchQuery = text,
                                         BottomBarScreen.Home
                                     )
@@ -153,7 +153,7 @@ private fun Content(
                             },
                             doOnSearchTextChange = { text ->
                                 onEventSend(
-                                    MainUiEvent.OnSearchTextChange(
+                                    MainUiEvent.OnSearchQueryChange(
                                         text
                                     )
                                 )
@@ -178,10 +178,10 @@ private fun Content(
                             PhotoListItemView(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                photoItem = photo,
+                                photo = photo,
                                 onPhotoClick = { hasPhotoLoadedSuccessfully ->
                                     onEventSend(
-                                        MainUiEvent.OnPhotoItemClicked(
+                                        MainUiEvent.OnPhotoClicked(
                                             photo
                                         )
                                     )
@@ -211,7 +211,7 @@ private fun Content(
                             LaunchedEffect(isKeyboardOpen) {
                                 delay(300)
                                 if (!isKeyboardOpen) {
-                                    onEventSend(MainUiEvent.OnBackPressed(BottomBarScreen.Search))
+                                    onEventSend(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.Search))
                                 }
                             }
                         }
@@ -273,14 +273,14 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
         MainViewState(
             searchQuery = "query",
             photoList = listOf(
-                PhotoItem(
+                Photo(
                     title = "Photo One",
                     url = "url",
                     isPublic = true,
                     isFriend = true,
                     isFamily = true
                 ),
-                PhotoItem(
+                Photo(
                     title = "Photo One",
                     url = "url",
                     isPublic = true,
@@ -292,7 +292,7 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
         ), MainViewState(
             searchQuery = "query",
             photoList = listOf(
-                PhotoItem(
+                Photo(
                     title = "Photo Two",
                     url = "url",
                     isPublic = false,
@@ -304,7 +304,7 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
         ), MainViewState(
             searchQuery = "query",
             photoList = listOf(
-                PhotoItem(
+                Photo(
                     title = "Photo Three",
                     url = "url",
                     isPublic = false,

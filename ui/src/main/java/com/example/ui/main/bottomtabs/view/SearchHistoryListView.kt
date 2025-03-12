@@ -43,7 +43,7 @@ internal fun SearchHistoryListView(
                 .fillMaxWidth(),
             buttonText = stringResource(R.string.search_history_clear_all_button_text),
             onClick = {
-                onEventSend(MainUiEvent.OnClearAllButtonClick)
+                onEventSend(MainUiEvent.ClearSearchHistory)
             }
         )
 
@@ -64,13 +64,13 @@ internal fun SearchHistoryListView(
                     searchText = searchText,
                     onItemClick = {
                         onEventSend(
-                            MainUiEvent.OnSearchHistoryItemClicked(
+                            MainUiEvent.OnSearchHistoryItemSelected(
                                 searchText,
                                 fromScreen
                             )
                         )
                     },
-                    onDeleteIconClick = { onEventSend(MainUiEvent.DeleteFromSearchHistory(index)) }
+                    onDeleteIconClick = { onEventSend(MainUiEvent.RemoveSearchHistory(index)) }
                 )
             }
         }

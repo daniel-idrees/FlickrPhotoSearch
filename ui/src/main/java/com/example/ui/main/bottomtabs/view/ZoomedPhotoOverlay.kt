@@ -20,13 +20,13 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.example.domain.model.PhotoItem
+import com.example.domain.model.Photo
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.SPACING_SMALL
 
 @Composable
 internal fun ZoomedPhotoOverlay(
-    photo: PhotoItem,
+    photo: Photo,
     onClose: () -> Unit
 ) {
     val context = LocalContext.current

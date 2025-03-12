@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.example.domain.model.PhotoItem
+import com.example.domain.model.Photo
 import com.example.ui.R
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.content.ContentScreen
@@ -35,7 +35,7 @@ internal fun HomeScreen(
 ) {
     ContentScreen(
         isLoading = viewState.isLoading,
-        backPressHandler = { viewModel.setEvent(MainUiEvent.OnBackPressed(BottomBarScreen.Home)) }
+        backPressHandler = { viewModel.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.Home)) }
     ) { paddingValues ->
         Content(
             state = viewState,
@@ -80,7 +80,7 @@ private fun Content(
             searchErrorReceived = state.error != null,
             doOnSearchRequest = { text ->
                 onEventSend(
-                    MainUiEvent.OnSearchRequest(
+                    MainUiEvent.RequestSearch(
                         searchQuery = text,
                         BottomBarScreen.Home
                     )
@@ -88,13 +88,13 @@ private fun Content(
             },
             doOnSearchHistoryDropDownItemClick = { text ->
                 onEventSend(
-                    MainUiEvent.OnSearchHistoryItemClicked(
+                    MainUiEvent.OnSearchHistoryItemSelected(
                         searchQuery = text,
                         BottomBarScreen.Home
                     )
                 )
             },
-            doOnSearchTextChange = { text -> onEventSend(MainUiEvent.OnSearchTextChange(text)) }
+            doOnSearchTextChange = { text -> onEventSend(MainUiEvent.OnSearchQueryChange(text)) }
         )
     }
 }
@@ -126,14 +126,14 @@ private class HomePreviewParameterProvider : PreviewParameterProvider<MainViewSt
             error = null,
             searchQuery = "query",
             photoList = listOf(
-                PhotoItem(
+                Photo(
                     title = "Photo One",
                     url = "url",
                     isPublic = true,
                     isFriend = true,
                     isFamily = true
                 ),
-                PhotoItem(
+                Photo(
                     title = "Photo Two",
                     url = "url",
                     isPublic = true,

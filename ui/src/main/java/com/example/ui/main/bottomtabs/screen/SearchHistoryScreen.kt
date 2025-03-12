@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.example.domain.model.PhotoItem
+import com.example.domain.model.Photo
 import com.example.ui.R
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.content.ContentScreen
@@ -33,7 +33,7 @@ import com.example.ui.main.bottomtabs.view.SearchHistoryListView
 internal fun SearchHistoryScreen(viewModel: MainViewModel, viewState: MainViewState) {
     ContentScreen(
         isLoading = viewState.isLoading,
-        backPressHandler = { viewModel.setEvent(MainUiEvent.OnBackPressed(BottomBarScreen.History)) }
+        backPressHandler = { viewModel.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.History)) }
     ) { paddingValues ->
         Content(
             state = viewState,
@@ -104,7 +104,7 @@ private class SearchHistoryPreviewParameterProvider : PreviewParameterProvider<M
             searchQuery = "query",
             searchResultTitleRes = R.string.main_view_model_success_result_title,
             photoList = listOf(
-                PhotoItem(
+                Photo(
                     title = "Photo One",
                     url = "url",
                     isPublic = false,

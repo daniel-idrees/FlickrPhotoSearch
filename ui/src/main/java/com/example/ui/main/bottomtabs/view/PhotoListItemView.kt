@@ -35,7 +35,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.crossfade
-import com.example.domain.model.PhotoItem
+import com.example.domain.model.Photo
 import com.example.ui.R
 import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_LARGE
@@ -46,7 +46,7 @@ import com.example.ui.common.theme.FlickrPhotoSearchTheme
 @Composable
 internal fun PhotoListItemView(
     modifier: Modifier = Modifier,
-    photoItem: PhotoItem,
+    photo: Photo,
     onPhotoClick: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
@@ -72,7 +72,7 @@ internal fun PhotoListItemView(
 
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data(photoItem.url)
+                    .data(photo.url)
                     .crossfade(true)
                     .listener(object : EventListener() {
                         override fun onSuccess(request: ImageRequest, result: SuccessResult) {
@@ -90,7 +90,7 @@ internal fun PhotoListItemView(
         }
 
         TextBodyMedium(
-            text = photoItem.title,
+            text = photo.title,
         )
 
         Row(
@@ -100,15 +100,15 @@ internal fun PhotoListItemView(
             verticalAlignment = Alignment.CenterVertically
         ) {
             val iconModifier = Modifier.size(SPACING_LARGE.dp)
-            if (photoItem.isPublic) {
+            if (photo.isPublic) {
                 PublicIconImage(modifier = iconModifier)
             } else {
                 PrivateIconImage(modifier = iconModifier)
             }
-            if (photoItem.isFriend) {
+            if (photo.isFriend) {
                 FriendsIconImage(modifier = iconModifier)
             }
-            if (photoItem.isFamily) {
+            if (photo.isFamily) {
                 FamilyIconImage(modifier = iconModifier)
             }
         }
@@ -126,7 +126,7 @@ internal fun PhotoListItemView(
 @Composable
 private fun PhotoListItemWithAllIconsPreview() {
     PhotoListItemView(
-        photoItem = PhotoItem(
+        photo = Photo(
             title = "Photo title",
             url = " https://farm66.staticflickr.com/65535/54375913088_62172768d8.jpg",
             isPublic = true,
@@ -142,7 +142,7 @@ private fun PhotoListItemWithAllIconsPreview() {
 private fun PhotoListItemWithFriendPreview() {
     FlickrPhotoSearchTheme {
         PhotoListItemView(
-            photoItem = PhotoItem(
+            photo = Photo(
                 title = "Photo title",
                 url = " https://farm66.staticflickr.com/65535/54375913088_62172768d8.jpg",
                 isPublic = false,

@@ -1,16 +1,15 @@
 package com.example.ui.main
 
-import com.example.domain.model.PhotoItem
+import com.example.domain.model.Photo
 import com.example.ui.common.mvi.ViewEvent
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 
 internal sealed interface MainUiEvent : ViewEvent {
-    data class OnBackPressed(val fromScreen: BottomBarScreen) : MainUiEvent
-    data object OnClearAllButtonClick : MainUiEvent
-    data class OnSearchRequest(val searchQuery: String, val fromScreen: BottomBarScreen) : MainUiEvent
-    data class OnPhotoItemClicked(val photoItem: PhotoItem) : MainUiEvent
-    data class OnSearchTextChange(val searchQuery: String) :
-        MainUiEvent
-    data class DeleteFromSearchHistory(val index: Int) : MainUiEvent
-    data class OnSearchHistoryItemClicked(val searchQuery: String, val fromScreen: BottomBarScreen) : MainUiEvent
+    data class OnNavigateBackRequest(val fromScreen: BottomBarScreen) : MainUiEvent
+    data object ClearSearchHistory : MainUiEvent
+    data class RequestSearch(val searchQuery: String, val fromScreen: BottomBarScreen) : MainUiEvent
+    data class OnPhotoClicked(val photo: Photo) : MainUiEvent
+    data class OnSearchQueryChange(val query: String) : MainUiEvent
+    data class RemoveSearchHistory(val index: Int) : MainUiEvent
+    data class OnSearchHistoryItemSelected(val searchQuery: String, val fromScreen: BottomBarScreen) : MainUiEvent
 }

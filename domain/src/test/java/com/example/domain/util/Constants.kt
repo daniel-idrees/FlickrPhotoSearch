@@ -1,7 +1,7 @@
 package com.example.domain.util
 
 import com.example.data.dto.PhotoItemDto
-import com.example.domain.model.PhotoItem
+import com.example.domain.model.Photo
 import com.example.testfeature.util.fakeFirstPhotoFarm
 import com.example.testfeature.util.fakeFirstPhotoId
 import com.example.testfeature.util.fakeFirstPhotoOwner
@@ -59,7 +59,7 @@ val fakePhotoDtoList = listOf(fakeFirstPhotoItemDto, fakeSecondPhotoItemDto)
 
 val fakePhotoList = fakePhotoDtoList.map { photoDto ->
     with(photoDto) {
-        PhotoItem(
+        Photo(
             title = title,
             url = "https://farm$farm.staticflickr.com/$server/${id}_$secret.jpg",
             isPublic = isPublic == 1,
