@@ -50,7 +50,7 @@ internal fun SearchHistoryItem(
                 horizontalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                PastIcon(modifier = Modifier.size(SPACING_LARGE.dp))
+                PastIconImageView(modifier = Modifier.size(SPACING_LARGE.dp))
 
                 TextBodyMedium(
                     text = searchText,

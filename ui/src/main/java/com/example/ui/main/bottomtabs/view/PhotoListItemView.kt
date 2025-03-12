@@ -101,15 +101,15 @@ internal fun PhotoListItemView(
         ) {
             val iconModifier = Modifier.size(SPACING_LARGE.dp)
             if (photo.isPublic) {
-                PublicIconImage(modifier = iconModifier)
+                PublicIconImageView(modifier = iconModifier)
             } else {
-                PrivateIconImage(modifier = iconModifier)
+                PrivateIconImageView(modifier = iconModifier)
             }
             if (photo.isFriend) {
-                FriendsIconImage(modifier = iconModifier)
+                FriendsIconImageView(modifier = iconModifier)
             }
             if (photo.isFamily) {
-                FamilyIconImage(modifier = iconModifier)
+                FamilyIconImageView(modifier = iconModifier)
             }
         }
 

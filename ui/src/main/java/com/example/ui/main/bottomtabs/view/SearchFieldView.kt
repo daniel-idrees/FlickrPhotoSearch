@@ -127,7 +127,7 @@ internal fun SearchFieldView(
 
                         DropdownMenuItem(
                             leadingIcon = {
-                                PastIcon(modifier = Modifier.size(SPACING_LARGE.dp))
+                                PastIconImageView(modifier = Modifier.size(SPACING_LARGE.dp))
                             },
                             trailingIcon = {
                                 TopLeftArrowIcon(

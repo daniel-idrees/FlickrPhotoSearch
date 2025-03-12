@@ -54,7 +54,7 @@ import com.example.ui.main.bottomtabs.view.PhotoListItemView
 import com.example.ui.main.bottomtabs.view.SearchFieldView
 import com.example.ui.main.bottomtabs.view.TextBodyMedium
 import com.example.ui.main.bottomtabs.view.TopArrowIcon
-import com.example.ui.main.bottomtabs.view.ZoomedPhotoOverlay
+import com.example.ui.main.bottomtabs.view.ZoomedPhotoOverlayView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -240,7 +240,7 @@ private fun Content(
             exit = fadeOut()
         ) {
             zoomedPhoto?.let { photo ->
-                ZoomedPhotoOverlay(
+                ZoomedPhotoOverlayView(
                     photo = photo,
                     onClose = {
                         zoomedPhoto = null
