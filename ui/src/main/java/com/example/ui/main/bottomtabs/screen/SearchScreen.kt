@@ -63,7 +63,13 @@ internal fun SearchScreen(viewModel: MainViewModel, viewState: MainViewState) {
     Content(
         state = viewState,
         onEventSend = { viewModel.setEvent(it) },
-        triggerOnBackPressUiEvent = { viewModel.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.Search)) }
+        triggerOnBackPressUiEvent = {
+            viewModel.setEvent(
+                MainUiEvent.OnNavigateBackRequest(
+                    BottomBarScreen.Search
+                )
+            )
+        }
     )
 }
 
@@ -157,6 +163,9 @@ private fun Content(
                                         text
                                     )
                                 )
+                            },
+                            doOnClearHistoryClick = { index ->
+                                onEventSend(MainUiEvent.RemoveSearchHistory(index))
                             }
                         )
                     }
@@ -266,7 +275,7 @@ private fun SearchPreview(
 }
 
 private class SearchPreviewParameterProvider : PreviewParameterProvider<MainViewState> {
-    val viewState =  MainViewState(
+    val viewState = MainViewState(
         photoList = emptyList(),
         searchHistory = ArrayDeque(),
         isLoading = false,
@@ -275,7 +284,7 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
         lastSearch = "",
         searchResultTitleRes = 0
     )
-    
+
     override val values = sequenceOf(
         viewState,
         viewState.copy(searchQuery = "query"),

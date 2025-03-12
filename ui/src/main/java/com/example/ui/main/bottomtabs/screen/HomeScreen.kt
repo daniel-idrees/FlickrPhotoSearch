@@ -94,7 +94,10 @@ private fun Content(
                     )
                 )
             },
-            doOnSearchTextChange = { text -> onEventSend(MainUiEvent.OnSearchQueryChange(text)) }
+            doOnSearchTextChange = { text -> onEventSend(MainUiEvent.OnSearchQueryChange(text)) },
+            doOnClearHistoryClick = { index ->
+                onEventSend(MainUiEvent.RemoveSearchHistory(index))
+            }
         )
     }
 }

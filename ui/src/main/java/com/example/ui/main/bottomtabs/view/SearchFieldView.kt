@@ -47,9 +47,10 @@ internal fun SearchFieldView(
     buttonText: String? = null,
     shouldHaveFocus: Boolean = false,
     searchErrorReceived: Boolean = false,
-    doOnSearchTextChange: (String) -> Unit = {},
-    doOnSearchRequest: (String) -> Unit,
-    doOnSearchHistoryDropDownItemClick: (String) -> Unit = {}
+    doOnSearchTextChange: (updatedQuery: String) -> Unit = {},
+    doOnSearchRequest: (query: String) -> Unit,
+    doOnSearchHistoryDropDownItemClick: (query: String) -> Unit = {},
+    doOnClearHistoryClick: ((index: Int) -> Unit)? = null
 ) {
     val shouldShowButton = !buttonText.isNullOrEmpty()
 
@@ -130,10 +131,20 @@ internal fun SearchFieldView(
                                 PastIconImageView(modifier = Modifier.size(SPACING_LARGE.dp))
                             },
                             trailingIcon = {
-                                TopLeftArrowIcon(
-                                    modifier = Modifier
-                                        .size(SPACING_LARGE.dp)
-                                )
+                                if (doOnClearHistoryClick != null) {
+                                    ClearIcon(
+                                        modifier = Modifier
+                                            .size(SPACING_LARGE.dp)
+                                            .clickable {
+                                                doOnClearHistoryClick(index)
+                                            }
+                                    )
+                                } else {
+                                    TopLeftArrowIcon(
+                                        modifier = Modifier
+                                            .size(SPACING_LARGE.dp)
+                                    )
+                                }
                             },
                             text = { Text(text = suggestion) },
                             onClick = {
