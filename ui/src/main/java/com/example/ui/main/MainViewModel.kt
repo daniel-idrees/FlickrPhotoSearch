@@ -53,6 +53,11 @@ internal class MainViewModel @Inject constructor(
                 if (event.fromScreen != BottomBarScreen.Search) {
                     switchToSearchScreen()
                 }
+                setState {
+                    copy(
+                        searchQuery = event.searchQuery
+                    )
+                }
                 search(searchQuery = event.searchQuery)
             }
         }
