@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,7 +55,7 @@ import com.example.ui.main.bottomtabs.view.PhotoListItemView
 import com.example.ui.main.bottomtabs.view.SearchFieldView
 import com.example.ui.main.bottomtabs.view.TextBodyMedium
 import com.example.ui.main.bottomtabs.view.TopArrowIcon
-import com.example.ui.main.bottomtabs.view.ZoomedPhotoOverlayView
+import com.example.ui.main.bottomtabs.view.ZoomedImageOverlayView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -86,14 +87,14 @@ private fun Content(
             lazyListState.firstVisibleItemIndex > 5 //show floating button after 5 items
         }
     }
-    var zoomedPhoto by remember { mutableStateOf<Photo?>(null) }
-    val isPhotoZoomed = zoomedPhoto != null
+    var zoomedPhotoUrl by rememberSaveable { mutableStateOf<String?>(null) }
+    val isPhotoZoomed = zoomedPhotoUrl != null
 
     ContentScreen(
         isLoading = state.isLoading,
         backPressHandler = {
             if (isPhotoZoomed) {
-                zoomedPhoto = null   //hide zoomed photo if visible when back pressed
+                zoomedPhotoUrl = null   //hide zoomed photo if visible when back pressed
             } else {
                 triggerOnBackPressUiEvent()
             }
@@ -195,7 +196,7 @@ private fun Content(
                                         )
                                     )
                                     if (hasPhotoLoadedSuccessfully) {
-                                        zoomedPhoto = photo
+                                        zoomedPhotoUrl = photo.url
                                     }
                                 }
                             )
@@ -244,15 +245,15 @@ private fun Content(
         }
 
         AnimatedVisibility(
-            visible = zoomedPhoto != null,
+            visible = zoomedPhotoUrl != null,
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            zoomedPhoto?.let { photo ->
-                ZoomedPhotoOverlayView(
-                    photo = photo,
+            zoomedPhotoUrl?.let { imageUrl ->
+                ZoomedImageOverlayView(
+                    imageUrl = imageUrl,
                     onClose = {
-                        zoomedPhoto = null
+                        zoomedPhotoUrl = null
                     }
                 )
             }
