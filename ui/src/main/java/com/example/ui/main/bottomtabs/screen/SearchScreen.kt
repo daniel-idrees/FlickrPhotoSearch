@@ -266,11 +266,21 @@ private fun SearchPreview(
 }
 
 private class SearchPreviewParameterProvider : PreviewParameterProvider<MainViewState> {
+    val viewState =  MainViewState(
+        photoList = emptyList(),
+        searchHistory = ArrayDeque(),
+        isLoading = false,
+        error = null,
+        searchQuery = "",
+        lastSearch = "",
+        searchResultTitleRes = 0
+    )
+    
     override val values = sequenceOf(
-        MainViewState(),
-        MainViewState(searchQuery = "query"),
-        MainViewState(isLoading = true),
-        MainViewState(
+        viewState,
+        viewState.copy(searchQuery = "query"),
+        viewState.copy(isLoading = true),
+        viewState.copy(
             searchQuery = "query",
             photoList = listOf(
                 Photo(
@@ -288,8 +298,8 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                     isFamily = true
                 )
             ),
-            searchHistory = ArrayDeque(listOf("query", "query2"))
-        ), MainViewState(
+            searchHistory = ArrayDeque(listOf("query", "query2")),
+        ), viewState.copy(
             searchQuery = "query",
             photoList = listOf(
                 Photo(
@@ -300,8 +310,8 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                     isFamily = false
                 )
             ),
-            searchHistory = ArrayDeque(listOf("query", "query2"))
-        ), MainViewState(
+            searchHistory = ArrayDeque(listOf("query", "query2")),
+        ), viewState.copy(
             searchQuery = "query",
             photoList = listOf(
                 Photo(
@@ -314,7 +324,7 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
             ),
             searchHistory = ArrayDeque(listOf("query", "query2"))
         ),
-        MainViewState(
+        viewState.copy(
             searchQuery = "query",
             photoList = emptyList(),
             searchHistory = ArrayDeque(listOf("query", "query2")),

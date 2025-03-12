@@ -119,11 +119,19 @@ private fun HomePreview(
 
 
 private class HomePreviewParameterProvider : PreviewParameterProvider<MainViewState> {
+    val viewState = MainViewState(
+        photoList = emptyList(),
+        searchHistory = ArrayDeque(),
+        isLoading = false,
+        error = null,
+        searchQuery = "",
+        lastSearch = "",
+        searchResultTitleRes = 0
+    )
+
     override val values = sequenceOf(
-        MainViewState(),
-        MainViewState(
-            isLoading = false,
-            error = null,
+        viewState,
+        viewState.copy(
             searchQuery = "query",
             photoList = listOf(
                 Photo(
@@ -141,7 +149,6 @@ private class HomePreviewParameterProvider : PreviewParameterProvider<MainViewSt
                     isFamily = true
                 )
             ),
-            searchHistory = ArrayDeque()
         ),
     )
 }

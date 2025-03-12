@@ -18,7 +18,12 @@ internal class MainViewModel @Inject constructor(
 
     override fun setInitialState(): MainViewState = MainViewState(
         isLoading = false,
-        error = null
+        error = null,
+        searchQuery = "",
+        lastSearch = "",
+        photoList = emptyList(),
+        searchResultTitleRes = 0,
+        searchHistory = ArrayDeque()
     )
 
     override fun handleEvents(event: MainUiEvent) {

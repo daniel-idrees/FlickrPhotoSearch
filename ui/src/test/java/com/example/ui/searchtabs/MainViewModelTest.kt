@@ -42,6 +42,11 @@ internal class MainViewModelTest {
     fun `Initial state should be set correctly`() = runTest {
         subject.viewState.value.isLoading shouldBe false
         subject.viewState.value.error shouldBe null
+        subject.viewState.value.searchQuery shouldBe ""
+        subject.viewState.value.lastSearch shouldBe ""
+        subject.viewState.value.photoList shouldBe emptyList()
+        subject.viewState.value.searchResultTitleRes shouldBe 0
+        subject.viewState.value.searchHistory shouldBe ArrayDeque()
     }
 
     @Test

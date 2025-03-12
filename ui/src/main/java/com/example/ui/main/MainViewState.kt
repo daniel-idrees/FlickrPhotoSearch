@@ -7,10 +7,10 @@ import com.example.ui.common.mvi.ViewState
 
 internal data class MainViewState(
     val isLoading: Boolean = false,
-    val error: ContentErrorConfig? = null,
-    val searchQuery: String = "",
-    val lastSearch: String = "",
-    val photoList: List<Photo> = emptyList(),
-    @StringRes val searchResultTitleRes : Int = 0,
-    val searchHistory: ArrayDeque<String> = ArrayDeque(),
+    val error: ContentErrorConfig? ,
+    val searchQuery: String ,
+    val lastSearch: String ,
+    val photoList: List<Photo>,
+    @StringRes val searchResultTitleRes : Int ,
+    val searchHistory: ArrayDeque<String>,
 ) : ViewState
