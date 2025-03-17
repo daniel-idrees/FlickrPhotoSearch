@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -17,6 +18,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.domain.model.Photo
 import com.example.ui.R
 import com.example.ui.common.SPACING_MEDIUM
@@ -30,13 +32,15 @@ import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 import com.example.ui.main.bottomtabs.view.SearchHistoryListView
 
 @Composable
-internal fun SearchHistoryScreen(viewModel: MainViewModel, viewState: MainViewState) {
+internal fun SearchHistoryScreen(viewModel: MainViewModel) {
+    val viewState by viewModel.viewState.collectAsStateWithLifecycle()
+
     ContentScreen(
         isLoading = viewState.isLoading,
         backPressHandler = { viewModel.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.History)) }
     ) { paddingValues ->
         Content(
-            state = viewState,
+            searchHistory = viewState.searchHistory,
             onEventSend = { viewModel.setEvent(it) },
             paddingValues = paddingValues
         )
@@ -45,13 +49,10 @@ internal fun SearchHistoryScreen(viewModel: MainViewModel, viewState: MainViewSt
 
 @Composable
 private fun Content(
-    state: MainViewState,
+    searchHistory: List<String>,
     onEventSend: (MainUiEvent) -> Unit,
     paddingValues: PaddingValues,
 ) {
-
-    val searchHistory = state.searchHistory
-
     Column(
         verticalArrangement = Arrangement.spacedBy(SPACING_MEDIUM.dp),
         modifier = Modifier
@@ -81,7 +82,7 @@ private fun Content(
 @PreviewLightDark
 @Composable
 private fun SearchHistoryPreview(
-    @PreviewParameter(SearchHistoryPreviewParameterProvider::class) viewState: MainViewState
+    @PreviewParameter(SearchHistoryPreviewParameterProvider::class) viewState: MainViewState,
 ) {
     FlickrPhotoSearchTheme {
         ContentScreen(
@@ -89,7 +90,7 @@ private fun SearchHistoryPreview(
             backPressHandler = { }
         ) {
             Content(
-                state = viewState,
+                searchHistory = viewState.searchHistory,
                 onEventSend = {},
                 paddingValues = PaddingValues(1.dp),
             )

@@ -38,7 +38,6 @@ import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val bottomNavigationController = rememberNavController()
-    val state by viewModel.viewState.collectAsStateWithLifecycle()
 
     Scaffold(
         bottomBar = { BottomNavigationBar(bottomNavigationController) }
@@ -53,20 +52,17 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
         ) {
             composable(BottomBarScreen.Home.route) {
                 HomeScreen(
-                    viewModel = viewModel,
-                    viewState = state
+                    viewModel = viewModel
                 )
             }
             composable(BottomBarScreen.Search.route) {
                 SearchScreen(
-                    mainViewModel = viewModel,
-                    mainViewState = state
+                    mainViewModel = viewModel
                 )
             }
             composable(BottomBarScreen.History.route) {
                 SearchHistoryScreen(
-                    viewModel = viewModel,
-                    viewState = state
+                    viewModel = viewModel
                 )
             }
         }

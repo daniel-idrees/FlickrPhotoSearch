@@ -20,7 +20,7 @@ import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 @Composable
 internal fun SearchHistoryListView(
     modifier: Modifier = Modifier,
-    searchHistory: ArrayDeque<String>,
+    searchHistory: List<String>,
     fromScreen: BottomBarScreen,
     onEventSend: (MainUiEvent) -> Unit,
 ) {
