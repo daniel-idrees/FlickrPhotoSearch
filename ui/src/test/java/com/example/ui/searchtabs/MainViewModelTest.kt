@@ -46,7 +46,7 @@ internal class MainViewModelTest {
         subject.viewState.value.lastSearch shouldBe ""
         subject.viewState.value.photoList shouldBe emptyList()
         subject.viewState.value.searchResultTitleRes shouldBe 0
-        subject.viewState.value.searchHistory shouldBe ArrayDeque()
+        subject.viewState.value.searchHistory shouldBe emptyList()
     }
 
     @Test
@@ -99,12 +99,12 @@ internal class MainViewModelTest {
         // when
         subject.setEvent(MainUiEvent.RequestSearch(testQuery, BottomBarScreen.History))
         // then
-        subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
+        subject.viewState.value.searchHistory shouldBe listOf(testQuery)
 
         // when
         subject.setEvent(MainUiEvent.ClearSearchHistory)
         // then
-        subject.viewState.value.searchHistory shouldBe ArrayDeque()
+        subject.viewState.value.searchHistory shouldBe emptyList()
     }
 
     @Test
@@ -249,16 +249,15 @@ internal class MainViewModelTest {
         // when
         subject.setEvent(MainUiEvent.RequestSearch(testQuery, BottomBarScreen.History))
         subject.setEvent(MainUiEvent.RequestSearch(anotherTestQuery, BottomBarScreen.History))
-        subject.viewState.value.searchHistory shouldBe ArrayDeque(
-            listOf(
-                anotherTestQuery,
-                testQuery
-            )
+        subject.viewState.value.searchHistory shouldBe listOf(
+            anotherTestQuery,
+            testQuery
         )
+
         subject.setEvent(MainUiEvent.RemoveSearchHistory(0))
 
         // then
-        subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
+        subject.viewState.value.searchHistory shouldBe listOf(testQuery)
     }
 
     @Test
@@ -430,7 +429,7 @@ internal class MainViewModelTest {
             subject.viewState.value.lastSearch shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList<Photo>()
             subject.viewState.value.isLoading shouldBe false
-            subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
+            subject.viewState.value.searchHistory shouldBe listOf(testQuery)
 
             subject.viewState.value.error?.let { errorConfig ->
                 errorConfig.errorTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_empty_error_title)
@@ -471,7 +470,7 @@ internal class MainViewModelTest {
             subject.viewState.value.error shouldBe null
             subject.viewState.value.isLoading shouldBe false
             subject.viewState.value.searchResultTitleRes shouldBe R.string.main_view_model_success_result_title
-            subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
+            subject.viewState.value.searchHistory shouldBe listOf(testQuery)
         }
 
     @Test
@@ -496,7 +495,7 @@ internal class MainViewModelTest {
             subject.viewState.value.lastSearch shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
-            subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
+            subject.viewState.value.searchHistory shouldBe listOf(testQuery)
 
             subject.viewState.value.error?.let { errorConfig ->
                 errorConfig.errorTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_generic_error_title)
@@ -509,12 +508,11 @@ internal class MainViewModelTest {
                 capturedRetryFunction?.invoke()
 
                 subject.viewState.value.lastSearch shouldBe testQuery
-                subject.viewState.value.searchHistory shouldBe ArrayDeque(
-                    listOf(
-                        testQuery,
-                        testQuery
-                    )
+                subject.viewState.value.searchHistory shouldBe listOf(
+                    testQuery,
+                    testQuery
                 )
+
             }
         }
 
@@ -540,7 +538,7 @@ internal class MainViewModelTest {
             subject.viewState.value.lastSearch shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
-            subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
+            subject.viewState.value.searchHistory shouldBe listOf(testQuery)
 
             subject.viewState.value.error?.let { errorConfig ->
                 errorConfig.errorTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_search_failed_error_title)
@@ -553,11 +551,9 @@ internal class MainViewModelTest {
                 capturedRetryFunction?.invoke()
 
                 subject.viewState.value.lastSearch shouldBe testQuery
-                subject.viewState.value.searchHistory shouldBe ArrayDeque(
-                    listOf(
-                        testQuery,
-                        testQuery
-                    )
+                subject.viewState.value.searchHistory shouldBe listOf(
+                    testQuery,
+                    testQuery
                 )
             }
         }
@@ -585,7 +581,7 @@ internal class MainViewModelTest {
             subject.viewState.value.lastSearch shouldBe testQuery
             subject.viewState.value.photoList shouldBe emptyList()
             subject.viewState.value.isLoading shouldBe false
-            subject.viewState.value.searchHistory shouldBe ArrayDeque(listOf(testQuery))
+            subject.viewState.value.searchHistory shouldBe listOf(testQuery)
 
             subject.viewState.value.error?.let { errorConfig ->
                 errorConfig.errorTitleRes shouldBe ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_no_internet_connection_error_title)
@@ -598,11 +594,9 @@ internal class MainViewModelTest {
                 capturedRetryFunction?.invoke()
 
                 subject.viewState.value.lastSearch shouldBe testQuery
-                subject.viewState.value.searchHistory shouldBe ArrayDeque(
-                    listOf(
-                        testQuery,
-                        testQuery
-                    )
+                subject.viewState.value.searchHistory shouldBe listOf(
+                    testQuery,
+                    testQuery
                 )
             }
         }
@@ -749,11 +743,9 @@ internal class MainViewModelTest {
             subject.setEvent(MainUiEvent.RequestSearch(anotherTestQuery, BottomBarScreen.Search))
 
             // then
-            subject.viewState.value.searchHistory shouldBe ArrayDeque(
-                listOf(
-                    anotherTestQuery,
-                    testQuery
-                )
+            subject.viewState.value.searchHistory shouldBe listOf(
+                anotherTestQuery,
+                testQuery
             )
         }
 }

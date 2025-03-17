@@ -133,7 +133,7 @@ private fun HomePreview(
 private class HomePreviewParameterProvider : PreviewParameterProvider<MainViewState> {
     val viewState = MainViewState(
         photoList = emptyList(),
-        searchHistory = ArrayDeque(),
+        searchHistory = emptyList(),
         isLoading = false,
         error = null,
         searchQuery = "",

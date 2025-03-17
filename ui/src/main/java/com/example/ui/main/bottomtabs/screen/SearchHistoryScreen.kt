@@ -102,7 +102,7 @@ private fun SearchHistoryPreview(
 private class SearchHistoryPreviewParameterProvider : PreviewParameterProvider<MainViewState> {
     val viewState = MainViewState(
         photoList = emptyList(),
-        searchHistory = ArrayDeque(),
+        searchHistory = emptyList(),
         isLoading = false,
         error = null,
         searchQuery = "",
@@ -124,7 +124,7 @@ private class SearchHistoryPreviewParameterProvider : PreviewParameterProvider<M
                     isFamily = false
                 )
             ),
-            searchHistory = ArrayDeque(listOf("test1", "test2")),
+            searchHistory = listOf("test1", "test2"),
         ),
     )
 }

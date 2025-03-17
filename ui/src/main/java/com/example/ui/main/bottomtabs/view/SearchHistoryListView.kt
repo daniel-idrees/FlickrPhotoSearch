@@ -81,7 +81,7 @@ internal fun SearchHistoryListView(
 @PreviewLightDark
 private fun SearchHistoryListViewPreview() {
     SearchHistoryListView(
-        searchHistory = ArrayDeque(listOf("text1", "text2")),
+        searchHistory = listOf("text1", "text2"),
         fromScreen = BottomBarScreen.History,
         onEventSend = {}
     )
@@ -91,7 +91,7 @@ private fun SearchHistoryListViewPreview() {
 @PreviewLightDark
 private fun SearchHistoryListViewEmptyPreview() {
     SearchHistoryListView(
-        searchHistory = ArrayDeque(),
+        searchHistory = emptyList(),
         fromScreen = BottomBarScreen.History,
         onEventSend = {}
     )

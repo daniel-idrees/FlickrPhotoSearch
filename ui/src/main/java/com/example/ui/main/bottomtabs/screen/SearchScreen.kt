@@ -319,7 +319,7 @@ private fun SearchPreview(
 private class SearchPreviewParameterProvider : PreviewParameterProvider<MainViewState> {
     val viewState = MainViewState(
         photoList = emptyList(),
-        searchHistory = ArrayDeque(),
+        searchHistory = emptyList(),
         isLoading = false,
         error = null,
         searchQuery = "",
@@ -349,7 +349,7 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                     isFamily = true
                 )
             ),
-            searchHistory = ArrayDeque(listOf("query", "query2")),
+            searchHistory = listOf("query", "query2"),
         ), viewState.copy(
             searchQuery = "query",
             photoList = listOf(
@@ -361,7 +361,7 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                     isFamily = false
                 )
             ),
-            searchHistory = ArrayDeque(listOf("query", "query2")),
+            searchHistory = listOf("query", "query2"),
         ), viewState.copy(
             searchQuery = "query",
             photoList = listOf(
@@ -373,12 +373,12 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                     isFamily = false
                 )
             ),
-            searchHistory = ArrayDeque(listOf("query", "query2"))
+            searchHistory = listOf("query", "query2")
         ),
         viewState.copy(
             searchQuery = "query",
             photoList = emptyList(),
-            searchHistory = ArrayDeque(listOf("query", "query2")),
+            searchHistory = listOf("query", "query2"),
             error = ContentErrorConfig(
                 errorTitleRes = ContentErrorConfig.ErrorMessage.Text("Something went wrong"),
                 errorSubTitleRes = ContentErrorConfig.ErrorMessage.Text("Please check something and try again."),

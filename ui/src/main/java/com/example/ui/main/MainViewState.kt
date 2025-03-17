@@ -12,5 +12,5 @@ internal data class MainViewState(
     val lastSearch: String ,
     val photoList: List<Photo>,
     @StringRes val searchResultTitleRes : Int ,
-    val searchHistory: ArrayDeque<String>,
+    val searchHistory: List<String>,
 ) : ViewState
