@@ -23,7 +23,7 @@ internal class MainViewModel @Inject constructor(
         lastSearch = "",
         photoList = emptyList(),
         searchResultTitleRes = 0,
-        searchHistory = ArrayDeque()
+        searchHistory = emptyList()
     )
 
     override fun handleEvents(event: MainUiEvent) {
@@ -37,14 +37,11 @@ internal class MainViewModel @Inject constructor(
                 )
             }
 
-            MainUiEvent.ClearSearchHistory -> setState { copy(searchHistory = ArrayDeque()) }
+            MainUiEvent.ClearSearchHistory -> setState { copy(searchHistory = emptyList()) }
             is MainUiEvent.RemoveSearchHistory -> {
                 setState {
-                    val newSearchHistory = ArrayDeque(searchHistory).apply {
-                        removeAt(event.index)
-                    }
                     copy(
-                        searchHistory = newSearchHistory
+                        searchHistory = searchHistory.filterIndexed { index, _ -> index != event.index }
                     )
                 }
             }
@@ -163,8 +160,8 @@ internal class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getUpdatedSearchHistory(searchQuery: String): ArrayDeque<String> {
-        val searchHistory = viewState.value.searchHistory
+    private fun getUpdatedSearchHistory(searchQuery: String): List<String> {
+        val searchHistory = ArrayDeque(viewState.value.searchHistory)
         searchHistory.addFirst(searchQuery)
         return searchHistory
     }

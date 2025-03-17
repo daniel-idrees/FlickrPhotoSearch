@@ -20,7 +20,7 @@ import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 @Composable
 internal fun SearchHistoryListView(
     modifier: Modifier = Modifier,
-    searchHistory: ArrayDeque<String>,
+    searchHistory: List<String>,
     fromScreen: BottomBarScreen,
     onEventSend: (MainUiEvent) -> Unit,
 ) {
@@ -81,7 +81,7 @@ internal fun SearchHistoryListView(
 @PreviewLightDark
 private fun SearchHistoryListViewPreview() {
     SearchHistoryListView(
-        searchHistory = ArrayDeque(listOf("text1", "text2")),
+        searchHistory = listOf("text1", "text2"),
         fromScreen = BottomBarScreen.History,
         onEventSend = {}
     )
@@ -91,7 +91,7 @@ private fun SearchHistoryListViewPreview() {
 @PreviewLightDark
 private fun SearchHistoryListViewEmptyPreview() {
     SearchHistoryListView(
-        searchHistory = ArrayDeque(),
+        searchHistory = emptyList(),
         fromScreen = BottomBarScreen.History,
         onEventSend = {}
     )
