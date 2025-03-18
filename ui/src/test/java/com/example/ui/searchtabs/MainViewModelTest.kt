@@ -45,7 +45,6 @@ internal class MainViewModelTest {
         subject.viewState.value.searchQuery shouldBe ""
         subject.viewState.value.lastSearch shouldBe ""
         subject.viewState.value.photoList shouldBe emptyList()
-        subject.viewState.value.searchResultTitleRes shouldBe 0
         subject.viewState.value.searchHistory shouldBe emptyList()
     }
 
@@ -469,7 +468,6 @@ internal class MainViewModelTest {
             subject.viewState.value.photoList shouldBe fakePhotoList
             subject.viewState.value.error shouldBe null
             subject.viewState.value.isLoading shouldBe false
-            subject.viewState.value.searchResultTitleRes shouldBe R.string.main_view_model_success_result_title
             subject.viewState.value.searchHistory shouldBe listOf(testQuery)
         }
 

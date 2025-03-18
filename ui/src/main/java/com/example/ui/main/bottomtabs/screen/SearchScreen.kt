@@ -90,7 +90,6 @@ internal fun SearchScreen(
             searchQuery = mainViewState.searchQuery,
             errorConfig = mainViewState.error,
             searchHistory = mainViewState.searchHistory,
-            searchResultTitleRes = mainViewState.searchResultTitleRes,
             searchViewState = searchViewState,
             onMainUiEventSend = { mainViewModel.setEvent(it) },
             onSearchUiEventSend = { searchViewModel.setEvent(it) },
@@ -120,7 +119,6 @@ private fun Content(
     lastSearch: String,
     searchQuery: String,
     errorConfig: ContentErrorConfig?,
-    searchResultTitleRes: Int,
     searchHistory: List<String>,
 ) {
     val hasError = errorConfig != null
@@ -210,7 +208,7 @@ private fun Content(
                                 .fillMaxWidth()
                                 .padding(vertical = SPACING_MEDIUM.dp),
                             text = stringResource(
-                                searchResultTitleRes,
+                                R.string.main_view_model_success_result_title,
                                 lastSearch
                             ),
                         )
@@ -306,7 +304,6 @@ private fun SearchPreview(
             searchQuery = viewState.searchQuery,
             errorConfig = viewState.error,
             searchHistory = viewState.searchHistory,
-            searchResultTitleRes = viewState.searchResultTitleRes,
             searchViewState = SearchViewState(selectedPhoto = null),
             onSearchUiEventSend = {},
             onMainUiEventSend = {},
@@ -324,7 +321,6 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
         error = null,
         searchQuery = "",
         lastSearch = "",
-        searchResultTitleRes = 0
     )
 
     override val values = sequenceOf(
@@ -350,6 +346,7 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                 )
             ),
             searchHistory = listOf("query", "query2"),
+            lastSearch = "query"
         ), viewState.copy(
             searchQuery = "query",
             photoList = listOf(
@@ -362,6 +359,7 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                 )
             ),
             searchHistory = listOf("query", "query2"),
+            lastSearch = "query"
         ), viewState.copy(
             searchQuery = "query",
             photoList = listOf(
@@ -373,7 +371,8 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                     isFamily = false
                 )
             ),
-            searchHistory = listOf("query", "query2")
+            searchHistory = listOf("query", "query2"),
+            lastSearch = "query"
         ),
         viewState.copy(
             searchQuery = "query",

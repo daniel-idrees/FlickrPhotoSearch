@@ -22,7 +22,6 @@ internal class MainViewModel @Inject constructor(
         searchQuery = "",
         lastSearch = "",
         photoList = emptyList(),
-        searchResultTitleRes = 0,
         searchHistory = emptyList()
     )
 
@@ -96,8 +95,7 @@ internal class MainViewModel @Inject constructor(
                             copy(
                                 error = null,
                                 isLoading = false,
-                                photoList = result.photos,
-                                searchResultTitleRes = R.string.main_view_model_success_result_title,
+                                photoList = result.photos
                             )
                         }
                     }

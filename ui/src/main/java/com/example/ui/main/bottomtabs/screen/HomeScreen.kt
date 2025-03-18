@@ -137,8 +137,7 @@ private class HomePreviewParameterProvider : PreviewParameterProvider<MainViewSt
         isLoading = false,
         error = null,
         searchQuery = "",
-        lastSearch = "",
-        searchResultTitleRes = 0
+        lastSearch = ""
     )
 
     override val values = sequenceOf(

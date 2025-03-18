@@ -107,14 +107,12 @@ private class SearchHistoryPreviewParameterProvider : PreviewParameterProvider<M
         error = null,
         searchQuery = "",
         lastSearch = "",
-        searchResultTitleRes = 0
     )
 
     override val values = sequenceOf(
         viewState,
         viewState.copy(
             searchQuery = "query",
-            searchResultTitleRes = R.string.main_view_model_success_result_title,
             photoList = listOf(
                 Photo(
                     title = "Photo One",
