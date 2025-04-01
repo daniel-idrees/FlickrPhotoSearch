@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -16,6 +17,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.domain.model.Photo
 import com.example.ui.R
 import com.example.ui.common.SPACING_LARGE
@@ -31,14 +33,17 @@ import com.example.ui.main.bottomtabs.view.SearchFieldView
 @Composable
 internal fun HomeScreen(
     viewModel: MainViewModel,
-    viewState: MainViewState
 ) {
+    val viewState by viewModel.viewState.collectAsStateWithLifecycle()
+
     ContentScreen(
         isLoading = viewState.isLoading,
         backPressHandler = { viewModel.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.Home)) }
     ) { paddingValues ->
         Content(
-            state = viewState,
+            searchQuery = viewState.searchQuery,
+            searchHistory = viewState.searchHistory,
+            hasError = viewState.error != null,
             onEventSend = { viewModel.setEvent(it) },
             paddingValues = paddingValues,
         )
@@ -47,7 +52,9 @@ internal fun HomeScreen(
 
 @Composable
 private fun Content(
-    state: MainViewState,
+    searchQuery: String,
+    searchHistory: List<String>,
+    hasError: Boolean,
     onEventSend: (MainUiEvent) -> Unit,
     paddingValues: PaddingValues,
 ) {
@@ -73,11 +80,11 @@ private fun Content(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = SPACING_LARGE.dp),
-            searchInputPrefilledText = state.searchQuery,
-            searchHistory = state.searchHistory,
+            searchInputPrefilledText = searchQuery,
+            searchHistory = searchHistory,
             label = stringResource(R.string.home_screen_search_field_label),
             buttonText = stringResource(R.string.home_screen_search_button_text),
-            searchErrorReceived = state.error != null,
+            searchErrorReceived = hasError,
             doOnSearchRequest = { text ->
                 onEventSend(
                     MainUiEvent.RequestSearch(
@@ -105,14 +112,16 @@ private fun Content(
 @PreviewLightDark
 @Composable
 private fun HomePreview(
-    @PreviewParameter(HomePreviewParameterProvider::class) viewState: MainViewState
+    @PreviewParameter(HomePreviewParameterProvider::class) viewState: MainViewState,
 ) {
     FlickrPhotoSearchTheme {
         ContentScreen(
             isLoading = viewState.isLoading,
         ) {
             Content(
-                state = viewState,
+                searchQuery = viewState.searchQuery,
+                searchHistory = viewState.searchHistory,
+                hasError = viewState.error != null,
                 onEventSend = {},
                 paddingValues = PaddingValues(1.dp)
             )
@@ -124,12 +133,11 @@ private fun HomePreview(
 private class HomePreviewParameterProvider : PreviewParameterProvider<MainViewState> {
     val viewState = MainViewState(
         photoList = emptyList(),
-        searchHistory = ArrayDeque(),
+        searchHistory = emptyList(),
         isLoading = false,
         error = null,
         searchQuery = "",
-        lastSearch = "",
-        searchResultTitleRes = 0
+        lastSearch = ""
     )
 
     override val values = sequenceOf(

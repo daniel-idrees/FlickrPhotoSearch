@@ -68,9 +68,9 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun SearchScreen(
     mainViewModel: MainViewModel,
-    mainViewState: MainViewState,
-    searchViewModel: SearchViewModel = hiltViewModel()
+    searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
+    val mainViewState by mainViewModel.viewState.collectAsStateWithLifecycle()
     val searchViewState by searchViewModel.viewState.collectAsStateWithLifecycle()
     var isPhotoOverlayVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -85,7 +85,11 @@ internal fun SearchScreen(
         }
     ) { paddingValues ->
         Content(
-            mainViewState = mainViewState,
+            photoList = mainViewState.photoList,
+            lastSearch = mainViewState.lastSearch,
+            searchQuery = mainViewState.searchQuery,
+            errorConfig = mainViewState.error,
+            searchHistory = mainViewState.searchHistory,
             searchViewState = searchViewState,
             onMainUiEventSend = { mainViewModel.setEvent(it) },
             onSearchUiEventSend = { searchViewModel.setEvent(it) },
@@ -96,9 +100,9 @@ internal fun SearchScreen(
 
     LaunchedEffect(Unit) {
         searchViewModel.effect.collect { effect ->
-            when (effect) {
-                SearchUiEffect.HidePhotoOverlay -> isPhotoOverlayVisible = false
-                SearchUiEffect.ShowPhotoOverlay -> isPhotoOverlayVisible = true
+            isPhotoOverlayVisible = when (effect) {
+                SearchUiEffect.HidePhotoOverlay -> false
+                SearchUiEffect.ShowPhotoOverlay -> true
             }
         }
     }
@@ -106,13 +110,18 @@ internal fun SearchScreen(
 
 @Composable
 private fun Content(
-    mainViewState: MainViewState,
     searchViewState: SearchViewState,
     onMainUiEventSend: (MainUiEvent) -> Unit,
     onSearchUiEventSend: (SearchUiEvent) -> Unit,
     shouldPhotoOverlayBeVisible: Boolean,
     paddingValues: PaddingValues,
+    photoList: List<Photo>,
+    lastSearch: String,
+    searchQuery: String,
+    errorConfig: ContentErrorConfig?,
+    searchHistory: List<String>,
 ) {
+    val hasError = errorConfig != null
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val showFab by remember {
@@ -133,7 +142,7 @@ private fun Content(
                     )
                 )
         ) {
-            val photosResultAvailable = mainViewState.photoList.isNotEmpty()
+            val photosResultAvailable = photoList.isNotEmpty()
             if (!photosResultAvailable) {
                 ContentTitle(
                     modifier = Modifier.fillMaxWidth(),
@@ -147,7 +156,7 @@ private fun Content(
             ) {
                 stickyHeader {
                     val prefilledText =
-                        if (photosResultAvailable) mainViewState.lastSearch else mainViewState.searchQuery
+                        if (photosResultAvailable) lastSearch else searchQuery
 
                     val shouldShowButton = !photosResultAvailable
 
@@ -156,13 +165,13 @@ private fun Content(
                             .fillMaxWidth()
                             .then(if (!photosResultAvailable) Modifier.padding(top = SPACING_LARGE.dp) else Modifier),
                         searchInputPrefilledText = prefilledText,
-                        searchHistory = mainViewState.searchHistory,
+                        searchHistory = searchHistory,
                         label = stringResource(R.string.search_screen_search_field_label),
                         shouldHaveFocus = !photosResultAvailable,
-                        buttonText = if (shouldShowButton && mainViewState.error == null) stringResource(
+                        buttonText = if (shouldShowButton && !hasError) stringResource(
                             R.string.search_screen_search_button_text
                         ) else null,
-                        searchErrorReceived = mainViewState.error != null,
+                        searchErrorReceived = hasError,
                         doOnSearchRequest = { text ->
                             onMainUiEventSend(
                                 MainUiEvent.RequestSearch(
@@ -199,13 +208,12 @@ private fun Content(
                                 .fillMaxWidth()
                                 .padding(vertical = SPACING_MEDIUM.dp),
                             text = stringResource(
-                                mainViewState.searchResultTitleRes,
-                                mainViewState.lastSearch
+                                R.string.main_view_model_success_result_title,
+                                lastSearch
                             ),
                         )
                     }
-
-                    items(mainViewState.photoList) { photo ->
+                    items(photoList) { photo ->
                         PhotoListItemView(
                             modifier = Modifier
                                 .fillMaxWidth(),
@@ -217,7 +225,7 @@ private fun Content(
                             }
                         )
                     }
-                } else if (mainViewState.error != null) {
+                } else if (errorConfig != null) {
                     item {
                         ContentError(
                             modifier = Modifier
@@ -228,7 +236,7 @@ private fun Content(
                                         bottom = paddingValues.calculateBottomPadding()
                                     )
                                 ),
-                            contentErrorConfig = mainViewState.error
+                            contentErrorConfig = errorConfig
                         )
                     }
                 } else {
@@ -248,7 +256,11 @@ private fun Content(
                 }
             }
         }
-        if (showFab) {
+        AnimatedVisibility(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(SPACING_MEDIUM.dp), visible = showFab
+        ) {
             FloatingActionButton(
                 onClick = {
                     coroutineScope.launch {
@@ -256,8 +268,7 @@ private fun Content(
                     }
                 },
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(SPACING_MEDIUM.dp)
+
             ) {
                 TopArrowIcon(modifier = Modifier.size(SPACING_LARGE.dp))
             }
@@ -284,11 +295,15 @@ private fun Content(
 @PreviewLightDark
 @Composable
 private fun SearchPreview(
-    @PreviewParameter(SearchPreviewParameterProvider::class) viewState: MainViewState
+    @PreviewParameter(SearchPreviewParameterProvider::class) viewState: MainViewState,
 ) {
     FlickrPhotoSearchTheme {
         Content(
-            mainViewState = viewState,
+            photoList = viewState.photoList,
+            lastSearch = viewState.lastSearch,
+            searchQuery = viewState.searchQuery,
+            errorConfig = viewState.error,
+            searchHistory = viewState.searchHistory,
             searchViewState = SearchViewState(selectedPhoto = null),
             onSearchUiEventSend = {},
             onMainUiEventSend = {},
@@ -301,12 +316,11 @@ private fun SearchPreview(
 private class SearchPreviewParameterProvider : PreviewParameterProvider<MainViewState> {
     val viewState = MainViewState(
         photoList = emptyList(),
-        searchHistory = ArrayDeque(),
+        searchHistory = emptyList(),
         isLoading = false,
         error = null,
         searchQuery = "",
         lastSearch = "",
-        searchResultTitleRes = 0
     )
 
     override val values = sequenceOf(
@@ -331,7 +345,8 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                     isFamily = true
                 )
             ),
-            searchHistory = ArrayDeque(listOf("query", "query2")),
+            searchHistory = listOf("query", "query2"),
+            lastSearch = "query"
         ), viewState.copy(
             searchQuery = "query",
             photoList = listOf(
@@ -343,7 +358,8 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                     isFamily = false
                 )
             ),
-            searchHistory = ArrayDeque(listOf("query", "query2")),
+            searchHistory = listOf("query", "query2"),
+            lastSearch = "query"
         ), viewState.copy(
             searchQuery = "query",
             photoList = listOf(
@@ -355,12 +371,13 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                     isFamily = false
                 )
             ),
-            searchHistory = ArrayDeque(listOf("query", "query2"))
+            searchHistory = listOf("query", "query2"),
+            lastSearch = "query"
         ),
         viewState.copy(
             searchQuery = "query",
             photoList = emptyList(),
-            searchHistory = ArrayDeque(listOf("query", "query2")),
+            searchHistory = listOf("query", "query2"),
             error = ContentErrorConfig(
                 errorTitleRes = ContentErrorConfig.ErrorMessage.Text("Something went wrong"),
                 errorSubTitleRes = ContentErrorConfig.ErrorMessage.Text("Please check something and try again."),
