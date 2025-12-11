@@ -15,7 +15,8 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-val apiKey: String = localProperties.getProperty("API_KEY") ?: ""
+val apiKey: String =
+    System.getenv("API_KEY") ?: localProperties.getProperty("API_KEY", "")
 
 android {
     namespace = "com.example.data"
@@ -24,7 +25,7 @@ android {
     defaultConfig {
         consumerProguardFiles("consumer-rules.pro")
 
-        buildConfigField("String", "API_KEY", apiKey)
+        buildConfigField("String", "API_KEY", "\"${apiKey}\"")
     }
 
     buildTypes {
