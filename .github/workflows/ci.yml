@@ -1,0 +1,89 @@
+name: CI
+env:
+  main_project_module: app
+  API_KEY: ${{ secrets.API_KEY }}
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.event.pull_request.head.ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  linting:
+    name: Run Lint Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v5
+
+      - name: Setup Java and Gradle
+        uses: ./.github/actions/job-set-up
+
+      - name: Run Android Lint
+        run: ./gradlew lint
+
+      - name: Upload Lint Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: ${{ github.workspace }}/**/build/reports/lint-results.html
+
+  unit_test:
+    name: Unit Test
+    needs: [ linting ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v5
+
+      - name: Setup Java and Gradle
+        uses: ./.github/actions/job-set-up
+
+      - name: Run Unit Tests
+        run: ./gradlew test
+
+  build_and_upload:
+    name: Build and Upload
+    needs: [ unit_test ]
+    runs-on: ubuntu-latest
+    env:
+      JAVA_HOME: /opt/java/openjdk
+      GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx2g
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v5
+
+      - name: Setup Java and Gradle
+        uses: ./.github/actions/job-set-up
+
+      # Set Current Date As Env Variable
+      - name: Set current date as env variable
+        run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      # Set Repository Name As Env Variable
+      - name: Set repository name as env variable
+        run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+
+      # Create APK
+      - name: Build apk - ${{ env.main_project_module }} module
+        run: ./gradlew assembleDebug
+
+      # Upload Artifact Build
+      # Noted For Output [main_project_module]/build/outputs/apk/debug/
+      - name: Upload APK - ${{ env.repository_name }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) dev debug generated
+          path: ${{ env.main_project_module }}/build/outputs/apk/debug/
