@@ -30,6 +30,7 @@ Ensure that your project's ```local.properties``` file contains the Flickr API k
 - Retrofit for network calls
 - Junit/Mockito/Kotest for unit testing 
 - Coil for Image loading.
+- Github Actions for CI/CD
 
 #### Demo
 
