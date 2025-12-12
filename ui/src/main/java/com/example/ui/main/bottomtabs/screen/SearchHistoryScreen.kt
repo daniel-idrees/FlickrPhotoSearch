@@ -25,7 +25,7 @@ import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.content.ContentScreen
 import com.example.ui.common.content.ContentTitle
 import com.example.ui.common.theme.FlickrPhotoSearchTheme
-import com.example.ui.main.MainUiEvent
+import com.example.ui.main.MainUiAction
 import com.example.ui.main.MainViewModel
 import com.example.ui.main.MainViewState
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
@@ -37,11 +37,11 @@ internal fun SearchHistoryScreen(viewModel: MainViewModel) {
 
     ContentScreen(
         isLoading = viewState.isLoading,
-        backPressHandler = { viewModel.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.History)) }
+        backPressHandler = { viewModel.setAction(MainUiAction.OnNavigateBackRequest(BottomBarScreen.History)) }
     ) { paddingValues ->
         Content(
             searchHistory = viewState.searchHistory,
-            onEventSend = { viewModel.setEvent(it) },
+            onEventSend = { viewModel.setAction(it) },
             paddingValues = paddingValues
         )
     }
@@ -50,7 +50,7 @@ internal fun SearchHistoryScreen(viewModel: MainViewModel) {
 @Composable
 private fun Content(
     searchHistory: List<String>,
-    onEventSend: (MainUiEvent) -> Unit,
+    onEventSend: (MainUiAction) -> Unit,
     paddingValues: PaddingValues,
 ) {
     Column(

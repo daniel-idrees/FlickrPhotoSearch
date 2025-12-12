@@ -24,7 +24,7 @@ import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.content.ContentScreen
 import com.example.ui.common.content.ContentTitle
 import com.example.ui.common.theme.FlickrPhotoSearchTheme
-import com.example.ui.main.MainUiEvent
+import com.example.ui.main.MainUiAction
 import com.example.ui.main.MainViewModel
 import com.example.ui.main.MainViewState
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
@@ -38,13 +38,13 @@ internal fun HomeScreen(
 
     ContentScreen(
         isLoading = viewState.isLoading,
-        backPressHandler = { viewModel.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.Home)) }
+        backPressHandler = { viewModel.setAction(MainUiAction.OnNavigateBackRequest(BottomBarScreen.Home)) }
     ) { paddingValues ->
         Content(
             searchQuery = viewState.searchQuery,
             searchHistory = viewState.searchHistory,
             hasError = viewState.error != null,
-            onEventSend = { viewModel.setEvent(it) },
+            onEventSend = { viewModel.setAction(it) },
             paddingValues = paddingValues,
         )
     }
@@ -55,7 +55,7 @@ private fun Content(
     searchQuery: String,
     searchHistory: List<String>,
     hasError: Boolean,
-    onEventSend: (MainUiEvent) -> Unit,
+    onEventSend: (MainUiAction) -> Unit,
     paddingValues: PaddingValues,
 ) {
     Column(
@@ -87,7 +87,7 @@ private fun Content(
             searchErrorReceived = hasError,
             doOnSearchRequest = { text ->
                 onEventSend(
-                    MainUiEvent.RequestSearch(
+                    MainUiAction.RequestSearch(
                         searchQuery = text,
                         BottomBarScreen.Home
                     )
@@ -95,15 +95,15 @@ private fun Content(
             },
             doOnSearchHistoryDropDownItemClick = { text ->
                 onEventSend(
-                    MainUiEvent.OnSearchHistoryItemSelected(
+                    MainUiAction.OnSearchHistoryItemSelected(
                         searchQuery = text,
                         BottomBarScreen.Home
                     )
                 )
             },
-            doOnSearchTextChange = { text -> onEventSend(MainUiEvent.OnSearchQueryChange(text)) },
+            doOnSearchTextChange = { text -> onEventSend(MainUiAction.OnSearchQueryChange(text)) },
             doOnClearHistoryClick = { index ->
-                onEventSend(MainUiEvent.RemoveSearchHistory(index))
+                onEventSend(MainUiAction.RemoveSearchHistory(index))
             }
         )
     }

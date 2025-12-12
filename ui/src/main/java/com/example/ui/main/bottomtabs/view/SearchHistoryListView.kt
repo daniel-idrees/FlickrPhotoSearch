@@ -14,7 +14,7 @@ import com.example.ui.R
 import com.example.ui.common.SPACING_EXTRA_SMALL
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.SPACING_SMALL
-import com.example.ui.main.MainUiEvent
+import com.example.ui.main.MainUiAction
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 
 @Composable
@@ -22,7 +22,7 @@ internal fun SearchHistoryListView(
     modifier: Modifier = Modifier,
     searchHistory: List<String>,
     fromScreen: BottomBarScreen,
-    onEventSend: (MainUiEvent) -> Unit,
+    onEventSend: (MainUiAction) -> Unit,
 ) {
 
     if (searchHistory.isEmpty()) {
@@ -43,7 +43,7 @@ internal fun SearchHistoryListView(
                 .fillMaxWidth(),
             buttonText = stringResource(R.string.search_history_clear_all_button_text),
             onClick = {
-                onEventSend(MainUiEvent.ClearSearchHistory)
+                onEventSend(MainUiAction.ClearSearchHistory)
             }
         )
 
@@ -64,13 +64,13 @@ internal fun SearchHistoryListView(
                     searchText = searchText,
                     onItemClick = {
                         onEventSend(
-                            MainUiEvent.OnSearchHistoryItemSelected(
+                            MainUiAction.OnSearchHistoryItemSelected(
                                 searchText,
                                 fromScreen
                             )
                         )
                     },
-                    onDeleteIconClick = { onEventSend(MainUiEvent.RemoveSearchHistory(index)) }
+                    onDeleteIconClick = { onEventSend(MainUiAction.RemoveSearchHistory(index)) }
                 )
             }
         }

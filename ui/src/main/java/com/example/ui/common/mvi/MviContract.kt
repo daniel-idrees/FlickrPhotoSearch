@@ -18,6 +18,6 @@ package com.example.ui.common.mvi
 
 internal interface ViewState
 
-internal interface ViewEvent
+internal interface ViewAction
 
 internal interface ViewSideEffect

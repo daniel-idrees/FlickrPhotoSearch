@@ -20,6 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,12 +34,52 @@ import com.example.ui.main.bottomtabs.screen.HomeScreen
 import com.example.ui.main.bottomtabs.screen.SearchHistoryScreen
 import com.example.ui.main.bottomtabs.screen.SearchScreen
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 @Composable
 internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val bottomNavigationController = rememberNavController()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner.lifecycle) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            withContext(Dispatchers.Main.immediate) {
+                viewModel.effect.collect { effect ->
+                    when (effect) {
+                        is MainUiEffect.Navigation.SwitchScreen -> bottomNavigationController.navigate(
+                            effect.toScreen.route
+                        ) {
+                            popUpTo(bottomNavigationController.graph.startDestinationId)
+                            launchSingleTop = true
+                        }
+
+                        MainUiEffect.Navigation.Finish -> context.getActivity()?.finish()
+                        is MainUiEffect.Navigation.Pop -> {
+                            when (effect.fromScreen) {
+
+                                BottomBarScreen.Search, BottomBarScreen.History -> bottomNavigationController.navigate(
+                                    BottomBarScreen.Home.route
+                                ) {
+                                    popUpTo(bottomNavigationController.graph.startDestinationId)
+                                    launchSingleTop = true
+                                }
+
+                                BottomBarScreen.Home -> context.getActivity()?.finish()
+                            }
+                        }
+
+                        is MainUiEffect.ShowEmptyTextError -> showToast(
+                            context = context,
+                            messageRes = effect.errorMessageRes
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     Scaffold(
         bottomBar = { BottomNavigationBar(bottomNavigationController) }
@@ -62,39 +105,6 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
             composable(BottomBarScreen.History.route) {
                 SearchHistoryScreen(
                     viewModel = viewModel
-                )
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is MainUiEffect.Navigation.SwitchScreen -> bottomNavigationController.navigate(
-                    effect.toScreen.route
-                ) {
-                    popUpTo(bottomNavigationController.graph.startDestinationId)
-                    launchSingleTop = true
-                }
-
-                MainUiEffect.Navigation.Finish -> context.getActivity()?.finish()
-                is MainUiEffect.Navigation.Pop -> {
-                    when (effect.fromScreen) {
-
-                        BottomBarScreen.Search, BottomBarScreen.History -> bottomNavigationController.navigate(
-                            BottomBarScreen.Home.route
-                        ) {
-                            popUpTo(bottomNavigationController.graph.startDestinationId)
-                            launchSingleTop = true
-                        }
-
-                        BottomBarScreen.Home -> context.getActivity()?.finish()
-                    }
-                }
-
-                is MainUiEffect.ShowEmptyTextError -> showToast(
-                    context = context,
-                    messageRes = effect.errorMessageRes
                 )
             }
         }

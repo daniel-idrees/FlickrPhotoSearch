@@ -26,7 +26,7 @@ internal class SearchViewModelTest {
     @Test
     fun `OnPhotoClick event should trigger ShowPhotoOverlay effect`() = runTest {
         // when
-        subject.setEvent(SearchUiEvent.OnPhotoClick(fakePhoto))
+        subject.setAction(SearchUiAction.OnPhotoClick(fakePhoto))
 
         // then
         subject.effect.test {
@@ -40,7 +40,7 @@ internal class SearchViewModelTest {
     @Test
     fun `ClearPhotoOverlay event should trigger HidePhotoOverlay effect`() = runTest {
         // when
-        subject.setEvent(SearchUiEvent.ClearPhotoOverlay)
+        subject.setAction(SearchUiAction.ClearPhotoOverlay)
 
         // then
         subject.effect.test {

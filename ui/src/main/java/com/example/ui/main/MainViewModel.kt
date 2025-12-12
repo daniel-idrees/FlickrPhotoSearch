@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class MainViewModel @Inject constructor(
     private val getPhotoListUseCase: GetPhotoListUseCase
-) : MviViewModel<MainUiEvent, MainViewState, MainUiEffect>() {
+) : MviViewModel<MainUiAction, MainViewState, MainUiEffect>() {
 
     override fun setInitialState(): MainViewState = MainViewState(
         isLoading = false,
@@ -25,19 +25,19 @@ internal class MainViewModel @Inject constructor(
         searchHistory = emptyList()
     )
 
-    override fun handleEvents(event: MainUiEvent) {
+    override fun handleAction(event: MainUiAction) {
         when (event) {
-            is MainUiEvent.RequestSearch -> doOnSearchRequest(event)
-            is MainUiEvent.OnNavigateBackRequest -> setEffect { MainUiEffect.Navigation.Pop(event.fromScreen) }
-            is MainUiEvent.OnSearchQueryChange -> setState {
+            is MainUiAction.RequestSearch -> doOnSearchRequest(event)
+            is MainUiAction.OnNavigateBackRequest -> setEffect { MainUiEffect.Navigation.Pop(event.fromScreen) }
+            is MainUiAction.OnSearchQueryChange -> setState {
                 copy(
                     error = null,
                     searchQuery = event.query
                 )
             }
 
-            MainUiEvent.ClearSearchHistory -> setState { copy(searchHistory = emptyList()) }
-            is MainUiEvent.RemoveSearchHistory -> {
+            MainUiAction.ClearSearchHistory -> setState { copy(searchHistory = emptyList()) }
+            is MainUiAction.RemoveSearchHistory -> {
                 setState {
                     copy(
                         searchHistory = searchHistory.filterIndexed { index, _ -> index != event.index }
@@ -45,7 +45,7 @@ internal class MainViewModel @Inject constructor(
                 }
             }
 
-            is MainUiEvent.OnSearchHistoryItemSelected -> {
+            is MainUiAction.OnSearchHistoryItemSelected -> {
                 if (event.fromScreen != BottomBarScreen.Search) {
                     switchToSearchScreen()
                 }
@@ -59,7 +59,7 @@ internal class MainViewModel @Inject constructor(
         }
     }
 
-    private fun doOnSearchRequest(event: MainUiEvent.RequestSearch) {
+    private fun doOnSearchRequest(event: MainUiAction.RequestSearch) {
         if (event.searchQuery.isEmpty() || event.searchQuery.isBlank()) {
             setEffect {
                 MainUiEffect.ShowEmptyTextError(R.string.main_view_model_empty_text_error_toast_text)

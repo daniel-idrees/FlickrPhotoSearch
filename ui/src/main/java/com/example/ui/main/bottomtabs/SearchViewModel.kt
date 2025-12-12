@@ -5,19 +5,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-internal class SearchViewModel @Inject constructor() : MviViewModel<SearchUiEvent, SearchViewState, SearchUiEffect>() {
+internal class SearchViewModel @Inject constructor() : MviViewModel<SearchUiAction, SearchViewState, SearchUiEffect>() {
     override fun setInitialState(): SearchViewState = SearchViewState(selectedPhoto = null)
 
-    override fun handleEvents(event: SearchUiEvent) {
+    override fun handleAction(event: SearchUiAction) {
         when (event) {
-            SearchUiEvent.ClearPhotoOverlay -> {
+            SearchUiAction.ClearPhotoOverlay -> {
                 setEffect { SearchUiEffect.HidePhotoOverlay }
                 setState {
                     copy(selectedPhoto = null)
                 }
             }
 
-            is SearchUiEvent.OnPhotoClick -> {
+            is SearchUiAction.OnPhotoClick -> {
                 setState {
                     setEffect { SearchUiEffect.ShowPhotoOverlay }
                     copy(selectedPhoto = event.photo)

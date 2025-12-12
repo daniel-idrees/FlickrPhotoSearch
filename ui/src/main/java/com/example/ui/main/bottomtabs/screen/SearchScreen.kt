@@ -38,7 +38,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.domain.model.Photo
 import com.example.ui.R
 import com.example.ui.common.SPACING_LARGE
@@ -49,21 +52,23 @@ import com.example.ui.common.content.ContentScreen
 import com.example.ui.common.content.ContentTitle
 import com.example.ui.common.keyboardAsState
 import com.example.ui.common.theme.FlickrPhotoSearchTheme
-import com.example.ui.main.MainUiEvent
+import com.example.ui.main.MainUiAction
 import com.example.ui.main.MainViewModel
 import com.example.ui.main.MainViewState
 import com.example.ui.main.bottomtabs.SearchUiEffect
-import com.example.ui.main.bottomtabs.SearchUiEvent
+import com.example.ui.main.bottomtabs.SearchUiAction
 import com.example.ui.main.bottomtabs.SearchViewModel
 import com.example.ui.main.bottomtabs.SearchViewState
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
+import com.example.ui.main.bottomtabs.view.ImageOverlayView
 import com.example.ui.main.bottomtabs.view.PhotoListItemView
 import com.example.ui.main.bottomtabs.view.SearchFieldView
 import com.example.ui.main.bottomtabs.view.TextBodyMedium
 import com.example.ui.main.bottomtabs.view.TopArrowIcon
-import com.example.ui.main.bottomtabs.view.ImageOverlayView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 internal fun SearchScreen(
@@ -74,13 +79,27 @@ internal fun SearchScreen(
     val searchViewState by searchViewModel.viewState.collectAsStateWithLifecycle()
     var isPhotoOverlayVisible by rememberSaveable { mutableStateOf(false) }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner.lifecycle) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            withContext(Dispatchers.Main.immediate) {
+                searchViewModel.effect.collect { effect ->
+                    isPhotoOverlayVisible = when (effect) {
+                        SearchUiEffect.HidePhotoOverlay -> false
+                        SearchUiEffect.ShowPhotoOverlay -> true
+                    }
+                }
+            }
+        }
+    }
+
     ContentScreen(
         isLoading = mainViewState.isLoading,
         backPressHandler = {
             if (isPhotoOverlayVisible) {
-                searchViewModel.setEvent(SearchUiEvent.ClearPhotoOverlay)
+                searchViewModel.setAction(SearchUiAction.ClearPhotoOverlay)
             } else {
-                mainViewModel.setEvent(MainUiEvent.OnNavigateBackRequest(fromScreen = BottomBarScreen.Search))
+                mainViewModel.setAction(MainUiAction.OnNavigateBackRequest(fromScreen = BottomBarScreen.Search))
             }
         }
     ) { paddingValues ->
@@ -91,28 +110,19 @@ internal fun SearchScreen(
             errorConfig = mainViewState.error,
             searchHistory = mainViewState.searchHistory,
             searchViewState = searchViewState,
-            onMainUiEventSend = { mainViewModel.setEvent(it) },
-            onSearchUiEventSend = { searchViewModel.setEvent(it) },
+            onMainUiEventSend = { mainViewModel.setAction(it) },
+            onSearchUiEventSend = { searchViewModel.setAction(it) },
             shouldPhotoOverlayBeVisible = isPhotoOverlayVisible,
             paddingValues = paddingValues
         )
-    }
-
-    LaunchedEffect(Unit) {
-        searchViewModel.effect.collect { effect ->
-            isPhotoOverlayVisible = when (effect) {
-                SearchUiEffect.HidePhotoOverlay -> false
-                SearchUiEffect.ShowPhotoOverlay -> true
-            }
-        }
     }
 }
 
 @Composable
 private fun Content(
     searchViewState: SearchViewState,
-    onMainUiEventSend: (MainUiEvent) -> Unit,
-    onSearchUiEventSend: (SearchUiEvent) -> Unit,
+    onMainUiEventSend: (MainUiAction) -> Unit,
+    onSearchUiEventSend: (SearchUiAction) -> Unit,
     shouldPhotoOverlayBeVisible: Boolean,
     paddingValues: PaddingValues,
     photoList: List<Photo>,
@@ -174,7 +184,7 @@ private fun Content(
                         searchErrorReceived = hasError,
                         doOnSearchRequest = { text ->
                             onMainUiEventSend(
-                                MainUiEvent.RequestSearch(
+                                MainUiAction.RequestSearch(
                                     searchQuery = text,
                                     BottomBarScreen.Search
                                 )
@@ -182,7 +192,7 @@ private fun Content(
                         },
                         doOnSearchHistoryDropDownItemClick = { text ->
                             onMainUiEventSend(
-                                MainUiEvent.OnSearchHistoryItemSelected(
+                                MainUiAction.OnSearchHistoryItemSelected(
                                     searchQuery = text,
                                     BottomBarScreen.Home
                                 )
@@ -190,13 +200,13 @@ private fun Content(
                         },
                         doOnSearchTextChange = { text ->
                             onMainUiEventSend(
-                                MainUiEvent.OnSearchQueryChange(
+                                MainUiAction.OnSearchQueryChange(
                                     text
                                 )
                             )
                         },
                         doOnClearHistoryClick = { index ->
-                            onMainUiEventSend(MainUiEvent.RemoveSearchHistory(index))
+                            onMainUiEventSend(MainUiAction.RemoveSearchHistory(index))
                         }
                     )
                 }
@@ -220,7 +230,7 @@ private fun Content(
                             photo = photo,
                             onPhotoClick = { hasPhotoLoadedSuccessfully ->
                                 if (hasPhotoLoadedSuccessfully) {
-                                    onSearchUiEventSend(SearchUiEvent.OnPhotoClick(photo))
+                                    onSearchUiEventSend(SearchUiAction.OnPhotoClick(photo))
                                 }
                             }
                         )
@@ -246,7 +256,7 @@ private fun Content(
                             delay(300)
                             if (!isKeyboardOpen) {
                                 onMainUiEventSend(
-                                    MainUiEvent.OnNavigateBackRequest(
+                                    MainUiAction.OnNavigateBackRequest(
                                         BottomBarScreen.Search
                                     )
                                 )
@@ -285,7 +295,7 @@ private fun Content(
             ImageOverlayView(
                 imageUrl = image.url,
                 onClose = {
-                    onSearchUiEventSend(SearchUiEvent.ClearPhotoOverlay)
+                    onSearchUiEventSend(SearchUiAction.ClearPhotoOverlay)
                 }
             )
         }

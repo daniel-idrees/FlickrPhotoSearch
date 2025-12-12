@@ -8,7 +8,7 @@ import com.example.testfeature.rule.CoroutineTestRule
 import com.example.ui.R
 import com.example.ui.common.content.ContentErrorConfig
 import com.example.ui.main.MainUiEffect
-import com.example.ui.main.MainUiEvent
+import com.example.ui.main.MainUiAction
 import com.example.ui.main.MainViewModel
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 import com.example.ui.util.anotherTestQuery
@@ -51,7 +51,7 @@ internal class MainViewModelTest {
     @Test
     fun `OnNavigateBackRequest event from Home should trigger navigation Pop effect`() = runTest {
         // when
-        subject.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.Home))
+        subject.setAction(MainUiAction.OnNavigateBackRequest(BottomBarScreen.Home))
 
         // then
         subject.effect.test {
@@ -63,7 +63,7 @@ internal class MainViewModelTest {
     @Test
     fun `OnNavigateBackRequest event from Search should trigger navigation Pop effect`() = runTest {
         // when
-        subject.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.Search))
+        subject.setAction(MainUiAction.OnNavigateBackRequest(BottomBarScreen.Search))
 
         // then
         subject.effect.test {
@@ -76,7 +76,7 @@ internal class MainViewModelTest {
     fun `OnNavigateBackRequest event from History should trigger navigation Pop effect`() =
         runTest {
             // when
-            subject.setEvent(MainUiEvent.OnNavigateBackRequest(BottomBarScreen.History))
+            subject.setAction(MainUiAction.OnNavigateBackRequest(BottomBarScreen.History))
 
             // then
             subject.effect.test {
@@ -96,12 +96,12 @@ internal class MainViewModelTest {
             )
         )
         // when
-        subject.setEvent(MainUiEvent.RequestSearch(testQuery, BottomBarScreen.History))
+        subject.setAction(MainUiAction.RequestSearch(testQuery, BottomBarScreen.History))
         // then
         subject.viewState.value.searchHistory shouldBe listOf(testQuery)
 
         // when
-        subject.setEvent(MainUiEvent.ClearSearchHistory)
+        subject.setAction(MainUiAction.ClearSearchHistory)
         // then
         subject.viewState.value.searchHistory shouldBe emptyList()
     }
@@ -117,7 +117,7 @@ internal class MainViewModelTest {
                 )
             )
             // when
-            subject.setEvent(MainUiEvent.RequestSearch(testQuery, BottomBarScreen.Home))
+            subject.setAction(MainUiAction.RequestSearch(testQuery, BottomBarScreen.Home))
 
             // then
             verify(getPhotoListUseCase).invoke(testQuery)
@@ -139,7 +139,7 @@ internal class MainViewModelTest {
                 )
             )
             // when
-            subject.setEvent(MainUiEvent.RequestSearch(testQuery, BottomBarScreen.History))
+            subject.setAction(MainUiAction.RequestSearch(testQuery, BottomBarScreen.History))
 
             // then
             verify(getPhotoListUseCase).invoke(testQuery)
@@ -162,7 +162,7 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(MainUiEvent.RequestSearch(testQuery, BottomBarScreen.Search))
+            subject.setAction(MainUiAction.RequestSearch(testQuery, BottomBarScreen.Search))
 
             // then
             verify(getPhotoListUseCase).invoke(testQuery)
@@ -175,7 +175,7 @@ internal class MainViewModelTest {
     @Test
     fun `RequestSearch should trigger ShowEmptyTextError is search query is empty`() = runTest {
         // when
-        subject.setEvent(MainUiEvent.RequestSearch("", BottomBarScreen.Search))
+        subject.setAction(MainUiAction.RequestSearch("", BottomBarScreen.Search))
         // then
         subject.effect.test {
             awaitItem() shouldBe MainUiEffect.ShowEmptyTextError(R.string.main_view_model_empty_text_error_toast_text)
@@ -183,8 +183,8 @@ internal class MainViewModelTest {
         }
 
         // when white space characters
-        subject.setEvent(
-            MainUiEvent.RequestSearch(
+        subject.setAction(
+            MainUiAction.RequestSearch(
                 "   ",
                 BottomBarScreen.Search
             )
@@ -208,7 +208,7 @@ internal class MainViewModelTest {
         )
 
         // when
-        subject.setEvent(MainUiEvent.RequestSearch(testQuery, BottomBarScreen.Search))
+        subject.setAction(MainUiAction.RequestSearch(testQuery, BottomBarScreen.Search))
 
         // then
         subject.viewState.value.lastSearch shouldBe testQuery
@@ -217,12 +217,12 @@ internal class MainViewModelTest {
     @Test
     fun `OnSearchQueryChange should update the searchQuery string in the viewState`() = runTest {
         // when
-        subject.setEvent(MainUiEvent.OnSearchQueryChange(testQuery))
+        subject.setAction(MainUiAction.OnSearchQueryChange(testQuery))
         // then
         subject.viewState.value.searchQuery shouldBe testQuery
 
         // when
-        subject.setEvent(MainUiEvent.OnSearchQueryChange(anotherTestQuery))
+        subject.setAction(MainUiAction.OnSearchQueryChange(anotherTestQuery))
         // then
         subject.viewState.value.searchQuery shouldBe anotherTestQuery
     }
@@ -246,14 +246,14 @@ internal class MainViewModelTest {
         )
 
         // when
-        subject.setEvent(MainUiEvent.RequestSearch(testQuery, BottomBarScreen.History))
-        subject.setEvent(MainUiEvent.RequestSearch(anotherTestQuery, BottomBarScreen.History))
+        subject.setAction(MainUiAction.RequestSearch(testQuery, BottomBarScreen.History))
+        subject.setAction(MainUiAction.RequestSearch(anotherTestQuery, BottomBarScreen.History))
         subject.viewState.value.searchHistory shouldBe listOf(
             anotherTestQuery,
             testQuery
         )
 
-        subject.setEvent(MainUiEvent.RemoveSearchHistory(0))
+        subject.setAction(MainUiAction.RemoveSearchHistory(0))
 
         // then
         subject.viewState.value.searchHistory shouldBe listOf(testQuery)
@@ -271,8 +271,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.OnSearchHistoryItemSelected(
+            subject.setAction(
+                MainUiAction.OnSearchHistoryItemSelected(
                     testQuery,
                     BottomBarScreen.Home
                 )
@@ -299,8 +299,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.OnSearchHistoryItemSelected(
+            subject.setAction(
+                MainUiAction.OnSearchHistoryItemSelected(
                     testQuery,
                     BottomBarScreen.History
                 )
@@ -326,7 +326,7 @@ internal class MainViewModelTest {
         )
 
         // when
-        subject.setEvent(MainUiEvent.OnSearchHistoryItemSelected(testQuery, BottomBarScreen.Search))
+        subject.setAction(MainUiAction.OnSearchHistoryItemSelected(testQuery, BottomBarScreen.Search))
 
         // then
         verify(getPhotoListUseCase).invoke(testQuery)
@@ -348,8 +348,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.OnSearchHistoryItemSelected(
+            subject.setAction(
+                MainUiAction.OnSearchHistoryItemSelected(
                     testQuery,
                     BottomBarScreen.Home
                 )
@@ -371,8 +371,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.OnSearchHistoryItemSelected(
+            subject.setAction(
+                MainUiAction.OnSearchHistoryItemSelected(
                     testQuery,
                     BottomBarScreen.Search
                 )
@@ -394,8 +394,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.OnSearchHistoryItemSelected(
+            subject.setAction(
+                MainUiAction.OnSearchHistoryItemSelected(
                     testQuery,
                     BottomBarScreen.History
                 )
@@ -417,8 +417,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -456,8 +456,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -482,8 +482,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -525,8 +525,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -568,8 +568,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -611,8 +611,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -629,8 +629,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -650,8 +650,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -668,8 +668,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -689,8 +689,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -707,8 +707,8 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
@@ -732,13 +732,13 @@ internal class MainViewModelTest {
             )
 
             // when
-            subject.setEvent(
-                MainUiEvent.RequestSearch(
+            subject.setAction(
+                MainUiAction.RequestSearch(
                     searchQuery = testQuery,
                     fromScreen = BottomBarScreen.Search
                 )
             )
-            subject.setEvent(MainUiEvent.RequestSearch(anotherTestQuery, BottomBarScreen.Search))
+            subject.setAction(MainUiAction.RequestSearch(anotherTestQuery, BottomBarScreen.Search))
 
             // then
             subject.viewState.value.searchHistory shouldBe listOf(
