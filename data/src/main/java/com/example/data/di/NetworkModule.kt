@@ -8,16 +8,24 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
 import okhttp3.Call
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal class NetworkModule {
+
+    @Provides
+    @Singleton
+    fun providesNetworkJson(): Json = Json {
+        ignoreUnknownKeys = true
+    }
 
     @Provides
     @Singleton
@@ -28,9 +36,6 @@ internal class NetworkModule {
             HttpLoggingInterceptor.Level.NONE
         }
     }
-
-    @Provides
-    fun provideConverterFactory(): GsonConverterFactory = GsonConverterFactory.create()
 
     @Provides
     @Singleton
@@ -47,12 +52,14 @@ internal class NetworkModule {
     fun provideRetrofitFlickrNetworkApi(
         retrofitBuilder: Retrofit.Builder,
         okhttpCallFactory: dagger.Lazy<Call.Factory>,
-        converterFactory: GsonConverterFactory
+        networkJson: Json
     ): RetrofitFlickrNetworkApi =
         retrofitBuilder
             .baseUrl("https://api.flickr.com/")
             .callFactory { okhttpCallFactory.get().newCall(it) }
-            .addConverterFactory(converterFactory)
+            .addConverterFactory(
+                networkJson.asConverterFactory("application/json".toMediaType()),
+            )
             .build()
             .create(RetrofitFlickrNetworkApi::class.java)
 
