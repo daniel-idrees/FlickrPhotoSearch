@@ -1,12 +1,13 @@
 package com.example.data.network.retrofit
 
-import com.example.data.network.PhotoDataSource
+import com.example.data.network.FlickrNetworkDataSource
 import com.example.data.network.model.PhotoSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import javax.inject.Inject
 import javax.inject.Singleton
 import com.example.data.BuildConfig
+import retrofit2.Retrofit
 
 private const val API_KEY = BuildConfig.API_KEY
 
@@ -25,10 +26,14 @@ internal interface RetrofitFlickrNetworkApi {
     ): PhotoSearchResponse
 }
 
+
+/**
+ * [Retrofit] backed [FlickrNetworkDataSource]
+ */
 @Singleton
 internal class RetrofitFlickrApiClient @Inject constructor(
     private val networkApi: RetrofitFlickrNetworkApi
-) : PhotoDataSource {
+) : FlickrNetworkDataSource {
     override suspend fun searchPhotos(searchText: String): PhotoSearchResponse =
         networkApi.getPhotos(
             searchText = searchText,

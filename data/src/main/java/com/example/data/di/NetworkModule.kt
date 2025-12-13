@@ -1,7 +1,7 @@
 package com.example.data.di
 
 import com.example.data.BuildConfig
-import com.example.data.network.PhotoDataSource
+import com.example.data.network.FlickrNetworkDataSource
 import com.example.data.network.retrofit.RetrofitFlickrApiClient
 import com.example.data.network.retrofit.RetrofitFlickrNetworkApi
 import dagger.Module
@@ -67,5 +67,5 @@ internal class NetworkModule {
     @Singleton
     fun providePhotoDataSource(
         network: RetrofitFlickrApiClient
-    ): PhotoDataSource = network
+    ): FlickrNetworkDataSource = network
 }

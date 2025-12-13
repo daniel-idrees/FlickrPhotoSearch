@@ -2,7 +2,7 @@ package com.example.data.repository
 
 import app.cash.turbine.test
 import com.example.data.RepoPhotoSearchResult
-import com.example.data.network.PhotoDataSource
+import com.example.data.network.FlickrNetworkDataSource
 import com.example.data.util.fakePhotoItemDtoList
 import com.example.data.util.fakePhotoSearchResponse
 import com.example.data.util.fakePhotoSearchResponseWithInvalidStatus
@@ -28,7 +28,7 @@ class PhotoNetworkRepositoryTest {
     val mainDispatcherRule = CoroutineTestRule()
 
     @Mock
-    private lateinit var network: PhotoDataSource
+    private lateinit var network: FlickrNetworkDataSource
 
     private val subject by lazy { PhotoNetworkRepository(network) }
 
