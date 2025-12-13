@@ -2,13 +2,13 @@ package com.example.data.di
 
 import com.example.data.BuildConfig
 import com.example.data.network.PhotoDataSource
-import com.example.data.network.retrofit.RetrofitFlickApiClient
-import com.example.data.network.retrofit.RetrofitFlickrApi
-import com.example.data.network.retrofit.RetrofitFlickrApi.Companion.FLICKR_API_BASE_URL
+import com.example.data.network.retrofit.RetrofitFlickrApiClient
+import com.example.data.network.retrofit.RetrofitFlickrNetworkApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -30,38 +30,35 @@ internal class NetworkModule {
     }
 
     @Provides
-    @Singleton
-    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
-        OkHttpClient()
-            .newBuilder()
-            .addInterceptor(httpLoggingInterceptor).build()
-
-    @Provides
     fun provideConverterFactory(): GsonConverterFactory = GsonConverterFactory.create()
 
     @Provides
     @Singleton
-    fun provideRetrofitBuilder(
-        client: OkHttpClient,
-        converterFactory: GsonConverterFactory
-    ): Retrofit.Builder =
-        Retrofit.Builder()
-            .addConverterFactory(converterFactory)
-            .client(client)
+    fun provideRetrofitBuilder(): Retrofit.Builder = Retrofit.Builder()
 
     @Provides
     @Singleton
-    fun provideRetrofitFlickrApi(
-        retrofitBuilder: Retrofit.Builder,
-    ): RetrofitFlickrApi =
-        retrofitBuilder
-            .baseUrl(FLICKR_API_BASE_URL)
+    fun okHttpCallFactory(httpLoggingInterceptor: HttpLoggingInterceptor): Call.Factory = OkHttpClient.Builder()
+            .addInterceptor(httpLoggingInterceptor)
             .build()
-            .create(RetrofitFlickrApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideRetrofitFlickrNetworkApi(
+        retrofitBuilder: Retrofit.Builder,
+        okhttpCallFactory: dagger.Lazy<Call.Factory>,
+        converterFactory: GsonConverterFactory
+    ): RetrofitFlickrNetworkApi =
+        retrofitBuilder
+            .baseUrl("https://api.flickr.com/")
+            .callFactory { okhttpCallFactory.get().newCall(it) }
+            .addConverterFactory(converterFactory)
+            .build()
+            .create(RetrofitFlickrNetworkApi::class.java)
 
     @Provides
     @Singleton
     fun providePhotoDataSource(
-        network: RetrofitFlickApiClient
+        network: RetrofitFlickrApiClient
     ): PhotoDataSource = network
 }

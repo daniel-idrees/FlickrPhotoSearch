@@ -10,13 +10,12 @@ import com.example.data.BuildConfig
 
 private const val API_KEY = BuildConfig.API_KEY
 
-internal interface RetrofitFlickrApi {
-    companion object {
-        const val FLICKR_API_BASE_URL = "https://api.flickr.com/"
-    }
-
+/**
+ * Retrofit API declaration for Retrofit Network API
+ */
+internal interface RetrofitFlickrNetworkApi {
     @GET("services/rest/")
-    suspend fun callFlickr(
+    suspend fun getPhotos(
         @Query("text") searchText: String,
         @Query("method") method: String,
         @Query("api_key") apiKey: String,
@@ -27,11 +26,11 @@ internal interface RetrofitFlickrApi {
 }
 
 @Singleton
-internal class RetrofitFlickApiClient @Inject constructor(
-    private val networkApi: RetrofitFlickrApi
+internal class RetrofitFlickrApiClient @Inject constructor(
+    private val networkApi: RetrofitFlickrNetworkApi
 ) : PhotoDataSource {
     override suspend fun searchPhotos(searchText: String): PhotoSearchResponse =
-        networkApi.callFlickr(
+        networkApi.getPhotos(
             searchText = searchText,
             method = "flickr.photos.search",
             apiKey = API_KEY,
