@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.domain.model.SearchedPhoto
+import com.example.domain.model.Visibility
 import com.example.ui.R
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.content.ContentScreen
@@ -117,9 +118,7 @@ private class SearchHistoryPreviewParameterProvider : PreviewParameterProvider<M
                 SearchedPhoto(
                     title = "Photo One",
                     url = "url",
-                    isPublic = false,
-                    isFriend = false,
-                    isFamily = false
+                    visibility = Visibility.PRIVATE
                 )
             ),
             searchHistory = listOf("test1", "test2"),

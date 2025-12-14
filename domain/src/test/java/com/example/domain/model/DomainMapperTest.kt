@@ -1,12 +1,6 @@
 package com.example.domain.model
 
-import com.example.domain.util.fakeFirstPhotoIsFamily
-import com.example.domain.util.fakeFirstPhotoIsFriend
-import com.example.domain.util.fakeFirstPhotoIsPublic
 import com.example.domain.util.fakePhotoDtoList
-import com.example.domain.util.fakeSecondPhotoIsFamily
-import com.example.domain.util.fakeSecondPhotoIsFriend
-import com.example.domain.util.fakeSecondPhotoIsPublic
 import com.example.testfeature.util.fakeFirstPhotoTitle
 import com.example.testfeature.util.fakeSecondPhotoTitle
 import io.kotest.matchers.shouldBe
@@ -26,16 +20,12 @@ class DomainMapperTest {
 
         firstItem.title shouldBe fakeFirstPhotoTitle
         firstItem.url shouldBe "https://farm9999.staticflickr.com/fakeServer/123456789_1c27664791.jpg"
-        firstItem.isPublic shouldBe fakeFirstPhotoIsPublic
-        firstItem.isFriend shouldBe fakeFirstPhotoIsFriend
-        firstItem.isFamily shouldBe fakeFirstPhotoIsFamily
+        firstItem.visibility shouldBe Visibility.PUBLIC
 
         // Verify the second item
         val secondItem = photoItemList[1]
         secondItem.title shouldBe fakeSecondPhotoTitle
         secondItem.url shouldBe "https://farm8888.staticflickr.com/fakeServer2/987654321_2d38764802.jpg"
-        secondItem.isPublic shouldBe fakeSecondPhotoIsPublic
-        secondItem.isFriend shouldBe fakeSecondPhotoIsFriend
-        secondItem.isFamily shouldBe fakeSecondPhotoIsFamily
+        secondItem.visibility shouldBe Visibility.FRIEND
     }
 }

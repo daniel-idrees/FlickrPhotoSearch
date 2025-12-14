@@ -1,6 +1,7 @@
 package com.example.domain.model
 
 import com.example.data.repository.model.Photo
+import com.example.data.repository.model.PhotoVisibility
 
 internal fun List<Photo>.toDomainModel(): List<SearchedPhoto> =
     this.map { photo ->
@@ -8,11 +9,19 @@ internal fun List<Photo>.toDomainModel(): List<SearchedPhoto> =
             SearchedPhoto(
                 title = title,
                 url = url,
-                isPublic = isPublic,
-                isFriend = isFriend,
-                isFamily = isFamily
+                visibility = getVisibility(photoVisibility),
             )
         }
     }
+
+
+private fun getVisibility(visibility: PhotoVisibility): Visibility {
+    return when (visibility) {
+        PhotoVisibility.PUBLIC -> Visibility.PUBLIC
+        PhotoVisibility.FRIEND -> Visibility.FRIEND
+        PhotoVisibility.FAMILY -> Visibility.FAMILY
+        PhotoVisibility.PRIVATE -> Visibility.PRIVATE
+    }
+}
 
 

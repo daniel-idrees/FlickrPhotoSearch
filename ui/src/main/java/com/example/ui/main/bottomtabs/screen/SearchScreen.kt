@@ -43,6 +43,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.domain.model.SearchedPhoto
+import com.example.domain.model.Visibility
 import com.example.ui.R
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
@@ -341,31 +342,9 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
             searchQuery = "query",
             searchedPhotos = listOf(
                 SearchedPhoto(
-                    title = "Photo One",
-                    url = "url",
-                    isPublic = true,
-                    isFriend = true,
-                    isFamily = true
-                ),
-                SearchedPhoto(
-                    title = "Photo One",
-                    url = "url",
-                    isPublic = true,
-                    isFriend = true,
-                    isFamily = true
-                )
-            ),
-            searchHistory = listOf("query", "query2"),
-            lastSearch = "query"
-        ), viewState.copy(
-            searchQuery = "query",
-            searchedPhotos = listOf(
-                SearchedPhoto(
                     title = "Photo Two",
                     url = "url",
-                    isPublic = false,
-                    isFriend = false,
-                    isFamily = false
+                    visibility = Visibility.PRIVATE
                 )
             ),
             searchHistory = listOf("query", "query2"),
@@ -376,9 +355,19 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
                 SearchedPhoto(
                     title = "Photo Three",
                     url = "url",
-                    isPublic = false,
-                    isFriend = true,
-                    isFamily = false
+                    visibility = Visibility.FRIEND
+                )
+            ),
+            searchHistory = listOf("query", "query2"),
+            lastSearch = "query"
+        ),
+        viewState.copy(
+            searchQuery = "query",
+            searchedPhotos = listOf(
+                SearchedPhoto(
+                    title = "Photo Three",
+                    url = "url",
+                    visibility = Visibility.FAMILY
                 )
             ),
             searchHistory = listOf("query", "query2"),

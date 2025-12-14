@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.domain.model.SearchedPhoto
+import com.example.domain.model.Visibility
 import com.example.ui.R
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.content.ContentScreen
@@ -148,16 +149,12 @@ private class HomePreviewParameterProvider : PreviewParameterProvider<MainViewSt
                 SearchedPhoto(
                     title = "Photo One",
                     url = "url",
-                    isPublic = true,
-                    isFriend = true,
-                    isFamily = true
+                    visibility = Visibility.PUBLIC
                 ),
                 SearchedPhoto(
                     title = "Photo Two",
                     url = "url",
-                    isPublic = true,
-                    isFriend = true,
-                    isFamily = true
+                    visibility = Visibility.FRIEND
                 )
             ),
         ),

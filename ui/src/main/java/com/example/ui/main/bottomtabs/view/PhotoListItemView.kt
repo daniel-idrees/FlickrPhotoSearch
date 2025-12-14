@@ -36,6 +36,7 @@ import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.crossfade
 import com.example.domain.model.SearchedPhoto
+import com.example.domain.model.Visibility
 import com.example.ui.R
 import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_LARGE
@@ -47,7 +48,7 @@ import com.example.ui.common.theme.FlickrPhotoSearchTheme
 internal fun PhotoListItemView(
     modifier: Modifier = Modifier,
     photo: SearchedPhoto,
-    onPhotoClick: (Boolean) -> Unit
+    onPhotoClick: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     var hasImageLoadedSuccessfully by rememberSaveable { mutableStateOf(false) }
@@ -100,16 +101,12 @@ internal fun PhotoListItemView(
             verticalAlignment = Alignment.CenterVertically
         ) {
             val iconModifier = Modifier.size(SPACING_LARGE.dp)
-            if (photo.isPublic) {
-                PublicIconImageView(modifier = iconModifier)
-            } else {
-                PrivateIconImageView(modifier = iconModifier)
-            }
-            if (photo.isFriend) {
-                FriendsIconImageView(modifier = iconModifier)
-            }
-            if (photo.isFamily) {
-                FamilyIconImageView(modifier = iconModifier)
+
+            when (photo.visibility) {
+                Visibility.PUBLIC -> PublicIconImageView(modifier = iconModifier)
+                Visibility.FRIEND -> FriendsIconImageView(modifier = iconModifier)
+                Visibility.FAMILY -> FamilyIconImageView(modifier = iconModifier)
+                Visibility.PRIVATE -> PrivateIconImageView(modifier = iconModifier)
             }
         }
 
@@ -124,14 +121,12 @@ internal fun PhotoListItemView(
 
 @PreviewLightDark
 @Composable
-private fun PhotoListItemWithAllIconsPreview() {
+private fun PhotoListItemWithPublicPreview() {
     PhotoListItemView(
         photo = SearchedPhoto(
             title = "Photo title",
             url = " https://farm66.staticflickr.com/65535/54375913088_62172768d8.jpg",
-            isPublic = true,
-            isFriend = true,
-            isFamily = true
+            visibility = Visibility.PUBLIC
         ),
         onPhotoClick = { }
     )
@@ -145,9 +140,7 @@ private fun PhotoListItemWithFriendPreview() {
             photo = SearchedPhoto(
                 title = "Photo title",
                 url = " https://farm66.staticflickr.com/65535/54375913088_62172768d8.jpg",
-                isPublic = false,
-                isFriend = true,
-                isFamily = false
+                visibility = Visibility.FRIEND
             ),
             onPhotoClick = { }
         )
