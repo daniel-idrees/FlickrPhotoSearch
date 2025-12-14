@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.domain.model.Photo
+import com.example.domain.model.SearchedPhoto
 import com.example.ui.R
 import com.example.ui.common.SPACING_MEDIUM
 import com.example.ui.common.content.ContentScreen
@@ -101,7 +101,7 @@ private fun SearchHistoryPreview(
 
 private class SearchHistoryPreviewParameterProvider : PreviewParameterProvider<MainViewState> {
     val viewState = MainViewState(
-        photoList = emptyList(),
+        searchedPhotos = emptyList(),
         searchHistory = emptyList(),
         isLoading = false,
         error = null,
@@ -113,8 +113,8 @@ private class SearchHistoryPreviewParameterProvider : PreviewParameterProvider<M
         viewState,
         viewState.copy(
             searchQuery = "query",
-            photoList = listOf(
-                Photo(
+            searchedPhotos = listOf(
+                SearchedPhoto(
                     title = "Photo One",
                     url = "url",
                     isPublic = false,

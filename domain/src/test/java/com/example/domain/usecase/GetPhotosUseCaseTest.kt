@@ -2,11 +2,11 @@ package com.example.domain.usecase
 
 import app.cash.turbine.test
 import com.example.data.RepoPhotoSearchResult
-import com.example.data.dto.PhotoItemDto
+import com.example.data.repository.model.Photo
 import com.example.data.repository.PhotoRepository
 import com.example.domain.PhotoSearchResult
 import com.example.domain.util.fakePhotoDtoList
-import com.example.domain.util.fakePhotoList
+import com.example.domain.util.fakeSearchedPhotos
 import com.example.testfeature.rule.CoroutineTestRule
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
@@ -23,15 +23,15 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
-class GetPhotoListUseCaseTest {
+class GetPhotosUseCaseTest {
     @Mock
     private lateinit var repository: PhotoRepository
 
     @get:Rule
     val mainDispatcherRule = CoroutineTestRule()
 
-    private val subject: GetPhotoListUseCase by lazy {
-        GetPhotoListUseCaseImpl(repository)
+    private val subject: GetPhotosUseCase by lazy {
+        GetPhotosUseCaseImpl(repository)
     }
 
     @Test
@@ -47,8 +47,8 @@ class GetPhotoListUseCaseTest {
                 verify(repository).searchPhotos("text")
                 verifyNoMoreInteractions(repository)
                 val result = awaitItem()
-                result shouldBe PhotoSearchResult.Success(fakePhotoList)
-                fakePhotoList.shouldNotBeEmpty()
+                result shouldBe PhotoSearchResult.Success(fakeSearchedPhotos)
+                fakeSearchedPhotos.shouldNotBeEmpty()
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -59,7 +59,7 @@ class GetPhotoListUseCaseTest {
     fun `Invocation should return Empty if the repository returns the empty photo list`() =
         runTest {
             // when
-            val photoDtoList: List<PhotoItemDto> = emptyList()
+            val photoDtoList: List<Photo> = emptyList()
 
             whenever(repository.searchPhotos("text")) doReturn flowOf(
                 RepoPhotoSearchResult.Success(photoDtoList)

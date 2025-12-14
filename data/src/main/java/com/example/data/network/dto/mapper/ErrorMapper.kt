@@ -1,4 +1,4 @@
-package com.example.data.dto.mapper
+package com.example.data.network.dto.mapper
 
 /**
  * https://www.flickr.com/services/api/flickr.photos.search.html

@@ -1,10 +1,10 @@
 package com.example.data
 
-import com.example.data.dto.PhotoItemDto
+import com.example.data.repository.model.Photo
 
 
 sealed interface RepoPhotoSearchResult {
-    data class Success(val photos: List<PhotoItemDto>) : RepoPhotoSearchResult
+    data class Success(val photos: List<Photo>) : RepoPhotoSearchResult
     sealed interface Error : RepoPhotoSearchResult {
         data object NetworkUnavailable : Error
         data class RequestFailed(val errorMessage: String) : Error

@@ -35,7 +35,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.crossfade
-import com.example.domain.model.Photo
+import com.example.domain.model.SearchedPhoto
 import com.example.ui.R
 import com.example.ui.common.SPACING_EXTRA_LARGE
 import com.example.ui.common.SPACING_LARGE
@@ -46,7 +46,7 @@ import com.example.ui.common.theme.FlickrPhotoSearchTheme
 @Composable
 internal fun PhotoListItemView(
     modifier: Modifier = Modifier,
-    photo: Photo,
+    photo: SearchedPhoto,
     onPhotoClick: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
@@ -126,7 +126,7 @@ internal fun PhotoListItemView(
 @Composable
 private fun PhotoListItemWithAllIconsPreview() {
     PhotoListItemView(
-        photo = Photo(
+        photo = SearchedPhoto(
             title = "Photo title",
             url = " https://farm66.staticflickr.com/65535/54375913088_62172768d8.jpg",
             isPublic = true,
@@ -142,7 +142,7 @@ private fun PhotoListItemWithAllIconsPreview() {
 private fun PhotoListItemWithFriendPreview() {
     FlickrPhotoSearchTheme {
         PhotoListItemView(
-            photo = Photo(
+            photo = SearchedPhoto(
                 title = "Photo title",
                 url = " https://farm66.staticflickr.com/65535/54375913088_62172768d8.jpg",
                 isPublic = false,

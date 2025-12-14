@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import com.example.data.RepoPhotoSearchResult
 import com.example.data.network.FlickrNetworkDataSource
 import com.example.data.util.fakePhotoItemDtoList
-import com.example.data.util.fakePhotoSearchResponse
-import com.example.data.util.fakePhotoSearchResponseWithInvalidStatus
+import com.example.data.util.fakePhotoSearchResponseDto
+import com.example.data.util.fakePhotoSearchResponseDtoWithInvalidStatus
 import com.example.testfeature.rule.CoroutineTestRule
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.runTest
@@ -35,7 +35,7 @@ class PhotoNetworkRepositoryTest {
     @Test
     fun `searchPhotos should return success when api response is successful`() =
         runTest {
-            whenever(network.searchPhotos("test")) doReturn fakePhotoSearchResponse
+            whenever(network.searchPhotos("test")) doReturn fakePhotoSearchResponseDto
 
             val result = subject.searchPhotos("test")
 
@@ -45,7 +45,7 @@ class PhotoNetworkRepositoryTest {
             // then
             result.test {
                 awaitItem() shouldBe expected
-                expected.photos.size shouldBe fakePhotoSearchResponse.photoSearchDetail.photos.size
+                expected.photos.size shouldBe fakePhotoSearchResponseDto.photoSearchDetailDto.photosDto.size
                 verify(network).searchPhotos("test")
                 verifyNoMoreInteractions(network)
                 cancelAndIgnoreRemainingEvents()
@@ -55,7 +55,7 @@ class PhotoNetworkRepositoryTest {
     @Test
     fun `searchPhotos should return success when api response is successful but status is invalid`() =
         runTest {
-            whenever(network.searchPhotos("test")) doReturn fakePhotoSearchResponseWithInvalidStatus
+            whenever(network.searchPhotos("test")) doReturn fakePhotoSearchResponseDtoWithInvalidStatus
 
             // when
             val result = subject.searchPhotos("test")

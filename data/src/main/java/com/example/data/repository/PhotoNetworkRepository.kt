@@ -1,8 +1,8 @@
 package com.example.data.repository
 
 import com.example.data.RepoPhotoSearchResult
-import com.example.data.dto.mapper.toPhotoList
-import com.example.data.dto.mapper.translateErrorCodeMessage
+import com.example.data.network.dto.mapper.toPhotoList
+import com.example.data.network.dto.mapper.translateErrorCodeMessage
 import com.example.data.network.FlickrNetworkDataSource
 import com.example.data.runSuspendCatching
 import kotlinx.coroutines.flow.Flow

@@ -1,8 +1,8 @@
 package com.example.domain.di
 
 import com.example.data.repository.PhotoRepository
-import com.example.domain.usecase.GetPhotoListUseCase
-import com.example.domain.usecase.GetPhotoListUseCaseImpl
+import com.example.domain.usecase.GetPhotosUseCase
+import com.example.domain.usecase.GetPhotosUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +15,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 internal class UseCaseModule {
     @Provides
     @ViewModelScoped
-    fun providesGetPhotoListUseCase(
+    fun providesGetPhotosUseCase(
         photoRepository: PhotoRepository
-    ): GetPhotoListUseCase = GetPhotoListUseCaseImpl(photoRepository)
+    ): GetPhotosUseCase = GetPhotosUseCaseImpl(photoRepository)
 }

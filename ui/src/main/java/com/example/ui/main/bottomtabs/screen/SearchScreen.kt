@@ -42,7 +42,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.domain.model.Photo
+import com.example.domain.model.SearchedPhoto
 import com.example.ui.R
 import com.example.ui.common.SPACING_LARGE
 import com.example.ui.common.SPACING_MEDIUM
@@ -104,7 +104,7 @@ internal fun SearchScreen(
         }
     ) { paddingValues ->
         Content(
-            photoList = mainViewState.photoList,
+            searchedPhotoList = mainViewState.searchedPhotos,
             lastSearch = mainViewState.lastSearch,
             searchQuery = mainViewState.searchQuery,
             errorConfig = mainViewState.error,
@@ -125,7 +125,7 @@ private fun Content(
     onSearchUiEventSend: (SearchUiAction) -> Unit,
     shouldPhotoOverlayBeVisible: Boolean,
     paddingValues: PaddingValues,
-    photoList: List<Photo>,
+    searchedPhotoList: List<SearchedPhoto>,
     lastSearch: String,
     searchQuery: String,
     errorConfig: ContentErrorConfig?,
@@ -152,7 +152,7 @@ private fun Content(
                     )
                 )
         ) {
-            val photosResultAvailable = photoList.isNotEmpty()
+            val photosResultAvailable = searchedPhotoList.isNotEmpty()
             if (!photosResultAvailable) {
                 ContentTitle(
                     modifier = Modifier.fillMaxWidth(),
@@ -223,7 +223,7 @@ private fun Content(
                             ),
                         )
                     }
-                    items(photoList) { photo ->
+                    items(searchedPhotoList) { photo ->
                         PhotoListItemView(
                             modifier = Modifier
                                 .fillMaxWidth(),
@@ -309,7 +309,7 @@ private fun SearchPreview(
 ) {
     FlickrPhotoSearchTheme {
         Content(
-            photoList = viewState.photoList,
+            searchedPhotoList = viewState.searchedPhotos,
             lastSearch = viewState.lastSearch,
             searchQuery = viewState.searchQuery,
             errorConfig = viewState.error,
@@ -325,7 +325,7 @@ private fun SearchPreview(
 
 private class SearchPreviewParameterProvider : PreviewParameterProvider<MainViewState> {
     val viewState = MainViewState(
-        photoList = emptyList(),
+        searchedPhotos = emptyList(),
         searchHistory = emptyList(),
         isLoading = false,
         error = null,
@@ -339,15 +339,15 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
         viewState.copy(isLoading = true),
         viewState.copy(
             searchQuery = "query",
-            photoList = listOf(
-                Photo(
+            searchedPhotos = listOf(
+                SearchedPhoto(
                     title = "Photo One",
                     url = "url",
                     isPublic = true,
                     isFriend = true,
                     isFamily = true
                 ),
-                Photo(
+                SearchedPhoto(
                     title = "Photo One",
                     url = "url",
                     isPublic = true,
@@ -359,8 +359,8 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
             lastSearch = "query"
         ), viewState.copy(
             searchQuery = "query",
-            photoList = listOf(
-                Photo(
+            searchedPhotos = listOf(
+                SearchedPhoto(
                     title = "Photo Two",
                     url = "url",
                     isPublic = false,
@@ -372,8 +372,8 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
             lastSearch = "query"
         ), viewState.copy(
             searchQuery = "query",
-            photoList = listOf(
-                Photo(
+            searchedPhotos = listOf(
+                SearchedPhoto(
                     title = "Photo Three",
                     url = "url",
                     isPublic = false,
@@ -386,7 +386,7 @@ private class SearchPreviewParameterProvider : PreviewParameterProvider<MainView
         ),
         viewState.copy(
             searchQuery = "query",
-            photoList = emptyList(),
+            searchedPhotos = emptyList(),
             searchHistory = listOf("query", "query2"),
             error = ContentErrorConfig(
                 errorTitleRes = ContentErrorConfig.ErrorMessage.Text("Something went wrong"),

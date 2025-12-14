@@ -3,7 +3,7 @@ package com.example.ui.main.bottomtabs
 
 import app.cash.turbine.test
 import com.example.testfeature.rule.CoroutineTestRule
-import com.example.ui.util.fakePhoto
+import com.example.ui.util.fakeSearchedPhoto
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -26,14 +26,14 @@ internal class SearchViewModelTest {
     @Test
     fun `OnPhotoClick event should trigger ShowPhotoOverlay effect`() = runTest {
         // when
-        subject.setAction(SearchUiAction.OnPhotoClick(fakePhoto))
+        subject.setAction(SearchUiAction.OnPhotoClick(fakeSearchedPhoto))
 
         // then
         subject.effect.test {
             awaitItem() shouldBe SearchUiEffect.ShowPhotoOverlay
             cancelAndIgnoreRemainingEvents()
 
-            subject.viewState.value.selectedPhoto shouldBe fakePhoto
+            subject.viewState.value.selectedPhoto shouldBe fakeSearchedPhoto
         }
     }
 

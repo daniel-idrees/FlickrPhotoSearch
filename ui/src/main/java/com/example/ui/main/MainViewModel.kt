@@ -2,7 +2,7 @@ package com.example.ui.main
 
 import androidx.lifecycle.viewModelScope
 import com.example.domain.PhotoSearchResult
-import com.example.domain.usecase.GetPhotoListUseCase
+import com.example.domain.usecase.GetPhotosUseCase
 import com.example.ui.R
 import com.example.ui.common.content.ContentErrorConfig
 import com.example.ui.common.mvi.MviViewModel
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class MainViewModel @Inject constructor(
-    private val getPhotoListUseCase: GetPhotoListUseCase
+    private val getPhotosUseCase: GetPhotosUseCase
 ) : MviViewModel<MainUiAction, MainViewState, MainUiEffect>() {
 
     override fun setInitialState(): MainViewState = MainViewState(
@@ -21,7 +21,7 @@ internal class MainViewModel @Inject constructor(
         error = null,
         searchQuery = "",
         lastSearch = "",
-        photoList = emptyList(),
+        searchedPhotos = emptyList(),
         searchHistory = emptyList()
     )
 
@@ -88,14 +88,14 @@ internal class MainViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            getPhotoListUseCase(searchQuery).collect { result ->
+            getPhotosUseCase(searchQuery).collect { result ->
                 when (result) {
                     is PhotoSearchResult.Success -> {
                         setState {
                             copy(
                                 error = null,
                                 isLoading = false,
-                                photoList = result.photos
+                                searchedPhotos = result.searchedPhotos
                             )
                         }
                     }
@@ -104,7 +104,7 @@ internal class MainViewModel @Inject constructor(
                         setState {
                             copy(
                                 isLoading = false,
-                                photoList = emptyList(),
+                                searchedPhotos = emptyList(),
                                 error = ContentErrorConfig(
                                     errorTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_search_failed_error_title),
                                     errorSubTitleRes = ContentErrorConfig.ErrorMessage.Text(result.errorMessage),
@@ -117,7 +117,7 @@ internal class MainViewModel @Inject constructor(
                     PhotoSearchResult.Empty -> setState {
                         copy(
                             isLoading = false,
-                            photoList = emptyList(),
+                            searchedPhotos = emptyList(),
                             error = ContentErrorConfig(
                                 errorTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_empty_error_title),
                                 errorSubTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_empty_error_sub_title),
@@ -130,7 +130,7 @@ internal class MainViewModel @Inject constructor(
                         setState {
                             copy(
                                 isLoading = false,
-                                photoList = emptyList(),
+                                searchedPhotos = emptyList(),
                                 error = ContentErrorConfig(
                                     errorTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_generic_error_title),
                                     errorSubTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_generic_error_sub_title),
@@ -144,7 +144,7 @@ internal class MainViewModel @Inject constructor(
                         setState {
                             copy(
                                 isLoading = false,
-                                photoList = emptyList(),
+                                searchedPhotos = emptyList(),
                                 error = ContentErrorConfig(
                                     errorTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_no_internet_connection_error_title),
                                     errorSubTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_no_internet_connection_error_sub_title),

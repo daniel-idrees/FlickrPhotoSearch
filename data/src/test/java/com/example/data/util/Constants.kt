@@ -1,9 +1,9 @@
 package com.example.data.util
 
-import com.example.data.dto.PhotoItemDto
-import com.example.data.network.model.Photo
-import com.example.data.network.model.PhotoSearchDetail
-import com.example.data.network.model.PhotoSearchResponse
+import com.example.data.repository.model.Photo
+import com.example.data.network.dto.PhotoDto
+import com.example.data.network.dto.PhotoSearchDetailDto
+import com.example.data.network.dto.PhotoSearchResponseDto
 import com.example.testfeature.util.fakeFirstPhotoFarm
 import com.example.testfeature.util.fakeFirstPhotoId
 import com.example.testfeature.util.fakeFirstPhotoOwner
@@ -34,7 +34,7 @@ internal const val fakeSecondPhotoIsFamily = 0
 internal const val fakeStatus = "ok"
 internal const val fakeInvalidStatus = "fail"
 
-internal val fakeFirstPhoto = Photo(
+internal val fakeFirstPhotoDto = PhotoDto(
     id = fakeFirstPhotoId,
     owner = fakeFirstPhotoOwner,
     secret = fakeFirstPhotoSecret,
@@ -46,7 +46,7 @@ internal val fakeFirstPhoto = Photo(
     isFamily = fakeFirstPhotoIsFamily
 )
 
-internal val fakeSecondPhoto = Photo(
+internal val fakeSecondPhotoDto = PhotoDto(
     id = fakeSecondPhotoId,
     owner = fakeSecondPhotoOwner,
     secret = fakeSecondPhotoSecret,
@@ -58,56 +58,50 @@ internal val fakeSecondPhoto = Photo(
     isFamily = fakeSecondPhotoIsFamily
 )
 
-internal val fakePhotoSearchDetail = PhotoSearchDetail(
+internal val fakePhotoSearchDetailDto = PhotoSearchDetailDto(
     page = fakePage,
     pages = fakePages,
     perPage = fakePerPage,
     total = fakeTotal,
-    photos = listOf(fakeFirstPhoto, fakeSecondPhoto)
+    photosDto = listOf(fakeFirstPhotoDto, fakeSecondPhotoDto)
 )
 
-internal val fakePhotoSearchResponse = PhotoSearchResponse(
-    photoSearchDetail = fakePhotoSearchDetail,
+internal val fakePhotoSearchResponseDto = PhotoSearchResponseDto(
+    photoSearchDetailDto = fakePhotoSearchDetailDto,
     status = fakeStatus
 )
 
-val fakeFirstPhotoItemDto = PhotoItemDto(
+val fakeFirstPhoto = Photo(
     title = fakeFirstPhotoTitle,
-    isPublic = fakeFirstPhotoIsPublic,
-    isFriend = fakeFirstPhotoIsFriend,
-    isFamily = fakeFirstPhotoIsFamily,
-    farm = fakeFirstPhotoFarm,
-    server = fakeFirstPhotoServer,
-    id = fakeFirstPhotoId,
-    secret = fakeFirstPhotoSecret,
-    owner = fakeFirstPhotoOwner
+    isPublic = fakeFirstPhotoIsPublic  == 1,
+    isFriend = fakeFirstPhotoIsFriend == 1,
+    isFamily = fakeFirstPhotoIsFamily == 1,
+    owner = fakeFirstPhotoOwner,
+    url = "https://farm9999.staticflickr.com/fakeServer/123456789_1c27664791.jpg",
 )
 
-val fakeSecondPhotoItemDto = PhotoItemDto(
+val fakeSecondPhoto = Photo(
     title = fakeSecondPhotoTitle,
-    isPublic = fakeSecondPhotoIsPublic,
-    isFriend = fakeSecondPhotoIsFriend,
-    isFamily = fakeSecondPhotoIsFamily,
-    farm = fakeSecondPhotoFarm,
-    server = fakeSecondPhotoServer,
-    id = fakeSecondPhotoId,
-    secret = fakeSecondPhotoSecret,
-    owner = fakeSecondPhotoOwner
+    isPublic = fakeSecondPhotoIsPublic == 1,
+    isFriend = fakeSecondPhotoIsFriend == 1,
+    isFamily = fakeSecondPhotoIsFamily == 1,
+    url = "https://farm8888.staticflickr.com/fakeServer2/987654321_2d38764802.jpg",
+    owner = fakeSecondPhotoOwner,
 )
 
-val fakePhotoItemDtoList = listOf(fakeFirstPhotoItemDto, fakeSecondPhotoItemDto)
+val fakePhotoItemDtoList = listOf(fakeFirstPhoto, fakeSecondPhoto)
 
-internal val fakePhotoSearchDetailForInvalidStatus = PhotoSearchDetail(
+internal val fakePhotoSearchDetailDtoForInvalidStatus = PhotoSearchDetailDto(
     page = fakePage,
     pages = fakePages,
     perPage = fakePerPage,
     total = fakeTotal,
-    photos = emptyList()
+    photosDto = emptyList()
 )
 
 
-internal val fakePhotoSearchResponseWithInvalidStatus = PhotoSearchResponse(
-    photoSearchDetail = fakePhotoSearchDetailForInvalidStatus,
+internal val fakePhotoSearchResponseDtoWithInvalidStatus = PhotoSearchResponseDto(
+    photoSearchDetailDto = fakePhotoSearchDetailDtoForInvalidStatus,
     status = fakeInvalidStatus,
     errorCode = 116
 )

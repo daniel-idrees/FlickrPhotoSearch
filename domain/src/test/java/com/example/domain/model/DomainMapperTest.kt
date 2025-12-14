@@ -16,7 +16,7 @@ import org.junit.Test
 class DomainMapperTest {
 
     @Test
-    fun `toDomainModel should transform PhotoItemDto list to PhotoItem list with correct generated url`() {
+    fun `toDomainModel should transform PhotoDto list to Domain Photo list with correct generated url`() {
 
         val photoItemList = fakePhotoDtoList.toDomainModel()
         photoItemList.size shouldBe fakePhotoDtoList.size
