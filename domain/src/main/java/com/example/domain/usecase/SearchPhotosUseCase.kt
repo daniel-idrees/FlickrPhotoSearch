@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * A use case which obtains a list of photos for a specific search text
  */
-interface GetPhotosUseCase {
+interface SearchPhotosUseCase {
     /**
      * Returns a list of photos for a specific search text
      */

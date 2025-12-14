@@ -30,8 +30,8 @@ class GetPhotosUseCaseTest {
     @get:Rule
     val mainDispatcherRule = CoroutineTestRule()
 
-    private val subject: GetPhotosUseCase by lazy {
-        GetPhotosUseCaseImpl(repository)
+    private val subject: SearchPhotosUseCase by lazy {
+        SearchPhotosUseCaseImpl(repository)
     }
 
     @Test

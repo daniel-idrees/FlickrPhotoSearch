@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-internal class GetPhotosUseCaseImpl @Inject constructor(
+internal class SearchPhotosUseCaseImpl @Inject constructor(
     private val photoRepository: PhotoRepository,
-) : GetPhotosUseCase {
+) : SearchPhotosUseCase {
     override suspend operator fun invoke(
         searchText: String,
     ): Flow<PhotoSearchResult> = flow {

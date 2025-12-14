@@ -1,8 +1,8 @@
 package com.example.domain.di
 
 import com.example.data.repository.PhotoRepository
-import com.example.domain.usecase.GetPhotosUseCase
-import com.example.domain.usecase.GetPhotosUseCaseImpl
+import com.example.domain.usecase.SearchPhotosUseCase
+import com.example.domain.usecase.SearchPhotosUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,5 +17,5 @@ internal class UseCaseModule {
     @ViewModelScoped
     fun providesGetPhotosUseCase(
         photoRepository: PhotoRepository
-    ): GetPhotosUseCase = GetPhotosUseCaseImpl(photoRepository)
+    ): SearchPhotosUseCase = SearchPhotosUseCaseImpl(photoRepository)
 }

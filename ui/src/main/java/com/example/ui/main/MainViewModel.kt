@@ -2,7 +2,7 @@ package com.example.ui.main
 
 import androidx.lifecycle.viewModelScope
 import com.example.domain.PhotoSearchResult
-import com.example.domain.usecase.GetPhotosUseCase
+import com.example.domain.usecase.SearchPhotosUseCase
 import com.example.ui.R
 import com.example.ui.common.content.ContentErrorConfig
 import com.example.ui.common.mvi.MviViewModel
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class MainViewModel @Inject constructor(
-    private val getPhotosUseCase: GetPhotosUseCase
+    private val searchPhotosUseCase: SearchPhotosUseCase
 ) : MviViewModel<MainUiAction, MainViewState, MainUiEffect>() {
 
     override fun setInitialState(): MainViewState = MainViewState(
@@ -88,7 +88,7 @@ internal class MainViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            getPhotosUseCase(searchQuery).collect { result ->
+            searchPhotosUseCase(searchQuery).collect { result ->
                 when (result) {
                     is PhotoSearchResult.Success -> {
                         setState {

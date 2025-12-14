@@ -3,7 +3,7 @@ package com.example.ui.searchtabs
 import app.cash.turbine.test
 import com.example.domain.PhotoSearchResult
 import com.example.domain.model.SearchedPhoto
-import com.example.domain.usecase.GetPhotosUseCase
+import com.example.domain.usecase.SearchPhotosUseCase
 import com.example.testfeature.rule.CoroutineTestRule
 import com.example.ui.R
 import com.example.ui.common.content.ContentErrorConfig
@@ -32,10 +32,10 @@ internal class MainViewModelTest {
     val mainDispatcherRule = CoroutineTestRule()
 
     @Mock
-    private lateinit var getPhotosUseCase: GetPhotosUseCase
+    private lateinit var searchPhotosUseCase: SearchPhotosUseCase
 
     private val subject: MainViewModel by lazy {
-        MainViewModel(getPhotosUseCase)
+        MainViewModel(searchPhotosUseCase)
     }
 
     @Test
@@ -88,7 +88,7 @@ internal class MainViewModelTest {
     @Test
     fun `ClearSearchHistory should trigger clear search history`() = runTest {
 
-        whenever(getPhotosUseCase(testQuery)).thenReturn(
+        whenever(searchPhotosUseCase(testQuery)).thenReturn(
             flowOf(
                 PhotoSearchResult.Success(
                     fakePhotoList
@@ -109,7 +109,7 @@ internal class MainViewModelTest {
     @Test
     fun `RequestSearch should trigger search and switch to Search screen if fromScreen is Home`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -120,7 +120,7 @@ internal class MainViewModelTest {
             subject.setAction(MainUiAction.RequestSearch(testQuery, BottomBarScreen.Home))
 
             // then
-            verify(getPhotosUseCase).invoke(testQuery)
+            verify(searchPhotosUseCase).invoke(testQuery)
 
             subject.effect.test {
                 awaitItem() shouldBe MainUiEffect.Navigation.SwitchScreen(BottomBarScreen.Search)
@@ -131,7 +131,7 @@ internal class MainViewModelTest {
     @Test
     fun `RequestSearch should trigger search and switch to Search screen if fromScreen is History`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -142,7 +142,7 @@ internal class MainViewModelTest {
             subject.setAction(MainUiAction.RequestSearch(testQuery, BottomBarScreen.History))
 
             // then
-            verify(getPhotosUseCase).invoke(testQuery)
+            verify(searchPhotosUseCase).invoke(testQuery)
 
             subject.effect.test {
                 awaitItem() shouldBe MainUiEffect.Navigation.SwitchScreen(BottomBarScreen.Search)
@@ -153,7 +153,7 @@ internal class MainViewModelTest {
     @Test
     fun `RequestSearch from Search screen should trigger search but should not switch screen`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -165,7 +165,7 @@ internal class MainViewModelTest {
             subject.setAction(MainUiAction.RequestSearch(testQuery, BottomBarScreen.Search))
 
             // then
-            verify(getPhotosUseCase).invoke(testQuery)
+            verify(searchPhotosUseCase).invoke(testQuery)
 
             subject.effect.test {
                 expectNoEvents()
@@ -199,7 +199,7 @@ internal class MainViewModelTest {
 
     @Test
     fun `RequestSearch should update lastSearch string in the viewState`() = runTest {
-        whenever(getPhotosUseCase(testQuery)).thenReturn(
+        whenever(searchPhotosUseCase(testQuery)).thenReturn(
             flowOf(
                 PhotoSearchResult.Success(
                     fakePhotoList
@@ -229,7 +229,7 @@ internal class MainViewModelTest {
 
     @Test
     fun `RemoveSearchHistory should delete the saved query from search history`() = runTest {
-        whenever(getPhotosUseCase(testQuery)).thenReturn(
+        whenever(searchPhotosUseCase(testQuery)).thenReturn(
             flowOf(
                 PhotoSearchResult.Success(
                     fakePhotoList
@@ -237,7 +237,7 @@ internal class MainViewModelTest {
             )
         )
 
-        whenever(getPhotosUseCase(anotherTestQuery)).thenReturn(
+        whenever(searchPhotosUseCase(anotherTestQuery)).thenReturn(
             flowOf(
                 PhotoSearchResult.Success(
                     fakePhotoList
@@ -262,7 +262,7 @@ internal class MainViewModelTest {
     @Test
     fun `OnSearchHistoryItemSelected should switch to Search screen if fromScreen is Home`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -279,7 +279,7 @@ internal class MainViewModelTest {
             )
 
             // then
-            verify(getPhotosUseCase).invoke(testQuery)
+            verify(searchPhotosUseCase).invoke(testQuery)
 
             subject.effect.test {
                 awaitItem() shouldBe MainUiEffect.Navigation.SwitchScreen(BottomBarScreen.Search)
@@ -290,7 +290,7 @@ internal class MainViewModelTest {
     @Test
     fun `OnSearchHistoryItemSelected should switch to Search screen if fromScreen is History`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -307,7 +307,7 @@ internal class MainViewModelTest {
             )
 
             // then
-            verify(getPhotosUseCase).invoke(testQuery)
+            verify(searchPhotosUseCase).invoke(testQuery)
 
             subject.effect.test {
                 awaitItem() shouldBe MainUiEffect.Navigation.SwitchScreen(BottomBarScreen.Search)
@@ -317,7 +317,7 @@ internal class MainViewModelTest {
 
     @Test
     fun `OnSearchHistoryItemSelected from Search screen should not switch screen`() = runTest {
-        whenever(getPhotosUseCase(testQuery)).thenReturn(
+        whenever(searchPhotosUseCase(testQuery)).thenReturn(
             flowOf(
                 PhotoSearchResult.Success(
                     fakePhotoList
@@ -329,7 +329,7 @@ internal class MainViewModelTest {
         subject.setAction(MainUiAction.OnSearchHistoryItemSelected(testQuery, BottomBarScreen.Search))
 
         // then
-        verify(getPhotosUseCase).invoke(testQuery)
+        verify(searchPhotosUseCase).invoke(testQuery)
 
         subject.effect.test {
             expectNoEvents()
@@ -339,7 +339,7 @@ internal class MainViewModelTest {
     @Test
     fun `OnSearchHistoryItemSelected should trigger search if called triggered from Home`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -356,13 +356,13 @@ internal class MainViewModelTest {
             )
 
             // then
-            verify(getPhotosUseCase).invoke(testQuery)
+            verify(searchPhotosUseCase).invoke(testQuery)
         }
 
     @Test
     fun `OnSearchHistoryItemSelected should trigger search if called triggered from Search`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -379,13 +379,13 @@ internal class MainViewModelTest {
             )
 
             // then
-            verify(getPhotosUseCase).invoke(testQuery)
+            verify(searchPhotosUseCase).invoke(testQuery)
         }
 
     @Test
     fun `OnSearchHistoryItemSelected should trigger search if called triggered from History`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -402,13 +402,13 @@ internal class MainViewModelTest {
             )
 
             // then
-            verify(getPhotosUseCase).invoke(testQuery)
+            verify(searchPhotosUseCase).invoke(testQuery)
         }
 
     @Test
     fun `Error config in viewState should have relevant updates when photo list is empty in the result when OnSearchRequest triggers search`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         emptyList()
@@ -447,7 +447,7 @@ internal class MainViewModelTest {
     @Test
     fun `Error config in viewState should have photo list when use case returns success with populated photo list`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -475,7 +475,7 @@ internal class MainViewModelTest {
     fun `Error config in viewState should have relevant updates when use case returns generic error`() =
         runTest {
 
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Error.Generic
                 )
@@ -518,7 +518,7 @@ internal class MainViewModelTest {
     fun `Error config in viewState should have relevant updates when use case returns no result error`() =
         runTest {
 
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Error.SearchFailed("search failed")
                 )
@@ -561,7 +561,7 @@ internal class MainViewModelTest {
     fun `Error config in viewState should have relevant updates when use case returns no internet connection error`() =
         runTest {
 
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Error.NoInternetConnection
                 )
@@ -602,7 +602,7 @@ internal class MainViewModelTest {
     @Test
     fun `viewState should have empty photo list when use case returns generic error`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -622,7 +622,7 @@ internal class MainViewModelTest {
 
             subject.viewState.value.searchedPhotos shouldBe fakePhotoList
 
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Error.Generic
                 )
@@ -641,7 +641,7 @@ internal class MainViewModelTest {
     @Test
     fun `viewState should have empty photo list when use case returns NoInternetConnection error`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -661,7 +661,7 @@ internal class MainViewModelTest {
 
             subject.viewState.value.searchedPhotos shouldBe fakePhotoList
 
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Error.NoInternetConnection
                 )
@@ -680,7 +680,7 @@ internal class MainViewModelTest {
     @Test
     fun `viewState should have empty photo list when use case returns SearchFailed error`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -700,7 +700,7 @@ internal class MainViewModelTest {
 
             subject.viewState.value.searchedPhotos shouldBe fakePhotoList
 
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Error.SearchFailed("")
                 )
@@ -719,7 +719,7 @@ internal class MainViewModelTest {
     @Test
     fun `viewState should have updated search history whenever OnSearchRequest triggers search`() =
         runTest {
-            whenever(getPhotosUseCase(testQuery)).thenReturn(
+            whenever(searchPhotosUseCase(testQuery)).thenReturn(
                 flowOf(
                     PhotoSearchResult.Success(
                         fakePhotoList
@@ -727,7 +727,7 @@ internal class MainViewModelTest {
                 )
             )
 
-            whenever(getPhotosUseCase(anotherTestQuery)).thenReturn(
+            whenever(searchPhotosUseCase(anotherTestQuery)).thenReturn(
                 flowOf(PhotoSearchResult.Success(fakePhotoList))
             )
 
