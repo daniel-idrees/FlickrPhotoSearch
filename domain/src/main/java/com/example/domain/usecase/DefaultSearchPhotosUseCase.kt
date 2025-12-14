@@ -6,7 +6,7 @@ import com.example.domain.PhotoSearchResult
 import com.example.domain.model.toDomainModel
 import javax.inject.Inject
 
-internal class SearchPhotosUseCaseImpl @Inject constructor(
+internal class DefaultSearchPhotosUseCase @Inject constructor(
     private val photoRepository: PhotoRepository,
 ) : SearchPhotosUseCase {
     override suspend operator fun invoke(

@@ -9,7 +9,6 @@ import com.example.domain.util.fakeSearchedPhotos
 import com.example.testfeature.rule.CoroutineTestRule
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +29,7 @@ class SearchPhotosUseCaseTest {
     val mainDispatcherRule = CoroutineTestRule()
 
     private val subject: SearchPhotosUseCase by lazy {
-        SearchPhotosUseCaseImpl(repository)
+        DefaultSearchPhotosUseCase(repository)
     }
 
     @Test
