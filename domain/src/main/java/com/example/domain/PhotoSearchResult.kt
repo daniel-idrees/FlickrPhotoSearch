@@ -8,7 +8,6 @@ sealed interface PhotoSearchResult {
         data object Generic : Error
         data class SearchFailed(val errorMessage: String) : Error
         data object NoInternetConnection : Error
+        data object Empty : Error
     }
-
-    data object Empty : PhotoSearchResult
 }

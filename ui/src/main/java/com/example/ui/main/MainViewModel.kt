@@ -5,6 +5,8 @@ import com.example.domain.PhotoSearchResult
 import com.example.domain.usecase.SearchPhotosUseCase
 import com.example.ui.R
 import com.example.ui.common.content.ContentErrorConfig
+import com.example.ui.common.content.ContentErrorConfig.ErrorMessage.Resource
+import com.example.ui.common.content.ContentErrorConfig.ErrorMessage.Text
 import com.example.ui.common.mvi.MviViewModel
 import com.example.ui.main.bottomtabs.screen.config.BottomBarScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class MainViewModel @Inject constructor(
-    private val searchPhotosUseCase: SearchPhotosUseCase
+    private val searchPhotosUseCase: SearchPhotosUseCase,
 ) : MviViewModel<MainUiAction, MainViewState, MainUiEffect>() {
 
     override fun setInitialState(): MainViewState = MainViewState(
@@ -88,73 +90,55 @@ internal class MainViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            searchPhotosUseCase(searchQuery).collect { result ->
-                when (result) {
-                    is PhotoSearchResult.Success -> {
-                        setState {
-                            copy(
-                                error = null,
-                                isLoading = false,
-                                searchedPhotos = result.searchedPhotos
-                            )
-                        }
+            when (val result = searchPhotosUseCase(searchQuery)) {
+                is PhotoSearchResult.Success -> {
+                    setState {
+                        copy(
+                            error = null,
+                            isLoading = false,
+                            searchedPhotos = result.searchedPhotos
+                        )
                     }
+                }
 
-                    is PhotoSearchResult.Error.SearchFailed -> {
-                        setState {
-                            copy(
-                                isLoading = false,
-                                searchedPhotos = emptyList(),
-                                error = ContentErrorConfig(
-                                    errorTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_search_failed_error_title),
-                                    errorSubTitleRes = ContentErrorConfig.ErrorMessage.Text(result.errorMessage),
-                                    onRetry = { search(searchQuery) },
-                                )
-                            )
-                        }
-                    }
-
-                    PhotoSearchResult.Empty -> setState {
+                is PhotoSearchResult.Error -> {
+                    setState {
                         copy(
                             isLoading = false,
                             searchedPhotos = emptyList(),
-                            error = ContentErrorConfig(
-                                errorTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_empty_error_title),
-                                errorSubTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_empty_error_sub_title),
-                                onRetry = { search(searchQuery) },
-                            )
+                            error = result.toContentErrorConfig { search(searchQuery) }
                         )
-                    }
-
-                    PhotoSearchResult.Error.Generic -> {
-                        setState {
-                            copy(
-                                isLoading = false,
-                                searchedPhotos = emptyList(),
-                                error = ContentErrorConfig(
-                                    errorTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_generic_error_title),
-                                    errorSubTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_generic_error_sub_title),
-                                    onRetry = { search(searchQuery) },
-                                )
-                            )
-                        }
-                    }
-
-                    PhotoSearchResult.Error.NoInternetConnection -> {
-                        setState {
-                            copy(
-                                isLoading = false,
-                                searchedPhotos = emptyList(),
-                                error = ContentErrorConfig(
-                                    errorTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_no_internet_connection_error_title),
-                                    errorSubTitleRes = ContentErrorConfig.ErrorMessage.Resource(R.string.main_view_model_no_internet_connection_error_sub_title),
-                                    onRetry = { search(searchQuery) },
-                                )
-                            )
-                        }
                     }
                 }
             }
+        }
+    }
+
+    private fun PhotoSearchResult.Error.toContentErrorConfig(onRetry: (() -> Unit)? = null): ContentErrorConfig {
+        return when (this) {
+            PhotoSearchResult.Error.Generic -> ContentErrorConfig(
+                errorTitleRes = Resource(R.string.main_view_model_generic_error_title),
+                errorSubTitleRes = Resource(R.string.main_view_model_generic_error_sub_title),
+                onRetry = onRetry,
+            )
+
+            PhotoSearchResult.Error.NoInternetConnection -> ContentErrorConfig(
+                errorTitleRes = Resource(R.string.main_view_model_no_internet_connection_error_title),
+                errorSubTitleRes = Resource(R.string.main_view_model_no_internet_connection_error_sub_title),
+                onRetry = onRetry,
+            )
+
+            is PhotoSearchResult.Error.SearchFailed -> ContentErrorConfig(
+                errorTitleRes = Resource(R.string.main_view_model_search_failed_error_title),
+                errorSubTitleRes = Text(this.errorMessage),
+                onRetry = onRetry,
+            )
+
+            is PhotoSearchResult.Error.Empty -> ContentErrorConfig(
+                errorTitleRes = Resource(R.string.main_view_model_empty_error_title),
+                errorSubTitleRes = Resource(R.string.main_view_model_empty_error_sub_title),
+                onRetry = onRetry,
+            )
         }
     }
 

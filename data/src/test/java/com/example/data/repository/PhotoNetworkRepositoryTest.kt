@@ -1,6 +1,5 @@
 package com.example.data.repository
 
-import app.cash.turbine.test
 import com.example.data.RepoPhotoSearchResult
 import com.example.data.network.FlickrNetworkDataSource
 import com.example.data.util.fakePhotoItemDtoList
@@ -33,24 +32,20 @@ class PhotoNetworkRepositoryTest {
     private val subject by lazy { PhotoNetworkRepository(network) }
 
     @Test
-    fun `searchPhotos should return success when api response is successful`() =
-        runTest {
-            whenever(network.searchPhotos("test")) doReturn fakePhotoSearchResponseDto
+    fun `searchPhotos should return success when api response is successful`() = runTest {
+        whenever(network.searchPhotos("test")) doReturn fakePhotoSearchResponseDto
 
-            val result = subject.searchPhotos("test")
+        val result = subject.searchPhotos("test")
 
-            // when
-            val expected = RepoPhotoSearchResult.Success(fakePhotoItemDtoList)
+        // when
+        val expected = RepoPhotoSearchResult.Success(fakePhotoItemDtoList)
 
-            // then
-            result.test {
-                awaitItem() shouldBe expected
-                expected.photos.size shouldBe fakePhotoSearchResponseDto.photoSearchDetailDto.photosDto.size
-                verify(network).searchPhotos("test")
-                verifyNoMoreInteractions(network)
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
+
+        result shouldBe expected
+        expected.photos.size shouldBe fakePhotoSearchResponseDto.photoSearchDetailDto.photosDto.size
+        verify(network).searchPhotos("test")
+        verifyNoMoreInteractions(network)
+    }
 
     @Test
     fun `searchPhotos should return success when api response is successful but status is invalid`() =
@@ -61,12 +56,9 @@ class PhotoNetworkRepositoryTest {
             val result = subject.searchPhotos("test")
 
             // then
-            result.test {
-                awaitItem() shouldBe RepoPhotoSearchResult.Error.RequestFailed("Operation failed. Please contact support.")
-                verify(network).searchPhotos("test")
-                verifyNoMoreInteractions(network)
-                cancelAndIgnoreRemainingEvents()
-            }
+            result shouldBe RepoPhotoSearchResult.Error.RequestFailed("Operation failed. Please contact support.")
+            verify(network).searchPhotos("test")
+            verifyNoMoreInteractions(network)
         }
 
     @Test
@@ -78,12 +70,9 @@ class PhotoNetworkRepositoryTest {
             val result = subject.searchPhotos("test")
 
             // then
-            result.test {
-                awaitItem() shouldBe RepoPhotoSearchResult.Error.ServerError
-                verify(network).searchPhotos("test")
-                verifyNoMoreInteractions(network)
-                cancelAndIgnoreRemainingEvents()
-            }
+            result shouldBe RepoPhotoSearchResult.Error.ServerError
+            verify(network).searchPhotos("test")
+            verifyNoMoreInteractions(network)
         }
 
     @Test
@@ -95,11 +84,8 @@ class PhotoNetworkRepositoryTest {
             val result = subject.searchPhotos("test")
 
             // then
-            result.test {
-                awaitItem() shouldBe RepoPhotoSearchResult.Error.NetworkUnavailable
-                verify(network).searchPhotos("test")
-                verifyNoMoreInteractions(network)
-                cancelAndIgnoreRemainingEvents()
-            }
+            result shouldBe RepoPhotoSearchResult.Error.NetworkUnavailable
+            verify(network).searchPhotos("test")
+            verifyNoMoreInteractions(network)
         }
 }

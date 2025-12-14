@@ -7,5 +7,5 @@ interface PhotoRepository {
     /**
      * Gets photos for a specific search text
      */
-    suspend fun searchPhotos(searchText: String): Flow<RepoPhotoSearchResult>
+    suspend fun searchPhotos(searchText: String): RepoPhotoSearchResult
 }

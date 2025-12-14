@@ -12,5 +12,5 @@ interface SearchPhotosUseCase {
      */
     suspend operator fun invoke(
         searchText: String,
-    ): Flow<PhotoSearchResult>
+    ): PhotoSearchResult
 }
